@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, staggerItem } from "../utils/animations";
+import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 
@@ -86,7 +87,7 @@ const process = [
 ];
 
 export default function Hire() {
-  const [lang, setLang] = useState("en");
+  const { lang } = useLang();
   const hu = lang === "hu";
 
   const [form, setForm] = useState({ name: "", email: "", company: "", budget: "", message: "" });
@@ -133,10 +134,6 @@ export default function Hire() {
               style={{ padding: "0.9rem 2rem", background: "#fff", color: "#1a1a1a", textDecoration: "none", borderRadius: "2px", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.05em" }}>
               {hu ? "Írd meg, mire van szükséged" : "Tell me what you need"}
             </a>
-            <button onClick={() => setLang(l => l === "en" ? "hu" : "en")}
-              style={{ padding: "0.9rem 1.5rem", background: "none", border: "1px solid #333", color: "#555", borderRadius: "2px", fontSize: "0.85rem", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.08em" }}>
-              {hu ? "EN" : "HU"}
-            </button>
           </div>
         </motion.div>
       </section>
