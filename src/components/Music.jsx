@@ -9,9 +9,9 @@ const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/TRn2qxJAvKE";
 
 const streamingLinks = [
   { label: "Spotify",       href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
-  { label: "Apple Music",   href: "#" }, // TODO: replace with Apple Music artist URL
+  { label: "Apple Music",   href: "https://music.apple.com/hu/artist/richard-k%C3%B6rmendi/1877841316" },
   { label: "YouTube",       href: "https://www.youtube.com/@richardkormendi6379" },
-  { label: "Tidal",         href: "#" }, // TODO: replace with Tidal artist URL
+  { label: "Tidal",         href: "https://tidal.com/artist/74624158" },
   { label: "Amazon Music",  href: "#" }, // TODO: replace with Amazon Music artist URL
   { label: "Instagram",     href: "https://www.instagram.com/rickormendi/" },
 ];
