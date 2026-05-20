@@ -15,7 +15,7 @@ const packages = [
     price: "~€380",
     priceHu: "~150 000 Ft",
     desc: "Single-page website or landing page — fast, clean, and live within 2 weeks.",
-    descHu: "Egyszeri egyoldalas weboldal vagy landing page — gyors, tiszta, 2 héten belül él.",
+    descHu: "Egyoldalas weboldal vagy landing page — gyors, tiszta, 2 héten belül éles.",
     items: [
       "1-page site or landing page",
       "Responsive design (mobile-first)",
@@ -24,10 +24,10 @@ const packages = [
       "Delivered in 2 weeks",
     ],
     itemsHu: [
-      "1 oldalas site vagy landing page",
-      "Reszponzív dizájn (mobile-first)",
+      "Egyoldalas site vagy landing page",
+      "Reszponzív dizájn (mobilra optimalizálva)",
       "Alapszintű SEO beállítás",
-      "Kapcsolati form",
+      "Kapcsolati űrlap",
       "Átadás 2 héten belül",
     ],
   },
@@ -36,7 +36,7 @@ const packages = [
     price: "~€760",
     priceHu: "~300 000 Ft",
     desc: "Multi-page WordPress site with SEO, analytics, and a month of support.",
-    descHu: "Többoldalas WordPress site SEO-val, analitikával és 1 hónap supporttal.",
+    descHu: "Többoldalas WordPress weboldal keresőoptimalizálással, analitikával és 1 hónap utókövetéssel.",
     highlight: true,
     items: [
       "Up to 5 pages",
@@ -47,12 +47,12 @@ const packages = [
       "1 month support included",
     ],
     itemsHu: [
-      "Több aloldal (5-ig)",
-      "WordPress + egyedi téma",
-      "SEO audit & on-page optimalizálás",
+      "Több aloldal (legfeljebb 5)",
+      "WordPress + egyedi arculat",
+      "SEO audit és on-page optimalizálás",
       "Google Analytics 4 beállítás",
-      "Teljesítmény-optimalizálás",
-      "1 hónap support",
+      "Oldalbetöltési sebesség optimalizálás",
+      "1 hónap ingyenes utókövetés",
     ],
   },
   {
@@ -60,7 +60,7 @@ const packages = [
     price: "Custom quote",
     priceHu: "Egyedi árajánlat",
     desc: "React development, Google Ads campaigns, complex projects, or long-term collaboration.",
-    descHu: "React fejlesztés, Google Ads kampányok, összetettebb projektek vagy hosszú távú együttműködés.",
+    descHu: "React-alapú fejlesztés, Google Ads kampányok, összetettebb projektek vagy hosszú távú együttműködés.",
     items: [
       "React / Vite development",
       "Google Ads campaign setup & management",
@@ -70,19 +70,19 @@ const packages = [
     ],
     itemsHu: [
       "React / Vite fejlesztés",
-      "Google Ads kampány setup & kezelés",
-      "Projekt menedzsment",
-      "Technikai SEO & Core Web Vitals",
+      "Google Ads kampány beállítás és kezelés",
+      "Projektmenedzsment",
+      "Technikai SEO és Core Web Vitals",
       "Hosszú távú együttműködés",
     ],
   },
 ];
 
 const process = [
-  { step: "01", en: "Discovery call", hu: "Feltérképezés", bodyEn: "We talk through your goals, timeline, and budget. No commitment, no sales pitch.", bodyHu: "Átbeszéljük a céljaidat, határidőt és büdzsét. Semmi kötelezettség, semmi sales." },
-  { step: "02", en: "Proposal", hu: "Ajánlat", bodyEn: "I send a clear, itemised proposal within 48 hours. You approve — we start.", bodyHu: "48 órán belül küldök egy részletes ajánlatot. Jóváhagyod — elkezdjük." },
-  { step: "03", en: "Build", hu: "Fejlesztés", bodyEn: "Regular updates, no surprises. You see the work in progress via a staging link.", bodyHu: "Rendszeres frissítések, nincsenek meglepetések. Staging linken látod a munkát menet közben." },
-  { step: "04", en: "Launch", hu: "Élesítés", bodyEn: "Go live, handover, and training if needed. Plus a month of free support.", bodyHu: "Élesítés, átadás, betanítás ha kell. Plusz 1 hónap ingyenes support." },
+  { step: "01", en: "Discovery call", hu: "Ismerkedés", bodyEn: "We talk through your goals, timeline, and budget. No commitment, no sales pitch.", bodyHu: "Átbeszéljük a céljaidat, a határidőt és a keretet. Semmi kötelezettség, semmi erőltetett értékesítés." },
+  { step: "02", en: "Proposal", hu: "Ajánlat", bodyEn: "I send a clear, itemised proposal within 48 hours. You approve — we start.", bodyHu: "48 órán belül küldök egy részletes, tételes árajánlatot. Jóváhagyod — nekiállunk." },
+  { step: "03", en: "Build", hu: "Fejlesztés", bodyEn: "Regular updates, no surprises. You see the work in progress via a staging link.", bodyHu: "Rendszeres visszajelzések, nincsenek meglepetések. A munkát menet közben egy tesztkörnyezeten tudod követni." },
+  { step: "04", en: "Launch", hu: "Átadás", bodyEn: "Go live, handover, and training if needed. Plus a month of free support.", bodyHu: "Élesítés, átadás, betanítás ha szükséges — plusz 1 hónap ingyenes utókövetés." },
 ];
 
 export default function Hire() {
@@ -124,14 +124,14 @@ export default function Hire() {
           </h1>
           <p style={{ fontSize: "1.1rem", color: "#666", lineHeight: 1.8, maxWidth: "540px", margin: "0 auto 3rem" }}>
             {hu
-              ? "Front-end fejlesztés, WordPress, SEO, Google Ads. Kis- és középvállalkozásoknak, egyéni vállalkozóknak — aki eredményt akar, nem csak egy szép weboldalt."
+              ? "Front-end fejlesztés, WordPress, SEO, Google Ads. Vállalkozásoknak és egyéni vállalkozóknak, akik eredményt akarnak — nem csak egy szép weboldalt."
               : "Front-end development, WordPress, SEO, Google Ads. For small businesses and freelancers who want results, not just a pretty website."
             }
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "0.75rem" }}>
             <a href="#contact-form"
               style={{ padding: "0.9rem 2rem", background: "#fff", color: "#1a1a1a", textDecoration: "none", borderRadius: "2px", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.05em" }}>
-              {hu ? "Írd meg mire van szükséged" : "Tell me what you need"}
+              {hu ? "Írd meg, mire van szükséged" : "Tell me what you need"}
             </a>
             <button onClick={() => setLang(l => l === "en" ? "hu" : "en")}
               style={{ padding: "0.9rem 1.5rem", background: "none", border: "1px solid #333", color: "#555", borderRadius: "2px", fontSize: "0.85rem", cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.08em" }}>
@@ -253,16 +253,16 @@ export default function Hire() {
                 </div>
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                   <input name="company" value={form.company} onChange={handleChange}
-                    placeholder={hu ? "Cégnév / Projekt" : "Company / Project"} style={inputStyle} />
+                    placeholder={hu ? "Cégnév / Projekt neve" : "Company / Project"} style={inputStyle} />
                   <select name="budget" value={form.budget} onChange={handleChange} style={inputStyle}>
-                    <option value="">{hu ? "Büdzsé (opcionális)" : "Budget (optional)"}</option>
+                    <option value="">{hu ? "Tervezett keret (nem kötelező)" : "Budget (optional)"}</option>
                     <option value="<€500">{hu ? "150 000 Ft alatt" : "Under €500"}</option>
                     <option value="€500–1500">{hu ? "150 000 – 600 000 Ft" : "€500 – €1 500"}</option>
                     <option value=">€1500">{hu ? "600 000 Ft felett" : "Over €1 500"}</option>
                   </select>
                 </div>
                 <textarea name="message" rows={5} required value={form.message} onChange={handleChange}
-                  placeholder={hu ? "Miről szólna a projekt?" : "Tell me about the project..."} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
+                  placeholder={hu ? "Meséld el, miről szólna a projekt..." : "Tell me about the project..."} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
                 {status === "error" && (
                   <p style={{ fontSize: "0.85rem", color: "#c0392b" }}>
                     {hu ? "Hiba. Írj emailt közvetlenül." : "Something went wrong. Please email directly."}
