@@ -8,5 +8,72 @@
 </head>
 <body>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <script>
+    CMS.init({
+      config: {
+        backend: {
+          name: "github",
+          repo: "rickcircle/richard-kormendi-site",
+          branch: "main",
+          auth_endpoint: "/api/auth"
+        },
+        media_folder: "public/media",
+        public_folder: "/media",
+        locale: "hu",
+        collections: [
+          {
+            name: "shows",
+            label: "Koncertek",
+            files: [
+              {
+                label: "Koncertlista",
+                name: "shows",
+                file: "src/data/shows.json",
+                fields: [
+                  {
+                    label: "Koncertek",
+                    name: "shows",
+                    widget: "list",
+                    summary: "{{fields.venue}} — {{fields.city}}",
+                    fields: [
+                      { label: "Dátum", name: "date", widget: "datetime", format: "YYYY-MM-DD", date_format: "YYYY-MM-DD", time_format: false },
+                      { label: "Helyszín", name: "venue", widget: "string" },
+                      { label: "Város", name: "city", widget: "string" },
+                      { label: "Ország", name: "country", widget: "string", required: false, default: "Hungary" },
+                      { label: "Jegyek URL", name: "ticketUrl", widget: "string", required: false, hint: "Hagyd üresen ha nincs jegy" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            name: "gallery",
+            label: "Fotók",
+            files: [
+              {
+                label: "Fotógaléria",
+                name: "photos",
+                file: "src/data/photos.json",
+                fields: [
+                  {
+                    label: "Fotók",
+                    name: "photos",
+                    widget: "list",
+                    summary: "{{fields.alt}}",
+                    fields: [
+                      { label: "Fotó", name: "src", widget: "image" },
+                      { label: "Alt szöveg", name: "alt", widget: "string" },
+                      { label: "Felirat", name: "caption", widget: "string", required: false }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    });
+  </script>
 </body>
 </html>
