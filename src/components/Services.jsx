@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, staggerItem } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
+import MagneticLink from "./MagneticLink";
 
 export default function Services() {
   const { lang } = useLang();
@@ -53,12 +54,12 @@ export default function Services() {
                   </li>
                 ))}
               </ul>
-              <a href="#contact"
-                style={{ marginTop: "auto", display: "inline-block", padding: "0.7rem 1.25rem", border: `1px solid ${pkg.highlight ? "#555" : "#ccc"}`, borderRadius: "2px", textDecoration: "none", fontSize: "0.85rem", letterSpacing: "0.05em", color: pkg.highlight ? "#fff" : "#1a1a1a", textAlign: "center", transition: "all 0.2s" }}
+              <MagneticLink href="#contact"
+                style={{ marginTop: "auto", display: "inline-block", padding: "0.7rem 1.25rem", border: `1px solid ${pkg.highlight ? "#555" : "#ccc"}`, borderRadius: "2px", textDecoration: "none", fontSize: "0.85rem", letterSpacing: "0.05em", color: pkg.highlight ? "#fff" : "#1a1a1a", textAlign: "center", transition: "background 0.2s, color 0.2s" }}
                 onMouseOver={e => { e.currentTarget.style.background = pkg.highlight ? "#fff" : "#1a1a1a"; e.currentTarget.style.color = pkg.highlight ? "#1a1a1a" : "#fff"; }}
                 onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = pkg.highlight ? "#fff" : "#1a1a1a"; }}>
                 {tx.cta}
-              </a>
+              </MagneticLink>
             </motion.div>
           ))}
         </motion.div>
