@@ -49,8 +49,13 @@ export default function Photos() {
             <motion.div key={i}
               initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.6, delay: i * 0.1 }}
-              style={{ flex: "0 0 300px", height: "400px", scrollSnapAlign: "start", borderRadius: "2px", overflow: "hidden", background: "#e8e8e8" }}>
+              style={{ flex: "0 0 300px", height: "400px", scrollSnapAlign: "start", borderRadius: "2px", overflow: "hidden", background: "#e8e8e8", position: "relative" }}>
               <img src={photo.src} alt={photo.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              {photo.caption && (
+                <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0.75rem 1rem", background: "linear-gradient(transparent, rgba(0,0,0,0.65))", color: "#fff", fontSize: "0.8rem", letterSpacing: "0.03em" }}>
+                  {photo.caption}
+                </div>
+              )}
             </motion.div>
           ))}
         </div>
