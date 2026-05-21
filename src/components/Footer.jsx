@@ -1,7 +1,9 @@
 const socials = [
-  { label: "YouTube", href: "https://www.youtube.com/@richardkormendi6379" },
+  { label: "Spotify",   href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
+  { label: "YouTube",   href: "https://www.youtube.com/@richardkormendi6379" },
   { label: "Instagram", href: "https://www.instagram.com/rickormendi/" },
-  { label: "Spotify", href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
+  { label: "TikTok",    href: "https://www.tiktok.com/@rick.cormendi" },
+  { label: "Upwork",    href: "https://www.upwork.com/freelancers/~01ec8ead6740efa3dc?viewMode=1" },
 ];
 
 export default function Footer() {
