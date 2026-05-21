@@ -4,10 +4,9 @@ import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 
-// Mailchimp embed URL — a Mailchimp dashboardon: Audience → Signup forms → Embedded forms
-// Cseréld ki: https://YOUR_ACCOUNT.us1.list-manage.com/subscribe/post?u=XXX&id=YYY
-// Vagy használd Formspree-t: https://formspree.io/f/YOUR_FORM_ID
-const NEWSLETTER_URL = "https://formspree.io/f/mwvzvzrn";
+// Mailchimp feliratkozás a Vercel serverless proxyn keresztül (/api/subscribe.js)
+// Env vars kellenek a Vercel dashboardon: MAILCHIMP_API_KEY + MAILCHIMP_LIST_ID
+const NEWSLETTER_URL = "/api/subscribe";
 
 export default function Newsletter() {
   const { lang } = useLang();
