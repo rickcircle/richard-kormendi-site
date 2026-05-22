@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 // Rejtett oldal — nav-ban NEM látszik
 // Közvetlen URL: /audit
 
-const PAGESPEED_URL = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
+const PAGESPEED_URL = "/api/pagespeed";
 
 const METRIC_CONFIG = {
   "first-contentful-paint":    { en: "First Contentful Paint",    hu: "Első tartalom megjelenése",   short: "FCP" },
@@ -200,12 +200,9 @@ export default function Audit() {
     setResults(null);
 
     try {
-      const [mobileRes, desktopRes] = await Promise.all([
-        fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}&strategy=mobile`),
-        fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}&strategy=desktop`),
-      ]);
-      if (!mobileRes.ok || !desktopRes.ok) throw new Error("API error");
-      const [mobile, desktop] = await Promise.all([mobileRes.json(), desktopRes.json()]);
+      const res = await fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}`);
+      if (!res.ok) throw new Error("API error");
+      const { mobile, desktop } = await res.json();
 
       const parse = (data) => {
         const audits = data.lighthouseResult?.audits || {};
@@ -232,13 +229,13 @@ export default function Audit() {
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
       <Navbar />
 
-      {/* Hero — sötét, de kompakt */}
-      <section style={{ background: "#1a1a1a", color: "#fff", padding: "9rem 2rem 5rem", textAlign: "center" }}>
+      {/* Hero — fehér */}
+      <section style={{ background: "#fff", padding: "9rem 2rem 5rem", textAlign: "center", borderBottom: "1px solid #e8e8e8" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
-          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {hu ? "Ingyenes eszköz" : "Free tool"}
           </p>
-          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem" }}>
+          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem", color: "#1a1a1a" }}>
             {hu ? "Weboldal audit" : "Website audit"}
           </h1>
           <p style={{ fontSize: "1rem", color: "#888", lineHeight: 1.7, maxWidth: "460px", margin: "0 auto 3rem" }}>
@@ -255,15 +252,15 @@ export default function Audit() {
                 required
                 style={{
                   flex: "1 1 260px", padding: "0.95rem 1.25rem",
-                  background: "#111", border: "1px solid #333", borderRadius: "4px",
-                  color: "#fff", fontSize: "0.95rem", fontFamily: "inherit", outline: "none",
+                  background: "#fff", border: "1px solid #ddd", borderRadius: "4px",
+                  color: "#1a1a1a", fontSize: "0.95rem", fontFamily: "inherit", outline: "none",
                 }}
               />
               <button type="submit" disabled={status === "loading"}
                 style={{
                   padding: "0.95rem 2rem",
-                  background: status === "loading" ? "#333" : "#fff",
-                  color: status === "loading" ? "#666" : "#1a1a1a",
+                  background: status === "loading" ? "#f0f0f0" : "#1a1a1a",
+                  color: status === "loading" ? "#999" : "#fff",
                   border: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600,
                   letterSpacing: "0.05em", cursor: status === "loading" ? "not-allowed" : "pointer",
                   fontFamily: "inherit", transition: "all 0.2s", whiteSpace: "nowrap",
@@ -272,7 +269,7 @@ export default function Audit() {
               </button>
             </div>
             {status === "error" && (
-              <p style={{ fontSize: "0.85rem", color: "#ff6b6b", marginTop: "1rem" }}>
+              <p style={{ fontSize: "0.85rem", color: "#e74c3c", marginTop: "1rem" }}>
                 {hu ? "Nem sikerült lekérni az adatokat. Ellenőrizd az URL-t és próbáld újra." : "Could not fetch data. Check the URL and try again."}
               </p>
             )}
