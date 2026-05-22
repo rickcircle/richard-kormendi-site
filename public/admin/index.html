@@ -33,7 +33,7 @@
             extension: "md",
             format: "frontmatter",
             identifier_field: "url",
-            summary: "{{fields.mobile_score}}📱  {{fields.desktop_score}}🖥  — {{fields.url}} — {{fields.fixable_label}}",
+            summary: "{{fields.contact_note}} — {{fields.url}} (📱{{fields.mobile_score}} 🖥{{fields.desktop_score}})",
             sortable_fields: ["date", "mobile_score", "desktop_score"],
             fields: [
               { label: "URL", name: "url", widget: "string" },
@@ -42,7 +42,9 @@
               { label: "🖥 Asztali pontszám", name: "desktop_score", widget: "number" },
               { label: "Értékelés", name: "fixable_label", widget: "string" },
               { label: "Becsült munkaidő", name: "fixable_hours", widget: "string", required: false },
-              { label: "Magyarázat", name: "fixable_reason", widget: "text" }
+              { label: "Magyarázat", name: "fixable_reason", widget: "text" },
+              { label: "Érdemes megkeresni?", name: "contact_worthy", widget: "boolean", required: false },
+              { label: "Megkeresési tanács", name: "contact_note", widget: "string", required: false }
             ]
           },
           {

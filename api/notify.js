@@ -29,6 +29,8 @@ function analyzeFixability(mobileScore, desktopScore, issues) {
       label: "⚠️ Új oldalt javaslunk",
       hours: null,
       reason: "Az oldal mobilon kritikusan teljesít és mély strukturális problémák vannak. A javítás valószínűleg többe kerülne, mint egy új, optimalizált oldal építése.",
+      contactWorthy: true,
+      contactNote: "📞 ÉRDEMES MEGKERESNI — nagy projekt, új oldal lehetséges",
     };
   }
   if (mobileScore < 40 && criticalCount >= 3) {
@@ -36,6 +38,8 @@ function analyzeFixability(mobileScore, desktopScore, issues) {
       label: "✅ Megcsináljuk — nagyobb munka",
       hours: "15–25 óra",
       reason: "Több kritikus probléma van, amelyek kód szintű beavatkozást igényelnek. Megoldható, de alapos munkát kíván.",
+      contactWorthy: true,
+      contactNote: "📞 ÉRDEMES MEGKERESNI — 15–25 órás munka, jó díj",
     };
   }
   if (mobileScore < 70 || criticalCount >= 2) {
@@ -43,12 +47,16 @@ function analyzeFixability(mobileScore, desktopScore, issues) {
       label: "✅ Megcsináljuk — közepes munka",
       hours: "5–15 óra",
       reason: "Van néhány komolyabb javítandó pont, de az alap rendben van. Optimalizálással sokat lehet nyerni.",
+      contactWorthy: true,
+      contactNote: "📞 ÉRDEMES MEGKERESNI — 5–15 órás munka, megéri",
     };
   }
   return {
-    label: "✅ Megcsináljuk — egyszerű optimalizálás",
+    label: "✅ Egyszerű optimalizálás",
     hours: "2–5 óra",
-    reason: "Az oldal jól teljesít, de van néhány gyors javítási lehetőség ami még jobbá teszi.",
+    reason: "Az oldal jól teljesít, csak kisebb finomhangolás kell.",
+    contactWorthy: false,
+    contactNote: "⏭ KIHAGYHATÓ — 2–5 óra, csak ha más okból is releváns az ügyfél",
   };
 }
 
@@ -102,11 +110,15 @@ desktop_score: ${desktopScore}
 fixable_label: "${analysis.label}"
 fixable_hours: "${analysis.hours || "—"}"
 fixable_reason: "${analysis.reason}"
+contact_worthy: ${analysis.contactWorthy}
+contact_note: "${analysis.contactNote}"
 ---
 
 # Audit: ${url}
 
 **Dátum:** ${now.toLocaleDateString("hu-HU")} ${now.toLocaleTimeString("hu-HU", { hour: "2-digit", minute: "2-digit" })}
+
+## ${analysis.contactNote}
 
 ## Pontszámok
 
