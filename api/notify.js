@@ -23,40 +23,56 @@ function analyzeFixability(mobileScore, desktopScore, issues) {
   const hasDeepIssues = issues.some(
     i => ["dom-size", "mainthread-work-breakdown"].includes(i.key) && (i.score || 0) < 0.5
   );
+  const bigGap = (desktopScore - mobileScore) > 30; // valószínűleg nem reszponzív
+  const contactWorthy = mobileScore < 70 || bigGap;
 
   if (mobileScore < 25 && criticalCount >= 4 && hasDeepIssues) {
     return {
       label: "⚠️ Új oldalt javaslunk",
       hours: null,
-      reason: "Az oldal mobilon kritikusan teljesít és mély strukturális problémák vannak. A javítás valószínűleg többe kerülne, mint egy új, optimalizált oldal építése.",
+      reason: "Mély strukturális problémák vannak. Az újraépítés jobban megéri, mint a javítgatás.",
       contactWorthy: true,
-      contactNote: "📞 ÉRDEMES MEGKERESNI — nagy projekt, új oldal lehetséges",
+      contactNote: "📞 ÉRDEMES MEGKERESNI — új oldal lehetséges",
+      clientMessage: "Szia! Megnéztem az önök weboldalát, és sajnos komoly technikai problémákat látok — mobilon szinte használhatatlan. Ennél a szintnél egy modern új oldal jobban megéri, mint a javítgatás, és az ár általában nem akkora, mint gondolnák. Ha érdekel, szívesen átbeszéljük a lehetőségeket.",
+    };
+  }
+  if (bigGap && mobileScore >= 50) {
+    return {
+      label: "✅ Megcsináljuk — mobilbarátosítás",
+      hours: "5–10 óra",
+      reason: "Az oldal asztali gépen rendben van, de mobilon nem megfelelően jelenik meg.",
+      contactWorthy: true,
+      contactNote: "📞 ÉRDEMES MEGKERESNI — mobilbarátosítás kell",
+      clientMessage: "Szia! Megnéztem az önök weboldalát — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok érdeklődőt eltérít. Pár fejlesztéssel könnyen orvosolható. Ha érdekel, szívesen megmutatom.",
     };
   }
   if (mobileScore < 40 && criticalCount >= 3) {
     return {
       label: "✅ Megcsináljuk — nagyobb munka",
       hours: "15–25 óra",
-      reason: "Több kritikus probléma van, amelyek kód szintű beavatkozást igényelnek. Megoldható, de alapos munkát kíván.",
+      reason: "Több kritikus probléma van, amelyek kód szintű beavatkozást igényelnek.",
       contactWorthy: true,
-      contactNote: "📞 ÉRDEMES MEGKERESNI — 15–25 órás munka, jó díj",
+      contactNote: "📞 ÉRDEMES MEGKERESNI — 15–25 óra",
+      clientMessage: "Szia! Ránéztem az önök weboldalára, és azt látom, hogy mobilon nehézkesen tölt be és használható. Ma már az ügyfelek nagy része telefonon keres — ha az oldal lassan tölt be, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a javulás. Ha kíváncsi rá, szívesen átbeszéljük.",
     };
   }
-  if (mobileScore < 70 || criticalCount >= 2) {
+  if (mobileScore < 70) {
     return {
       label: "✅ Megcsináljuk — közepes munka",
       hours: "5–15 óra",
-      reason: "Van néhány komolyabb javítandó pont, de az alap rendben van. Optimalizálással sokat lehet nyerni.",
+      reason: "Van néhány javítandó pont, de az alap rendben van.",
       contactWorthy: true,
-      contactNote: "📞 ÉRDEMES MEGKERESNI — 5–15 órás munka, megéri",
+      contactNote: "📞 ÉRDEMES MEGKERESNI — 5–15 óra",
+      clientMessage: "Szia! Megnéztem az önök weboldalát — az alap rendben van, de mobilon van néhány lassító tényező. Néhány fejlesztéssel gyorsabb és könnyebben megtalálható lehetne Google-ban is. Ha érdekel, szívesen megmutatom mi kellene hozzá.",
     };
   }
   return {
-    label: "✅ Egyszerű optimalizálás",
+    label: "✅ Kisebb finomhangolás",
     hours: "2–5 óra",
-    reason: "Az oldal jól teljesít, csak kisebb finomhangolás kell.",
+    reason: "Az oldal jól teljesít, kisebb finomhangolás elegendő.",
     contactWorthy: false,
-    contactNote: "⏭ KIHAGYHATÓ — 2–5 óra, csak ha más okból is releváns az ügyfél",
+    contactNote: "⏭ KIHAGYHATÓ — az oldal jól teljesít",
+    clientMessage: null,
   };
 }
 
@@ -138,6 +154,11 @@ ${analysis.hours ? `⏱️ **Becsült munkaidő: ${analysis.hours}**` : ""}
 ## Fő problémák (mobilon)
 
 ${topIssuesText || "Nem volt azonosítható probléma — jól néz ki!"}
+${analysis.clientMessage ? `
+## 📋 Másolható üzenet az ügyfélnek
+
+${analysis.clientMessage}
+` : ""}
 `;
 
   const content = Buffer.from(markdownContent).toString("base64");

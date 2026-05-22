@@ -112,34 +112,59 @@ function metricLevel(s) {
 
 function getSummary(mobile, desktop, hu) {
   const m = mobile.score;
+  const bigGap = (desktop.score - m) > 30;
   if (m >= 90) return {
     verdict: hu ? "Az oldalad kiváló teljesítményt nyújt 🎉" : "Your website performs excellently 🎉",
     impact:  hu
-      ? "A látogatóid gyors, zökkenőmentes élményt kapnak mobilon és asztali gépen egyaránt. Szép munka!"
-      : "Visitors get a fast, smooth experience on both mobile and desktop. Great work!",
+      ? "Mobilon és asztali gépen egyaránt gyors és kellemes. Szép munka!"
+      : "Fast and smooth on both mobile and desktop. Great work!",
     tone: "good",
+  };
+  if (bigGap) return {
+    verdict: hu ? "Az oldalad mobilon javítható" : "Your website needs mobile improvements",
+    impact:  hu
+      ? "Asztali gépen jól néz ki, de mobilon van néhány akadály. Ma már az emberek többsége telefonon böngészik."
+      : "Looks good on desktop, but there are some hurdles on mobile. Most people browse on their phones these days.",
+    tone: "medium",
   };
   if (m >= 70) return {
     verdict: hu ? "Az oldalad jól teljesít, de van hova fejlődni" : "Your website performs well, with room to improve",
     impact:  hu
-      ? "Mobilon van némi lassulás, de az alapok rendben vannak. Néhány javítással top szintre kerülhet."
-      : "There's some slowness on mobile, but the basics are solid. A few fixes could make it excellent.",
+      ? "Az alapok rendben vannak. Néhány javítással még jobb élményt nyújthat a mobilos látogatóknak."
+      : "The basics are solid. A few fixes could make the mobile experience even better.",
     tone: "medium",
   };
   if (m >= 50) return {
-    verdict: hu ? "Az oldalad mobilon lassú" : "Your website is slow on mobile",
+    verdict: hu ? "Az oldalad mobilon lassabb a kelleténél" : "Your website loads slowly on mobile",
     impact:  hu
-      ? "A mobilos látogatók kb. fele valószínűleg elmegy, mielőtt az oldal teljesen betölt. Ez üzleti veszteséget jelent."
-      : "About half of mobile visitors likely leave before the page fully loads. This is costing you business.",
+      ? "Mobilon a betöltés hosszabb ideig tart a javasolt szintnél. Ez különösen akkor számít, ha Google keresésből érkeznek látogatók."
+      : "The page takes longer to load on mobile than recommended — this matters most for visitors from Google Search.",
     tone: "medium",
   };
   return {
-    verdict: hu ? "Az oldalad mobilon kritikusan lassú" : "Your website is critically slow on mobile",
+    verdict: hu ? "Az oldalad mobilon fejlesztésre szorul" : "Your website needs mobile improvements",
     impact:  hu
-      ? "A mobilos látogatók többsége valószínűleg elhagyja az oldalt, mielőtt betölt. Ez egyértelműen üzleti veszteséget jelent."
-      : "Most mobile visitors likely leave before the page loads. This is directly costing you business.",
+      ? "Mobilon az oldal betöltése és használata nehézkes. Érdemes foglalkozni vele — a javítás általában látványos eredménnyel jár."
+      : "The site is slow and hard to use on mobile. It's worth addressing — improvements typically make a noticeable difference.",
     tone: "bad",
   };
+}
+
+function generateOutreach(mobileScore, desktopScore) {
+  const bigGap = (desktopScore - mobileScore) > 30;
+  if (mobileScore < 25) {
+    return "Szia! Megnéztem az önök weboldalát, és sajnos komoly technikai problémákat látok — mobilon szinte használhatatlan. Ennél a szintnél egy modern új oldal jobban megéri, mint a javítgatás, és az ár általában nem akkora, mint gondolnák. Ha érdekel, szívesen átbeszéljük a lehetőségeket.";
+  }
+  if (bigGap && mobileScore >= 50) {
+    return "Szia! Megnéztem az önök weboldalát — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok érdeklődőt eltérít. Pár fejlesztéssel könnyen orvosolható. Ha érdekel, szívesen megmutatom.";
+  }
+  if (mobileScore < 40) {
+    return "Szia! Ránéztem az önök weboldalára, és azt látom, hogy mobilon nehézkesen tölt be és használható. Ma már az ügyfelek nagy része telefonon keres — ha az oldal lassan tölt be, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a javulás. Ha kíváncsi rá, szívesen átbeszéljük.";
+  }
+  if (mobileScore < 70) {
+    return "Szia! Megnéztem az önök weboldalát — az alap rendben van, de mobilon van néhány lassító tényező. Néhány fejlesztéssel gyorsabb és könnyebben megtalálható lehetne Google-ban is. Ha érdekel, szívesen megmutatom mi kellene hozzá.";
+  }
+  return null;
 }
 
 // ── Komponensek ──────────────────────────────────────────────────────────────
@@ -262,6 +287,14 @@ export default function Audit() {
   const [errorDetail, setErrorDetail] = useState("");
   const [results, setResults] = useState(null);
   const [activeTab, setActiveTab] = useState("mobile");
+  const [copied, setCopied] = useState(false);
+
+  const handleCopy = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }).catch(() => {});
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -312,6 +345,7 @@ export default function Audit() {
   const current = results?.[activeTab];
   const summary = results ? getSummary(results.mobile, results.desktop, hu) : null;
   const summaryBg = summary?.tone === "good" ? "#f0fdf6" : summary?.tone === "bad" ? "#fff5f5" : "#fffbf0";
+  const outreachMsg = results ? generateOutreach(results.mobile.score, results.desktop.score) : null;
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
@@ -605,6 +639,32 @@ export default function Audit() {
                         <IssueItem key={i} audit={audit} auditKey={key} lang={lang} />
                       ))}
                     </motion.div>
+                  </motion.div>
+                )}
+
+                {/* ── Másolható üzenet ── */}
+                {outreachMsg && (
+                  <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                    style={{ marginTop: "3rem", padding: "2rem", background: "#fff", borderRadius: "8px", border: "1px solid #e8e8e8", borderLeft: "4px solid #1a1a1a" }}>
+                    <p style={{ fontSize: "0.7rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+                      📋 Másolható üzenet
+                    </p>
+                    <p style={{ fontSize: "0.8rem", color: "#aaa", marginBottom: "1rem", lineHeight: 1.5 }}>
+                      LinkedIn-en vagy emailben küldheted el — nem hivatkozik eszközre, nem kér semmit:
+                    </p>
+                    <p style={{ fontSize: "0.92rem", color: "#333", lineHeight: 1.8, marginBottom: "1.25rem", fontStyle: "italic" }}>
+                      "{outreachMsg}"
+                    </p>
+                    <button onClick={() => handleCopy(outreachMsg)}
+                      style={{
+                        padding: "0.55rem 1.25rem",
+                        background: copied ? "#0cce6b" : "#1a1a1a",
+                        color: "#fff", border: "none", borderRadius: "4px",
+                        fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                        fontFamily: "inherit", transition: "background 0.2s",
+                      }}>
+                      {copied ? "✓ Másolva!" : "Másolás"}
+                    </button>
                   </motion.div>
                 )}
 
