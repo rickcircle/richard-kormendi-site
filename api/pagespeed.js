@@ -8,6 +8,8 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Missing url parameter" });
   }
 
+  const API_KEY = process.env.GOOGLE_PAGESPEED_KEY || "";
+  const keyParam = API_KEY ? `&key=${API_KEY}` : "";
   const PAGESPEED = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
 
   const fetchWithTimeout = async (fetchUrl, timeoutMs = 25000) => {
@@ -26,7 +28,7 @@ export default async function handler(req, res) {
   try {
     // Egymás után hívjuk (nem párhuzamosan), hogy ne timeout-oljon
     const mobileRes = await fetchWithTimeout(
-      `${PAGESPEED}?url=${encodeURIComponent(url)}&strategy=mobile`
+      `${PAGESPEED}?url=${encodeURIComponent(url)}&strategy=mobile${keyParam}`
     );
     if (!mobileRes.ok) {
       const err = await mobileRes.json().catch(() => ({}));
@@ -36,7 +38,7 @@ export default async function handler(req, res) {
     const mobile = await mobileRes.json();
 
     const desktopRes = await fetchWithTimeout(
-      `${PAGESPEED}?url=${encodeURIComponent(url)}&strategy=desktop`
+      `${PAGESPEED}?url=${encodeURIComponent(url)}&strategy=desktop${keyParam}`
     );
     if (!desktopRes.ok) {
       const err = await desktopRes.json().catch(() => ({}));
