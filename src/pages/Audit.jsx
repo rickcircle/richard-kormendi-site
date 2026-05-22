@@ -8,7 +8,7 @@ import Footer from "../components/Footer";
 // Rejtett oldal — nav-ban NEM látszik
 // Közvetlen URL: /audit
 
-const PAGESPEED_URL = "/api/pagespeed";
+const PAGESPEED_URL = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
 
 const METRIC_CONFIG = {
   "first-contentful-paint":    { en: "First Contentful Paint",    hu: "Első tartalom megjelenése",   short: "FCP" },
@@ -200,9 +200,12 @@ export default function Audit() {
     setResults(null);
 
     try {
-      const res = await fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}`);
-      if (!res.ok) throw new Error("API error");
-      const { mobile, desktop } = await res.json();
+      const [mobileRes, desktopRes] = await Promise.all([
+        fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}&strategy=mobile`),
+        fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}&strategy=desktop`),
+      ]);
+      if (!mobileRes.ok || !desktopRes.ok) throw new Error("API error");
+      const [mobile, desktop] = await Promise.all([mobileRes.json(), desktopRes.json()]);
 
       const parse = (data) => {
         const audits = data.lighthouseResult?.audits || {};
