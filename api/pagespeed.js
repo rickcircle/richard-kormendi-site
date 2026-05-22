@@ -24,7 +24,7 @@ export default async function handler(req, res) {
 
   const fetchStrategy = async (strategy) => {
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 28000);
+    const timeout = setTimeout(() => controller.abort(), 45000);
     try {
       const response = await fetch(
         `${PAGESPEED}?url=${encodeURIComponent(url)}&strategy=${strategy}${keyParam}`,
