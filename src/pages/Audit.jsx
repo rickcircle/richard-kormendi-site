@@ -10,87 +10,165 @@ import Footer from "../components/Footer";
 
 const PAGESPEED_URL = "/api/pagespeed";
 
+// ── Metrika konfiguráció emberi magyarázatokkal ──────────────────────────────
 const METRIC_CONFIG = {
-  "first-contentful-paint":    { en: "First Contentful Paint",    hu: "Első tartalom megjelenése",   short: "FCP" },
-  "largest-contentful-paint":  { en: "Largest Contentful Paint",   hu: "Legnagyobb elem betöltése",   short: "LCP" },
-  "total-blocking-time":       { en: "Total Blocking Time",        hu: "Teljes blokkolási idő",       short: "TBT" },
-  "cumulative-layout-shift":   { en: "Cumulative Layout Shift",    hu: "Kumulatív elrendezéstolódás", short: "CLS" },
-  "speed-index":               { en: "Speed Index",                hu: "Sebesség index",              short: "SI"  },
-  "interactive":               { en: "Time to Interactive",        hu: "Interaktivitás ideje",        short: "TTI" },
+  "first-contentful-paint": {
+    en: "First Contentful Paint", hu: "Első megjelenés", short: "FCP",
+    question: { hu: "Mikor jelenik meg először valami az oldalon?", en: "When does the page first show something?" },
+    explain: {
+      good:   { hu: "Gyors első benyomás — a látogató rögtön lát valamit", en: "Fast first impression — visitor sees content right away" },
+      medium: { hu: "Kicsit sokat vár az első megjelenésre", en: "Slightly slow to first show content" },
+      bad:    { hu: "A látogató sokáig csak fehér képernyőt lát", en: "Visitor stares at a blank screen for too long" },
+    },
+  },
+  "largest-contentful-paint": {
+    en: "Largest Contentful Paint", hu: "Főtartalom betöltése", short: "LCP",
+    question: { hu: "Mikor tölt be a főtartalom (pl. a hero kép vagy szöveg)?", en: "When does the main content (e.g. hero image or text) load?" },
+    explain: {
+      good:   { hu: "A főtartalom gyorsan megjelenik — jó első benyomás", en: "Main content loads quickly — great first impression" },
+      medium: { hu: "A főtartalom lassan tölt be", en: "Main content loads slowly" },
+      bad:    { hu: "A látogató valószínűleg elveszti a türelmét és elmegy", en: "Visitors likely lose patience and leave" },
+    },
+  },
+  "total-blocking-time": {
+    en: "Total Blocking Time", hu: "Lefagyás betöltés közben", short: "TBT",
+    question: { hu: "Mennyit 'fagy' az oldal, mielőtt teljesen betölt?", en: "How long does the page freeze while loading?" },
+    explain: {
+      good:   { hu: "Az oldal nem fagy meg betöltés közben — gördülékeny élmény", en: "Page stays responsive during loading — smooth experience" },
+      medium: { hu: "Az oldal időnként nem reagál kattintásra", en: "Page occasionally doesn't respond to clicks" },
+      bad:    { hu: "Az oldal hosszan lefagy — nagyon frusztráló élmény", en: "Page freezes for a long time — very frustrating" },
+    },
+  },
+  "cumulative-layout-shift": {
+    en: "Cumulative Layout Shift", hu: "Elrendezés stabilitása", short: "CLS",
+    question: { hu: "Ugrálnak-e az elemek betöltés közben?", en: "Do elements jump around while loading?" },
+    explain: {
+      good:   { hu: "Az elemek stabilan a helyükön maradnak — nincs véletlen kattintás", en: "Elements stay stable — no accidental clicks" },
+      medium: { hu: "Néhány elem elmozdul betöltés közben", en: "Some elements shift while loading" },
+      bad:    { hu: "Az elemek ugrálnak — a látogató véletlenül rossz helyre kattint", en: "Elements jump around — visitors accidentally click the wrong thing" },
+    },
+  },
+  "speed-index": {
+    en: "Speed Index", hu: "Vizuális betöltési sebesség", short: "SI",
+    question: { hu: "Milyen gyorsan épül fel az oldal vizuálisan?", en: "How quickly does the page visually build up?" },
+    explain: {
+      good:   { hu: "Az oldal vizuálisan gyorsan épül fel", en: "Page builds up visually fast" },
+      medium: { hu: "Az oldal lassan épül fel vizuálisan", en: "Page builds up slowly" },
+      bad:    { hu: "A látogató sokáig részlegesen betöltött oldalt lát", en: "Visitor sees a half-loaded page for too long" },
+    },
+  },
+  "interactive": {
+    en: "Time to Interactive", hu: "Teljes használhatóság ideje", short: "TTI",
+    question: { hu: "Mikor válik teljesen kattinthatóvá és használhatóvá az oldal?", en: "When can visitors fully use and click everything on the page?" },
+    explain: {
+      good:   { hu: "Az oldal hamar teljesen interaktív — a látogató rögtön tud navigálni", en: "Page becomes fully usable quickly — visitors can navigate right away" },
+      medium: { hu: "Az oldal lassan lesz teljesen kattintható", en: "Page takes a while to become fully clickable" },
+      bad:    { hu: "A látogató sokáig nem tudja valójában használni az oldalt", en: "Visitors can't really use the page for a long time" },
+    },
+  },
 };
 
-const OPPORTUNITY_KEYS = [
-  "render-blocking-resources",
-  "unused-javascript",
-  "unused-css-rules",
-  "uses-optimized-images",
-  "uses-webp-images",
-  "uses-text-compression",
-  "offscreen-images",
-  "uses-responsive-images",
-  "efficient-animated-content",
-  "uses-rel-preconnect",
-  "uses-long-cache-ttl",
-  "dom-size",
-  "mainthread-work-breakdown",
-];
+// ── Fejlesztési lehetőségek emberi nyelven ───────────────────────────────────
+const ISSUE_HUMAN = {
+  "render-blocking-resources":  { hu: "Bizonyos fájlok blokkolják az oldal megjelenését", en: "Some files are blocking the page from appearing" },
+  "unused-javascript":          { hu: "Felesleges JavaScript kód lassítja az oldalt", en: "Unused JavaScript code is slowing things down" },
+  "unused-css-rules":           { hu: "Felesleges stíluslap-kód terheli az oldalt", en: "Unused CSS is adding unnecessary weight" },
+  "uses-optimized-images":      { hu: "A képek nincsenek optimalizálva — kisebbre lehetne tömöríteni őket", en: "Images aren't optimised — they could be compressed" },
+  "uses-webp-images":           { hu: "A képek régi formátumban vannak — WebP-ben ~30%-kal kisebbek lennének", en: "Images use an old format — WebP would be ~30% smaller" },
+  "uses-text-compression":      { hu: "A szövegfájlok nincsenek tömörítve a szerveren", en: "Text files aren't compressed on the server" },
+  "offscreen-images":           { hu: "A képek akkor is letöltődnek, ha még nem láthatóak az oldalon", en: "Images load even before they're visible on screen" },
+  "uses-responsive-images":     { hu: "Mobilon is nagy méretű képek töltődnek le", en: "Full-size desktop images load on mobile too" },
+  "efficient-animated-content": { hu: "Az animált képek (GIF) túl sok helyet foglalnak", en: "Animated images (GIFs) are too large" },
+  "uses-rel-preconnect":        { hu: "Külső szolgáltatásokhoz való csatlakozás lassítja az oldalt", en: "Connecting to external services is slowing things down" },
+  "uses-long-cache-ttl":        { hu: "A böngésző nem menti le az oldal elemeit visszatérő látogatóknak", en: "Browser isn't caching assets for returning visitors" },
+  "dom-size":                   { hu: "Az oldal HTML struktúrája túl bonyolult", en: "The page's HTML structure is too complex" },
+  "mainthread-work-breakdown":  { hu: "Az oldal JavaScript kódja túlterheli a böngészőt", en: "JavaScript is overloading the browser" },
+};
 
-function scoreColor(score) {
-  if (score >= 90) return "#0cce6b";
-  if (score >= 50) return "#ffa400";
+const OPPORTUNITY_KEYS = Object.keys(ISSUE_HUMAN);
+
+// ── Segédfüggvények ──────────────────────────────────────────────────────────
+function scoreColor(s) {
+  if (s >= 90) return "#0cce6b";
+  if (s >= 50) return "#ffa400";
   return "#ff4e42";
 }
-
-function scoreBg(score) {
-  if (score >= 90) return "#f0fdf6";
-  if (score >= 50) return "#fffbf0";
+function scoreBg(s) {
+  if (s >= 90) return "#f0fdf6";
+  if (s >= 50) return "#fffbf0";
   return "#fff5f5";
 }
-
-function scoreLabel(score, hu) {
-  if (score >= 90) return hu ? "Kiváló" : "Good";
-  if (score >= 50) return hu ? "Fejleszthető" : "Needs improvement";
+function scoreLabel(s, hu) {
+  if (s >= 90) return hu ? "Kiváló" : "Good";
+  if (s >= 50) return hu ? "Fejleszthető" : "Needs improvement";
   return hu ? "Kritikus" : "Poor";
 }
+function metricLevel(s) {
+  if (s === null) return "medium";
+  if (s >= 90) return "good";
+  if (s >= 50) return "medium";
+  return "bad";
+}
 
+function getSummary(mobile, desktop, hu) {
+  const m = mobile.score;
+  if (m >= 90) return {
+    verdict: hu ? "Az oldalad kiváló teljesítményt nyújt 🎉" : "Your website performs excellently 🎉",
+    impact:  hu
+      ? "A látogatóid gyors, zökkenőmentes élményt kapnak mobilon és asztali gépen egyaránt. Szép munka!"
+      : "Visitors get a fast, smooth experience on both mobile and desktop. Great work!",
+    tone: "good",
+  };
+  if (m >= 70) return {
+    verdict: hu ? "Az oldalad jól teljesít, de van hova fejlődni" : "Your website performs well, with room to improve",
+    impact:  hu
+      ? "Mobilon van némi lassulás, de az alapok rendben vannak. Néhány javítással top szintre kerülhet."
+      : "There's some slowness on mobile, but the basics are solid. A few fixes could make it excellent.",
+    tone: "medium",
+  };
+  if (m >= 50) return {
+    verdict: hu ? "Az oldalad mobilon lassú" : "Your website is slow on mobile",
+    impact:  hu
+      ? "A mobilos látogatók kb. fele valószínűleg elmegy, mielőtt az oldal teljesen betölt. Ez üzleti veszteséget jelent."
+      : "About half of mobile visitors likely leave before the page fully loads. This is costing you business.",
+    tone: "medium",
+  };
+  return {
+    verdict: hu ? "Az oldalad mobilon kritikusan lassú" : "Your website is critically slow on mobile",
+    impact:  hu
+      ? "A mobilos látogatók többsége valószínűleg elhagyja az oldalt, mielőtt betölt. Ez egyértelműen üzleti veszteséget jelent."
+      : "Most mobile visitors likely leave before the page loads. This is directly costing you business.",
+    tone: "bad",
+  };
+}
+
+// ── Komponensek ──────────────────────────────────────────────────────────────
 function ScoreCircle({ score, label, animate }) {
   const r = 52;
   const circ = 2 * Math.PI * r;
   const offset = circ - (score / 100) * circ;
   const color = scoreColor(score);
   const bg = scoreBg(score);
-
   return (
     <div style={{
       display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem",
       background: bg, borderRadius: "12px", padding: "2rem 2.5rem",
       border: `1px solid ${color}40`,
     }}>
-      <motion.svg
-        width="130" height="130" viewBox="0 0 130 130"
+      <motion.svg width="130" height="130" viewBox="0 0 130 130"
         initial={animate ? { opacity: 0, scale: 0.8 } : false}
         animate={animate ? { opacity: 1, scale: 1 } : false}
-        transition={{ duration: 0.6, ease: "easeOut" }}
-      >
+        transition={{ duration: 0.6, ease: "easeOut" }}>
         <circle cx="65" cy="65" r={r} fill="none" stroke="#e8e8e8" strokeWidth="10" />
-        <motion.circle
-          cx="65" cy="65" r={r}
-          fill="none" stroke={color} strokeWidth="10"
-          strokeLinecap="round"
-          strokeDasharray={circ}
-          transform="rotate(-90 65 65)"
+        <motion.circle cx="65" cy="65" r={r} fill="none" stroke={color} strokeWidth="10"
+          strokeLinecap="round" strokeDasharray={circ} transform="rotate(-90 65 65)"
           initial={{ strokeDashoffset: circ }}
           animate={animate ? { strokeDashoffset: offset } : { strokeDashoffset: offset }}
-          transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
-        />
+          transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }} />
         <text x="65" y="60" textAnchor="middle" dominantBaseline="middle"
-          fontSize="28" fontWeight="700" fill={color} fontFamily="Inter, sans-serif">
-          {score}
-        </text>
+          fontSize="28" fontWeight="700" fill={color} fontFamily="Inter, sans-serif">{score}</text>
         <text x="65" y="82" textAnchor="middle" dominantBaseline="middle"
-          fontSize="10" fill="#aaa" fontFamily="Inter, sans-serif" letterSpacing="1">
-          /100
-        </text>
+          fontSize="10" fill="#aaa" fontFamily="Inter, sans-serif" letterSpacing="1">/100</text>
       </motion.svg>
       <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>{label}</p>
       <span style={{ fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", color, fontWeight: 600 }}>
@@ -105,38 +183,38 @@ function MetricCard({ metricKey, data, lang }) {
   if (!config || !data) return null;
   const score = data.score !== null ? Math.round(data.score * 100) : null;
   const color = score !== null ? scoreColor(score) : "#888";
-
+  const level = metricLevel(score);
+  const hu = lang === "hu";
   return (
-    <motion.div variants={staggerItem}
-      style={{
-        background: "#fff",
-        border: "1px solid #e8e8e8",
-        borderTop: `3px solid ${color}`,
-        borderRadius: "6px",
-        padding: "1.25rem",
-        display: "flex", flexDirection: "column", gap: "0.4rem",
-      }}>
+    <motion.div variants={staggerItem} style={{
+      background: "#fff", border: "1px solid #e8e8e8",
+      borderTop: `3px solid ${color}`, borderRadius: "6px", padding: "1.25rem",
+      display: "flex", flexDirection: "column", gap: "0.35rem",
+    }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <span style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: "#bbb", textTransform: "uppercase", fontWeight: 600 }}>
           {config.short}
         </span>
         {score !== null && (
           <span style={{ fontSize: "0.65rem", letterSpacing: "0.08em", color, textTransform: "uppercase", fontWeight: 600 }}>
-            {scoreLabel(score, lang === "hu")}
+            {scoreLabel(score, hu)}
           </span>
         )}
       </div>
       <p style={{ fontSize: "1.4rem", fontWeight: 700, color: "#1a1a1a", margin: 0, letterSpacing: "-0.02em" }}>
         {data.displayValue || "–"}
       </p>
-      <p style={{ fontSize: "0.78rem", color: "#999", margin: 0, lineHeight: 1.4 }}>
-        {lang === "hu" ? config.hu : config.en}
+      <p style={{ fontSize: "0.78rem", color: "#555", margin: "0.1rem 0 0", lineHeight: 1.4, fontWeight: 500 }}>
+        {hu ? config.question.hu : config.question.en}
+      </p>
+      <p style={{ fontSize: "0.75rem", color, margin: 0, lineHeight: 1.4 }}>
+        {hu ? config.explain[level].hu : config.explain[level].en}
       </p>
     </motion.div>
   );
 }
 
-function IssueItem({ audit, lang }) {
+function IssueItem({ audit, auditKey, lang }) {
   if (!audit || audit.score === 1 || audit.score === null) return null;
   const savings = audit.details?.overallSavingsMs
     ? `~${(audit.details.overallSavingsMs / 1000).toFixed(1)}s`
@@ -146,41 +224,35 @@ function IssueItem({ audit, lang }) {
   const priorityLabel = priority === "high"
     ? (lang === "hu" ? "Kritikus" : "Critical")
     : (lang === "hu" ? "Ajánlott" : "Recommended");
-
+  const human = ISSUE_HUMAN[auditKey];
+  const hu = lang === "hu";
   return (
-    <motion.div variants={staggerItem}
-      style={{
-        display: "flex", gap: "1rem",
-        padding: "1.25rem 1.5rem",
-        background: "#fff",
-        borderRadius: "6px",
-        border: "1px solid #e8e8e8",
-        borderLeft: `4px solid ${priorityColor}`,
-        alignItems: "flex-start",
-      }}>
-      <div style={{ flex: 1 }}>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
-          <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a1a1a", margin: "0 0 0.25rem" }}>
-            {audit.title}
-          </p>
-          <span style={{
-            fontSize: "0.65rem", letterSpacing: "0.08em", color: priorityColor,
-            textTransform: "uppercase", fontWeight: 700, flexShrink: 0,
-            background: `${priorityColor}15`, padding: "2px 8px", borderRadius: "999px",
-          }}>
-            {priorityLabel}
-          </span>
-        </div>
-        <p style={{ fontSize: "0.82rem", color: "#999", margin: 0 }}>
-          {savings
-            ? (lang === "hu" ? `Potenciális megtakarítás: ${savings}` : `Potential savings: ${savings}`)
-            : audit.displayValue || ""}
+    <motion.div variants={staggerItem} style={{
+      padding: "1.25rem 1.5rem", background: "#fff", borderRadius: "6px",
+      border: "1px solid #e8e8e8", borderLeft: `4px solid ${priorityColor}`,
+    }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap", marginBottom: savings ? "0.3rem" : 0 }}>
+        <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
+          {human ? (hu ? human.hu : human.en) : audit.title}
         </p>
+        <span style={{
+          fontSize: "0.65rem", letterSpacing: "0.08em", color: priorityColor,
+          textTransform: "uppercase", fontWeight: 700, flexShrink: 0,
+          background: `${priorityColor}15`, padding: "2px 8px", borderRadius: "999px",
+        }}>
+          {priorityLabel}
+        </span>
       </div>
+      {savings && (
+        <p style={{ fontSize: "0.82rem", color: "#aaa", margin: 0 }}>
+          {hu ? `Potenciális időmegtakarítás: ${savings}` : `Potential time saving: ${savings}`}
+        </p>
+      )}
     </motion.div>
   );
 }
 
+// ── Főkomponens ──────────────────────────────────────────────────────────────
 export default function Audit() {
   const { lang } = useLang();
   const hu = lang === "hu";
@@ -195,27 +267,23 @@ export default function Audit() {
     if (!url.trim()) return;
     let cleanUrl = url.trim();
     if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = "https://" + cleanUrl;
-
     setStatus("loading");
     setResults(null);
-
     try {
       const res = await fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}`);
       if (!res.ok) throw new Error("API error");
       const { mobile, desktop } = await res.json();
-
       const parse = (data) => {
         const audits = data.lighthouseResult?.audits || {};
         const score = Math.round((data.lighthouseResult?.categories?.performance?.score || 0) * 100);
         const metrics = Object.fromEntries(Object.keys(METRIC_CONFIG).map(k => [k, audits[k] || null]));
         const issues = OPPORTUNITY_KEYS
-          .map(k => audits[k])
-          .filter(a => a && a.score !== null && a.score < 1)
-          .sort((a, b) => a.score - b.score)
+          .map(k => ({ key: k, audit: audits[k] }))
+          .filter(({ audit: a }) => a && a.score !== null && a.score < 1)
+          .sort((a, b) => a.audit.score - b.audit.score)
           .slice(0, 8);
         return { score, metrics, issues };
       };
-
       setResults({ mobile: parse(mobile), desktop: parse(desktop), url: cleanUrl });
       setStatus("done");
     } catch {
@@ -224,21 +292,29 @@ export default function Audit() {
   };
 
   const current = results?.[activeTab];
+  const summary = results ? getSummary(results.mobile, results.desktop, hu) : null;
+  const summaryBg = summary?.tone === "good" ? "#f0fdf6" : summary?.tone === "bad" ? "#fff5f5" : "#fffbf0";
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
       <style>{`
         @media print {
-          .audit-navbar, .audit-footer, .audit-hero, .audit-loading, .audit-tabs, .audit-cta, .audit-print-btn { display: none !important; }
+          .audit-navbar, .audit-footer, .audit-hero, .audit-loading,
+          .audit-tabs, .audit-cta, .audit-print-btn { display: none !important; }
           .audit-print-header { display: block !important; }
           body { background: #fff !important; }
           @page { margin: 1.5cm; }
         }
         .audit-print-header { display: none; }
+        @media (max-width: 600px) {
+          .audit-visitor-grid { grid-template-columns: 1fr !important; }
+          .audit-score-circles { flex-direction: column; align-items: center; }
+        }
       `}</style>
+
       <div className="audit-navbar"><Navbar /></div>
 
-      {/* Hero — fehér */}
+      {/* ── Hero ── */}
       <section className="audit-hero" style={{ background: "#fff", padding: "9rem 2rem 5rem", textAlign: "center", borderBottom: "1px solid #e8e8e8" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
           <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1.5rem" }}>
@@ -247,17 +323,16 @@ export default function Audit() {
           <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem", color: "#1a1a1a" }}>
             {hu ? "Weboldal audit" : "Website audit"}
           </h1>
-          <p style={{ fontSize: "1rem", color: "#888", lineHeight: 1.7, maxWidth: "460px", margin: "0 auto 3rem" }}>
+          <p style={{ fontSize: "1rem", color: "#888", lineHeight: 1.7, maxWidth: "480px", margin: "0 auto 3rem" }}>
             {hu
-              ? "Írd be a weboldal URL-jét — megmutatjuk a teljesítmény, sebesség és technikai problémákat."
-              : "Enter any website URL — we'll show you performance, speed and technical issues."}
+              ? "Írd be bármelyik weboldal URL-jét — megmutatjuk, mi lassítja és hogyan lehet javítani."
+              : "Enter any website URL — we'll show you what's slowing it down and how to fix it."}
           </p>
-
           <form onSubmit={handleSubmit} style={{ maxWidth: "560px", margin: "0 auto" }}>
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <input
                 type="text" value={url} onChange={e => setUrl(e.target.value)}
-                placeholder="pl. pelda.hu vagy https://pelda.hu"
+                placeholder={hu ? "pl. pelda.hu vagy https://pelda.hu" : "e.g. example.com"}
                 required
                 style={{
                   flex: "1 1 260px", padding: "0.95rem 1.25rem",
@@ -286,33 +361,36 @@ export default function Audit() {
         </motion.div>
       </section>
 
-      {/* Loading */}
+      {/* ── Töltés ── */}
       <AnimatePresence>
         {status === "loading" && (
           <motion.div className="audit-loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ textAlign: "center", padding: "5rem 2rem", background: "#f7f6f3" }}>
+            style={{ textAlign: "center", padding: "6rem 2rem", background: "#fafafa" }}>
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-              style={{ width: "32px", height: "32px", border: "2px solid #ddd", borderTopColor: "#1a1a1a", borderRadius: "50%", margin: "0 auto 1.5rem" }}
+              style={{ width: "32px", height: "32px", border: "3px solid #e8e8e8", borderTopColor: "#1a1a1a", borderRadius: "50%", margin: "0 auto 1.5rem" }}
             />
-            <p style={{ fontSize: "0.9rem", color: "#999", letterSpacing: "0.05em" }}>
-              {hu ? "Google PageSpeed elemzés fut... (~15 mp)" : "Running Google PageSpeed analysis... (~15 sec)"}
+            <p style={{ fontSize: "1rem", fontWeight: 600, color: "#1a1a1a", marginBottom: "0.5rem" }}>
+              {hu ? "Elemzés folyamatban..." : "Analysing your website..."}
+            </p>
+            <p style={{ fontSize: "0.85rem", color: "#aaa" }}>
+              {hu ? "Ez kb. 15–20 másodpercet vesz igénybe" : "This usually takes 15–20 seconds"}
             </p>
           </motion.div>
         )}
       </AnimatePresence>
 
-      {/* Results */}
+      {/* ── Eredmények ── */}
       <AnimatePresence>
         {status === "done" && results && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
 
-            {/* Score section */}
-            <section style={{ padding: "5rem 2rem", background: "#f7f6f3" }}>
+            {/* ── 1. Összefoglaló ── */}
+            <section style={{ padding: "4rem 2rem", background: summaryBg, borderBottom: "1px solid #e8e8e8" }}>
               <div style={{ maxWidth: "860px", margin: "0 auto" }}>
 
-                {/* Print-only header */}
+                {/* Csak nyomtatásban látható fejléc */}
                 <div className="audit-print-header" style={{ marginBottom: "2rem", paddingBottom: "1.5rem", borderBottom: "2px solid #1a1a1a" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
                     <div>
@@ -327,37 +405,46 @@ export default function Audit() {
                 </div>
 
                 <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "0.5rem" }}>
-                    <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", margin: 0 }}>
+
+                  {/* URL + PDF gomb */}
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "2rem" }}>
+                    <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", margin: 0 }}>
                       {results.url}
                     </p>
                     <button className="audit-print-btn" onClick={() => window.print()}
                       style={{
-                        padding: "0.55rem 1.25rem",
-                        background: "#fff", border: "1px solid #ddd",
-                        borderRadius: "4px", fontSize: "0.8rem", fontWeight: 500,
-                        color: "#555", cursor: "pointer", fontFamily: "inherit",
-                        display: "flex", alignItems: "center", gap: "0.4rem",
+                        padding: "0.55rem 1.25rem", background: "#fff", border: "1px solid #ddd",
+                        borderRadius: "4px", fontSize: "0.8rem", fontWeight: 500, color: "#555",
+                        cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", gap: "0.4rem",
                         transition: "all 0.2s",
                       }}
                       onMouseOver={e => { e.currentTarget.style.borderColor = "#1a1a1a"; e.currentTarget.style.color = "#1a1a1a"; }}
-                      onMouseOut={e => { e.currentTarget.style.borderColor = "#ddd"; e.currentTarget.style.color = "#555"; }}
-                    >
+                      onMouseOut={e => { e.currentTarget.style.borderColor = "#ddd"; e.currentTarget.style.color = "#555"; }}>
                       ↓ {hu ? "Mentés PDF-ként" : "Save as PDF"}
                     </button>
                   </div>
-                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "3rem" }}>
-                    {hu ? "Teljesítmény pontszám" : "Performance score"}
+
+                  {/* Verdikt */}
+                  <h2 style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: 700, color: "#1a1a1a", marginBottom: "0.75rem", lineHeight: 1.2 }}>
+                    {summary.verdict}
+                  </h2>
+                  <p style={{ fontSize: "1rem", color: "#555", lineHeight: 1.7, maxWidth: "600px", marginBottom: "2.5rem" }}>
+                    {summary.impact}
                   </p>
 
-                  <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap", marginBottom: "3rem" }}>
+                  {/* Pontszám körök */}
+                  <div className="audit-score-circles" style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap", marginBottom: "2rem" }}>
                     <ScoreCircle score={results.mobile.score} label={hu ? "📱 Mobil" : "📱 Mobile"} animate />
                     <ScoreCircle score={results.desktop.score} label={hu ? "🖥 Asztali" : "🖥 Desktop"} animate />
                   </div>
 
-                  {/* Legend */}
+                  {/* Jelmagyarázat */}
                   <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap" }}>
-                    {[["#0cce6b", hu ? "90–100: Kiváló" : "90–100: Good"], ["#ffa400", hu ? "50–89: Fejleszthető" : "50–89: Needs improvement"], ["#ff4e42", hu ? "0–49: Kritikus" : "0–49: Poor"]].map(([color, label]) => (
+                    {[
+                      ["#0cce6b", hu ? "90–100: Kiváló" : "90–100: Good"],
+                      ["#ffa400", hu ? "50–89: Fejleszthető" : "50–89: Needs improvement"],
+                      ["#ff4e42", hu ? "0–49: Kritikus" : "0–49: Poor"],
+                    ].map(([color, label]) => (
                       <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                         <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: color }} />
                         <span style={{ fontSize: "0.75rem", color: "#999" }}>{label}</span>
@@ -368,12 +455,88 @@ export default function Audit() {
               </div>
             </section>
 
-            {/* Metrics + Issues */}
-            <section style={{ padding: "5rem 2rem", background: "#fff" }}>
+            {/* ── 2. Mit tapasztalnak a látogatóid? ── */}
+            <section style={{ padding: "4rem 2rem", background: "#fff", borderBottom: "1px solid #e8e8e8" }}>
+              <div style={{ maxWidth: "860px", margin: "0 auto" }}>
+                <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+                    {hu ? "Mit tapasztalnak a látogatóid?" : "What do your visitors experience?"}
+                  </p>
+                  <p style={{ fontSize: "0.9rem", color: "#999", lineHeight: 1.6, marginBottom: "2rem" }}>
+                    {hu
+                      ? "Az alábbi adatok azt mutatják, mit érez valójában egy átlagos látogató, amikor megnyitja az oldalt."
+                      : "These figures show what an average visitor actually experiences when they open your site."}
+                  </p>
+                  <div className="audit-visitor-grid" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1rem" }}>
+                    {[
+                      {
+                        icon: "📱",
+                        title: hu ? "Mobilon" : "On mobile",
+                        value: results.mobile.metrics["interactive"]?.displayValue || `${results.mobile.score}/100`,
+                        sub: hu ? "várnak, mire kattinthatnak valamire" : "wait before they can interact",
+                        desc: results.mobile.score >= 90
+                          ? (hu ? "Gyors és kellemes élmény" : "Fast and enjoyable")
+                          : results.mobile.score >= 50
+                          ? (hu ? "Érezhető várakozás betöltés közben" : "Noticeable wait while loading")
+                          : (hu ? "Sokan el fognak menni, mielőtt betölt" : "Many will leave before it loads"),
+                        color: scoreColor(results.mobile.score),
+                      },
+                      {
+                        icon: "🖥️",
+                        title: hu ? "Asztali gépen" : "On desktop",
+                        value: results.desktop.metrics["interactive"]?.displayValue || `${results.desktop.score}/100`,
+                        sub: hu ? "várnak, mire kattinthatnak valamire" : "wait before they can interact",
+                        desc: results.desktop.score >= 90
+                          ? (hu ? "Gyors és kellemes élmény" : "Fast and enjoyable")
+                          : results.desktop.score >= 50
+                          ? (hu ? "Elfogadható, de lehetne jobb" : "Acceptable, but could be better")
+                          : (hu ? "Lassabb, mint elvárható" : "Slower than expected"),
+                        color: scoreColor(results.desktop.score),
+                      },
+                      {
+                        icon: "🔍",
+                        title: hu ? "Google keresőben" : "In Google Search",
+                        value: results.mobile.score >= 90
+                          ? (hu ? "Előnyben" : "Favoured")
+                          : results.mobile.score >= 50
+                          ? (hu ? "Semleges" : "Neutral")
+                          : (hu ? "Hátrányban" : "Penalised"),
+                        sub: hu ? "a keresési találatok között" : "in search results",
+                        desc: hu
+                          ? "A Google a sebesség alapján is rangsorolja az oldalakat — a lassú oldal hátrébb kerül."
+                          : "Google ranks pages partly by speed — a slow site ranks lower.",
+                        color: scoreColor(results.mobile.score),
+                      },
+                    ].map((item) => (
+                      <div key={item.title} style={{
+                        padding: "1.5rem", background: "#fafafa",
+                        border: "1px solid #e8e8e8", borderTop: `3px solid ${item.color}`,
+                        borderRadius: "6px",
+                      }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "1rem" }}>
+                          <span style={{ fontSize: "1.1rem" }}>{item.icon}</span>
+                          <span style={{ fontSize: "0.75rem", fontWeight: 600, color: "#1a1a1a", textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                            {item.title}
+                          </span>
+                        </div>
+                        <p style={{ fontSize: "1.6rem", fontWeight: 700, color: item.color, margin: "0 0 0.2rem", letterSpacing: "-0.02em" }}>
+                          {item.value}
+                        </p>
+                        <p style={{ fontSize: "0.75rem", color: "#aaa", margin: "0 0 0.75rem" }}>{item.sub}</p>
+                        <p style={{ fontSize: "0.82rem", color: "#666", margin: 0, lineHeight: 1.5 }}>{item.desc}</p>
+                      </div>
+                    ))}
+                  </div>
+                </motion.div>
+              </div>
+            </section>
+
+            {/* ── 3. Részletes mérőszámok + problémák ── */}
+            <section style={{ padding: "5rem 2rem", background: "#f7f6f3" }}>
               <div style={{ maxWidth: "860px", margin: "0 auto" }}>
 
-                {/* Tab */}
-                <div className="audit-tabs" style={{ display: "flex", gap: "0.5rem", marginBottom: "3rem", background: "#f0f0f0", borderRadius: "6px", padding: "4px", width: "fit-content" }}>
+                {/* Tab váltó */}
+                <div className="audit-tabs" style={{ display: "flex", gap: "0.5rem", marginBottom: "3rem", background: "#e8e8e8", borderRadius: "6px", padding: "4px", width: "fit-content" }}>
                   {[["mobile", hu ? "📱 Mobil" : "📱 Mobile"], ["desktop", hu ? "🖥 Asztali" : "🖥 Desktop"]].map(([key, label]) => (
                     <button key={key} onClick={() => setActiveTab(key)}
                       style={{
@@ -388,29 +551,39 @@ export default function Audit() {
                   ))}
                 </div>
 
-                {/* Core Web Vitals */}
-                <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ marginBottom: "3rem" }}>
-                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-                    Core Web Vitals
+                {/* Mérőszámok */}
+                <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ marginBottom: "3.5rem" }}>
+                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+                    {hu ? "Részletes mérőszámok" : "Detailed metrics"}
+                  </p>
+                  <p style={{ fontSize: "0.85rem", color: "#999", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+                    {hu
+                      ? "Minden szám mögött ott van a magyarázat: mit érez a látogató, és ez jó-e vagy sem."
+                      : "Each number comes with a plain-language explanation of what the visitor actually experiences."}
                   </p>
                   <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}
-                    style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: "1rem" }}>
+                    style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: "1rem" }}>
                     {Object.keys(METRIC_CONFIG).map(k => (
                       <MetricCard key={k} metricKey={k} data={current?.metrics[k]} lang={lang} />
                     ))}
                   </motion.div>
                 </motion.div>
 
-                {/* Issues */}
+                {/* Mit kell javítani? */}
                 {current?.issues?.length > 0 && (
                   <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                    <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-                      {hu ? "Fejlesztési lehetőségek" : "Opportunities to improve"}
+                    <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+                      {hu ? "Mit kell javítani?" : "What needs fixing?"}
+                    </p>
+                    <p style={{ fontSize: "0.85rem", color: "#999", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+                      {hu
+                        ? "Az alábbi problémák javításával a legtöbbet nyerheted — fontossági sorrendben."
+                        : "Fixing these issues will give you the most speed gains — ordered by priority."}
                     </p>
                     <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}
                       style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-                      {current.issues.map((issue, i) => (
-                        <IssueItem key={i} audit={issue} lang={lang} />
+                      {current.issues.map(({ key, audit }, i) => (
+                        <IssueItem key={i} audit={audit} auditKey={key} lang={lang} />
                       ))}
                     </motion.div>
                   </motion.div>
@@ -418,23 +591,33 @@ export default function Audit() {
 
                 {/* CTA */}
                 <motion.div className="audit-cta" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-                  style={{ marginTop: "4rem", padding: "3rem", background: "#f7f6f3", borderRadius: "8px", border: "1px solid #e8e8e8", textAlign: "center" }}>
+                  style={{ marginTop: "4rem", padding: "3rem", background: "#fff", borderRadius: "8px", border: "1px solid #e8e8e8", textAlign: "center" }}>
                   <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1rem" }}>
                     {hu ? "Segíthetünk?" : "Need help?"}
                   </p>
                   <h3 style={{ fontSize: "clamp(1.3rem, 3vw, 1.9rem)", fontWeight: 600, color: "#1a1a1a", marginBottom: "0.75rem", lineHeight: 1.3 }}>
-                    {hu ? "Javítanád ezeket a problémákat?" : "Want these issues fixed?"}
+                    {results.mobile.score >= 90
+                      ? (hu ? "Szép munka — még messzebb is mehet." : "Great work — there's still room to grow.")
+                      : (hu ? "Tudom, mi a gond. Meg is tudom oldani." : "I know what's wrong. I can fix it.")}
                   </h3>
-                  <p style={{ fontSize: "0.9rem", color: "#888", lineHeight: 1.7, maxWidth: "420px", margin: "0 auto 2rem" }}>
-                    {hu
-                      ? "14 év tapasztalattal segítünk a weboldal optimalizálásban — SEO, sebesség, mobilbarát dizájn."
-                      : "14 years of experience in web optimisation — SEO, speed, mobile-friendly design."}
+                  <p style={{ fontSize: "0.9rem", color: "#888", lineHeight: 1.8, maxWidth: "500px", margin: "0 auto 2rem" }}>
+                    {results.mobile.score >= 90
+                      ? (hu
+                          ? "Az oldalad jól teljesít. Ha szeretnéd a következő szintre emelni — SEO, konverzióoptimalizálás, új funkciók — szívesen segítek."
+                          : "Your site performs well. If you'd like to take it further — SEO, conversion optimisation, new features — I'm happy to help.")
+                      : (hu
+                          ? "14 éve csinálom ezt. Ezeket a problémákat már sokszor megoldottam — általában 1–2 héten belül érezhető javulást tudok elérni. Írj, és megnézzük együtt."
+                          : "I've been doing this for 14 years. I've fixed these exact problems many times before — noticeable improvements usually within 1–2 weeks. Get in touch.")}
                   </p>
-                  <a href="/hire"
-                    style={{ display: "inline-block", padding: "0.9rem 2rem", background: "#1a1a1a", color: "#fff", textDecoration: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em" }}>
+                  <a href="/hire" style={{
+                    display: "inline-block", padding: "0.9rem 2rem", background: "#1a1a1a",
+                    color: "#fff", textDecoration: "none", borderRadius: "4px",
+                    fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em",
+                  }}>
                     {hu ? "Kérek ajánlatot →" : "Get a quote →"}
                   </a>
                 </motion.div>
+
               </div>
             </section>
 
