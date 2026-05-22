@@ -7,7 +7,6 @@
   <meta name="robots" content="noindex, nofollow" />
 </head>
 <body>
-  <!-- Megakadályozza a config.yml automatikus betöltését -->
   <script>window.CMS_MANUAL_INIT = true;</script>
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script>
@@ -17,13 +16,35 @@
           name: "github",
           repo: "rickcircle/richard-kormendi-site",
           branch: "main",
-          base_url: "https://richard-kormendi-site.vercel.app",
+          base_url: "https://richardkormendi.com",
           auth_endpoint: "/api/auth"
         },
         media_folder: "public/media",
         public_folder: "/media",
         locale: "hu",
         collections: [
+          {
+            name: "audit_log",
+            label: "📊 Audit Log",
+            label_singular: "Audit",
+            folder: "content/audits",
+            create: false,
+            delete: false,
+            extension: "md",
+            format: "frontmatter",
+            identifier_field: "url",
+            summary: "{{fields.mobile_score}}📱  {{fields.desktop_score}}🖥  — {{fields.url}} — {{fields.fixable_label}}",
+            sortable_fields: ["date", "mobile_score", "desktop_score"],
+            fields: [
+              { label: "URL", name: "url", widget: "string" },
+              { label: "Dátum", name: "date", widget: "datetime" },
+              { label: "📱 Mobil pontszám", name: "mobile_score", widget: "number" },
+              { label: "🖥 Asztali pontszám", name: "desktop_score", widget: "number" },
+              { label: "Értékelés", name: "fixable_label", widget: "string" },
+              { label: "Becsült munkaidő", name: "fixable_hours", widget: "string", required: false },
+              { label: "Magyarázat", name: "fixable_reason", widget: "text" }
+            ]
+          },
           {
             name: "shows",
             label: "Koncertek",
