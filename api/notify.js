@@ -91,7 +91,7 @@ export default async function handler(req, res) {
     return res.status(400).json({ error: "Invalid JSON" });
   }
 
-  const { url, mobileScore, desktopScore, issues = [] } = body;
+  const { url, mobileScore, desktopScore, issues = [], checks = {} } = body;
   if (!url || mobileScore == null || desktopScore == null) {
     return res.status(400).json({ error: "Missing fields" });
   }
@@ -151,6 +151,15 @@ client_message: "${analysis.clientMessage ? analysis.clientMessage.replace(/"/g,
 ${analysis.reason}
 
 ${analysis.hours ? `⏱️ **Becsült munkaidő: ${analysis.hours}**` : ""}
+
+## Gyors ellenőrzések
+
+| | |
+|---|---|
+| Biztonságos (HTTPS) | ${checks.https ? "✅ Igen" : "❌ Nem"} |
+| Kattintható telefonszám | ${checks.hasPhoneLink === null ? "⚪ Nem ellenőrizhető" : checks.hasPhoneLink ? "✅ Igen" : checks.hasAnyPhone === false ? "❌ Nincs telefonszám" : "❌ Nem kattintható"} |
+| Google keresési leírás | ${checks.metaDescription === null || checks.metaDescription === undefined ? "⚪ Nem ellenőrizhető" : checks.metaDescription ? "✅ Van" : "❌ Hiányzik"} |
+| Gombok mérete mobilon | ${checks.tapTargets === null || checks.tapTargets === undefined ? "⚪ Nem ellenőrizhető" : checks.tapTargets ? "✅ Rendben" : "❌ Túl kicsi"} |
 
 ## Fő problémák (mobilon)
 

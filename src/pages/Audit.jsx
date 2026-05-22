@@ -322,7 +322,7 @@ export default function Audit() {
 
       const mobileData  = parse(mobile);
       const desktopData = parse(desktop);
-      setResults({ mobile: mobileData, desktop: desktopData, url: cleanUrl });
+      setResults({ mobile: mobileData, desktop: desktopData, url: cleanUrl, checks: json.checks || {} });
       setStatus("done");
 
       // Értesítés + audit log mentése — fire-and-forget, nem blokkolja az UI-t
@@ -334,6 +334,7 @@ export default function Audit() {
           mobileScore:  mobileData.score,
           desktopScore: desktopData.score,
           issues: mobileData.issues.map(({ key, audit: a }) => ({ key, score: a?.score ?? null })),
+          checks: json.checks || {},
         }),
       }).catch(() => {}); // silent fail — az audit eredmény fontos, a log nem blokkolhat
     } catch (err) {
@@ -508,7 +509,79 @@ export default function Audit() {
               </div>
             </section>
 
-            {/* ── 2. Mit tapasztalnak a látogatóid? ── */}
+            {/* ── 2. Gyors ellenőrzések ── */}
+            {results.checks && Object.keys(results.checks).length > 0 && (() => {
+              const c = results.checks;
+              const items = [
+                {
+                  ok: c.https,
+                  label: hu ? "Biztonságos kapcsolat (HTTPS)" : "Secure connection (HTTPS)",
+                  good: hu ? "Az oldal biztonságos kapcsolaton keresztül tölt be" : "Site loads over a secure connection",
+                  bad:  hu ? "Az oldal nem biztonságos — a Google \"Nem biztonságos\" figyelmeztetést mutat" : "Site is not secure — Google shows a 'Not secure' warning",
+                },
+                {
+                  ok: c.hasPhoneLink,
+                  skip: c.hasPhoneLink === null,
+                  label: hu ? "Telefonszám mobilon kattintható" : "Phone number tappable on mobile",
+                  good: hu ? "A telefonszám egy kattintással hívható mobilról" : "Phone number can be called with one tap on mobile",
+                  bad:  hu ? "A telefonszám nem kattintható — mobilon kézzel kell átírni és hívni" : "Phone number isn't tappable — mobile visitors must dial manually",
+                  warn: c.hasAnyPhone === false
+                    ? (hu ? "Nem találtunk telefonszámot az oldalon" : "No phone number found on the page")
+                    : null,
+                },
+                {
+                  ok: c.metaDescription,
+                  label: hu ? "Google keresési leírás (meta description)" : "Google search snippet (meta description)",
+                  good: hu ? "Van keresési leírás — a Google megmutatja az oldal alatt" : "Search description present — Google shows it below the result",
+                  bad:  hu ? "Hiányzik a keresési leírás — a Google találatok közt üres az oldal alatt" : "Missing search description — Google shows nothing below the result",
+                },
+                {
+                  ok: c.tapTargets,
+                  skip: c.tapTargets === null || c.tapTargets === undefined,
+                  label: hu ? "Gombok és linkek mérete mobilon" : "Button and link size on mobile",
+                  good: hu ? "A gombok és linkek könnyen megnyomhatók mobilon" : "Buttons and links are easy to tap on mobile",
+                  bad:  hu ? "Néhány gomb vagy link túl kicsi mobilon — könnyű mellé nyomni" : "Some buttons or links are too small on mobile — easy to miss",
+                },
+              ];
+              return (
+                <section style={{ padding: "3rem 2rem", background: "#fff", borderBottom: "1px solid #e8e8e8" }}>
+                  <div style={{ maxWidth: "860px", margin: "0 auto" }}>
+                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
+                      <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+                        {hu ? "Gyors ellenőrzések" : "Quick checks"}
+                      </p>
+                      <p style={{ fontSize: "0.85rem", color: "#999", lineHeight: 1.6, marginBottom: "1.5rem" }}>
+                        {hu ? "Ezek az alapok — amelyeken sok érdeklődő megfordul." : "These are the basics that many visitors rely on."}
+                      </p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                        {items.map((item) => {
+                          if (item.skip) return null;
+                          const icon  = item.ok ? "✅" : "❌";
+                          const color = item.ok ? "#0cce6b" : "#ff4e42";
+                          const text  = item.ok ? item.good : (item.warn || item.bad);
+                          return (
+                            <div key={item.label} style={{
+                              display: "flex", alignItems: "flex-start", gap: "0.75rem",
+                              padding: "0.9rem 1.2rem", background: "#fafafa",
+                              border: "1px solid #e8e8e8", borderLeft: `3px solid ${color}`,
+                              borderRadius: "6px",
+                            }}>
+                              <span style={{ fontSize: "1rem", flexShrink: 0, marginTop: "1px" }}>{icon}</span>
+                              <div>
+                                <p style={{ fontSize: "0.85rem", fontWeight: 600, color: "#1a1a1a", margin: "0 0 0.2rem" }}>{item.label}</p>
+                                <p style={{ fontSize: "0.8rem", color: "#777", margin: 0, lineHeight: 1.5 }}>{text}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </motion.div>
+                  </div>
+                </section>
+              );
+            })()}
+
+            {/* ── 3. Mit tapasztalnak a látogatóid? ── */}
             <section style={{ padding: "4rem 2rem", background: "#fff", borderBottom: "1px solid #e8e8e8" }}>
               <div style={{ maxWidth: "860px", margin: "0 auto" }}>
                 <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
