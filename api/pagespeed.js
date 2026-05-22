@@ -2,50 +2,62 @@
 // maxDuration: 60s (vercel.json-ban konfigurálva)
 
 export default async function handler(req, res) {
-  const { url } = req.query;
+  // CORS — Safari is megkapja a választ
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+  res.setHeader("Access-Control-Allow-Headers", "Content-Type");
 
+  if (req.method === "OPTIONS") {
+    return res.status(200).end();
+  }
+
+  const { url } = req.query;
   if (!url) {
     return res.status(400).json({ error: "Missing url parameter" });
   }
 
   const API_KEY = process.env.GOOGLE_PAGESPEED_KEY || "";
+  if (!API_KEY) console.warn("⚠️  GOOGLE_PAGESPEED_KEY nincs beállítva — rate limit lehetséges");
   const keyParam = API_KEY ? `&key=${API_KEY}` : "";
+
   const PAGESPEED = "https://www.googleapis.com/pagespeedonline/v5/runPagespeed";
 
-  const fetchWithTimeout = async (fetchUrl, timeoutMs = 25000) => {
+  const fetchStrategy = async (strategy) => {
     const controller = new AbortController();
-    const id = setTimeout(() => controller.abort(), timeoutMs);
+    const timeout = setTimeout(() => controller.abort(), 28000);
     try {
-      const response = await fetch(fetchUrl, { signal: controller.signal });
-      clearTimeout(id);
-      return response;
+      const response = await fetch(
+        `${PAGESPEED}?url=${encodeURIComponent(url)}&strategy=${strategy}${keyParam}`,
+        { signal: controller.signal }
+      );
+      clearTimeout(timeout);
+
+      // Szöveg alapon olvassuk be, majd próbáljuk parse-olni
+      const text = await response.text();
+      let data;
+      try {
+        data = JSON.parse(text);
+      } catch {
+        console.error(`[${strategy}] JSON parse error. Status: ${response.status}. Body: ${text.slice(0, 200)}`);
+        throw new Error(`Invalid JSON from Google API (status ${response.status})`);
+      }
+
+      if (!response.ok) {
+        console.error(`[${strategy}] API error ${response.status}:`, JSON.stringify(data).slice(0, 300));
+        throw new Error(`PageSpeed API ${response.status}: ${data?.error?.message || "unknown error"}`);
+      }
+
+      return data;
     } catch (err) {
-      clearTimeout(id);
+      clearTimeout(timeout);
+      if (err.name === "AbortError") throw new Error(`${strategy} request timed out after 28s`);
       throw err;
     }
   };
 
   try {
-    // Egymás után hívjuk (nem párhuzamosan), hogy ne timeout-oljon
-    const mobileRes = await fetchWithTimeout(
-      `${PAGESPEED}?url=${encodeURIComponent(url)}&strategy=mobile${keyParam}`
-    );
-    if (!mobileRes.ok) {
-      const err = await mobileRes.json().catch(() => ({}));
-      console.error("Mobile API error:", err);
-      return res.status(502).json({ error: "PageSpeed API error (mobile)", detail: err });
-    }
-    const mobile = await mobileRes.json();
-
-    const desktopRes = await fetchWithTimeout(
-      `${PAGESPEED}?url=${encodeURIComponent(url)}&strategy=desktop${keyParam}`
-    );
-    if (!desktopRes.ok) {
-      const err = await desktopRes.json().catch(() => ({}));
-      console.error("Desktop API error:", err);
-      return res.status(502).json({ error: "PageSpeed API error (desktop)", detail: err });
-    }
-    const desktop = await desktopRes.json();
+    const mobile = await fetchStrategy("mobile");
+    const desktop = await fetchStrategy("desktop");
 
     res.setHeader("Cache-Control", "s-maxage=300");
     return res.status(200).json({ mobile, desktop });
