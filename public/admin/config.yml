@@ -33,6 +33,27 @@ collections:
               - { label: Ország, name: country, widget: string, required: false, default: "Hungary" }
               - { label: Jegyek URL, name: ticketUrl, widget: string, required: false, hint: "Hagyd üresen ha nincs jegy" }
 
+  # Audit Log — automatikusan töltődik fel, ne szerkeszd kézzel
+  - name: audit_log
+    label: "📊 Audit Log"
+    label_singular: Audit
+    folder: content/audits
+    create: false
+    delete: false
+    extension: md
+    format: frontmatter
+    identifier_field: url
+    summary: "{{fields.mobile_score}}📱  {{fields.desktop_score}}🖥  — {{fields.url}} — {{fields.fixable_label}}"
+    sortable_fields: ['date', 'mobile_score', 'desktop_score']
+    fields:
+      - { label: URL, name: url, widget: string }
+      - { label: Dátum, name: date, widget: datetime }
+      - { label: "📱 Mobil pontszám", name: mobile_score, widget: number }
+      - { label: "🖥 Asztali pontszám", name: desktop_score, widget: number }
+      - { label: Értékelés, name: fixable_label, widget: string }
+      - { label: "Becsült munkaidő", name: fixable_hours, widget: string, required: false }
+      - { label: Magyarázat, name: fixable_reason, widget: text }
+
   # Fotógaléria kezelése
   - name: gallery
     label: Fotók

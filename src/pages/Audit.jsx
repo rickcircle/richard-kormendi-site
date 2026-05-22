@@ -284,8 +284,23 @@ export default function Audit() {
           .slice(0, 8);
         return { score, metrics, issues };
       };
-      setResults({ mobile: parse(mobile), desktop: parse(desktop), url: cleanUrl });
+
+      const mobileData  = parse(mobile);
+      const desktopData = parse(desktop);
+      setResults({ mobile: mobileData, desktop: desktopData, url: cleanUrl });
       setStatus("done");
+
+      // Értesítés + audit log mentése — fire-and-forget, nem blokkolja az UI-t
+      fetch("/api/notify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: cleanUrl,
+          mobileScore:  mobileData.score,
+          desktopScore: desktopData.score,
+          issues: mobileData.issues.map(({ key, audit: a }) => ({ key, score: a?.score ?? null })),
+        }),
+      }).catch(() => {}); // silent fail — az audit eredmény fontos, a log nem blokkolhat
     } catch {
       setStatus("error");
     }
