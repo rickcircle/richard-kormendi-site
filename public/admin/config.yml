@@ -6,6 +6,7 @@ backend:
   name: github
   repo: rickcircle/richard-kormendi-site
   branch: main
+  base_url: https://richardkormendi.com
   auth_endpoint: /api/auth
 
 media_folder: public/media
