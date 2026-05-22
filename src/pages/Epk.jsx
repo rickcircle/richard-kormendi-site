@@ -118,7 +118,7 @@ export default function Epk() {
       </section>
 
       {/* Bio */}
-      <section style={{ padding: "7rem 2rem", background: "#f7f6f3" }}>
+      <section style={{ padding: "8rem 2rem", background: "#f7f6f3" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
             <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "3rem" }}>
@@ -149,7 +149,7 @@ export default function Epk() {
       </section>
 
       {/* Press */}
-      <section style={{ padding: "7rem 2rem", background: "#fff" }}>
+      <section style={{ padding: "8rem 2rem", background: "#fff" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "3rem" }}>
             <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase" }}>
@@ -184,7 +184,7 @@ export default function Epk() {
       </section>
 
       {/* Photos */}
-      <section style={{ padding: "7rem 2rem", background: "#f7f6f3" }}>
+      <section style={{ padding: "8rem 2rem", background: "#f7f6f3" }}>
         <div style={{ maxWidth: "960px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "3rem" }}>
             <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase" }}>
@@ -209,7 +209,7 @@ export default function Epk() {
       </section>
 
       {/* Streaming */}
-      <section style={{ padding: "7rem 2rem", background: "#fff" }}>
+      <section style={{ padding: "8rem 2rem", background: "#fff" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
             <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "2.5rem" }}>
@@ -228,7 +228,7 @@ export default function Epk() {
       </section>
 
       {/* Technical Rider */}
-      <section style={{ padding: "7rem 2rem", background: "#1a1a1a", color: "#fff" }}>
+      <section style={{ padding: "8rem 2rem", background: "#1a1a1a", color: "#fff" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
             <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
@@ -255,7 +255,7 @@ export default function Epk() {
       </section>
 
       {/* Contact */}
-      <section style={{ padding: "7rem 2rem", background: "#f7f6f3" }}>
+      <section style={{ padding: "8rem 2rem", background: "#f7f6f3" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
             <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "1.5rem" }}>

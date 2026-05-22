@@ -29,7 +29,7 @@ export default function Press() {
   const tx = t[lang].press;
 
   return (
-    <section id="press" style={{ padding: "7rem 2rem", background: "#fff" }}>
+    <section id="press" style={{ padding: "8rem 2rem", background: "#fff" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>

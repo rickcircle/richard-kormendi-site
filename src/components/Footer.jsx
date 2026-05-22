@@ -23,7 +23,7 @@ export default function Footer() {
     }}>
       <span style={{ color: "#aaa" }}>© {year} Richard Körmendi</span>
 
-      <nav style={{ display: "flex", gap: "1.5rem" }}>
+      <nav style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", justifyContent: "center" }}>
         {socials.map(s => (
           <a
             key={s.label}

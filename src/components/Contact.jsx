@@ -36,9 +36,9 @@ export default function Contact() {
         <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap" }}>
           {socials.map(s => (
             <a key={s.label} href={s.href} target="_blank" rel="noreferrer"
-              style={{ fontSize: "0.85rem", letterSpacing: "0.08em", color: "#555", textDecoration: "none", transition: "color 0.2s" }}
+              style={{ fontSize: "0.85rem", letterSpacing: "0.08em", color: "#888", textDecoration: "none", transition: "color 0.2s" }}
               onMouseOver={e => e.currentTarget.style.color = "#fff"}
-              onMouseOut={e => e.currentTarget.style.color = "#555"}>
+              onMouseOut={e => e.currentTarget.style.color = "#888"}>
               {s.label}
             </a>
           ))}

@@ -82,7 +82,7 @@ export default function Newsletter() {
                   {status === "loading" ? "..." : tx.cta}
                 </button>
               </div>
-              <p style={{ fontSize: "0.75rem", color: "#444", marginTop: "1rem" }}>{tx.privacy}</p>
+              <p style={{ fontSize: "0.75rem", color: "#666", marginTop: "1rem" }}>{tx.privacy}</p>
             </form>
           )}
         </motion.div>
