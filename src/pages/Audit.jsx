@@ -514,35 +514,62 @@ export default function Audit() {
             {/* ── 2. Gyors ellenőrzések ── */}
             {results.checks && Object.keys(results.checks).length > 0 && (() => {
               const c = results.checks;
+              const currentYear = new Date().getFullYear();
               const items = [
                 {
                   ok: c.https,
                   label: hu ? "Biztonságos kapcsolat (HTTPS)" : "Secure connection (HTTPS)",
-                  good: hu ? "Az oldal biztonságos kapcsolaton keresztül tölt be" : "Site loads over a secure connection",
-                  bad:  hu ? "Az oldal nem biztonságos — a Google \"Nem biztonságos\" figyelmeztetést mutat" : "Site is not secure — Google shows a 'Not secure' warning",
+                  good: hu ? "Biztonságos — a böngészők nem mutatnak figyelmeztetést" : "Secure — no browser warnings shown",
+                  bad:  hu ? "Nem biztonságos — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak, és a Google is hátrányba sorolja" : "Not secure — browsers show a warning and Google ranks it lower",
                 },
                 {
                   ok: c.hasPhoneLink,
                   skip: c.hasPhoneLink === null,
                   label: hu ? "Telefonszám mobilon kattintható" : "Phone number tappable on mobile",
-                  good: hu ? "A telefonszám egy kattintással hívható mobilról" : "Phone number can be called with one tap on mobile",
-                  bad:  hu ? "A telefonszám nem kattintható — mobilon kézzel kell átírni és hívni" : "Phone number isn't tappable — mobile visitors must dial manually",
-                  warn: c.hasAnyPhone === false
-                    ? (hu ? "Nem találtunk telefonszámot az oldalon" : "No phone number found on the page")
-                    : null,
+                  good: hu ? "Egy kattintással hívható — mobilon ez az elvárás" : "One-tap calling — expected on mobile",
+                  bad:  hu ? "A telefonszám nem kattintható — mobilon kézzel kell beírni, és sokan ezt nem teszik meg" : "Phone number isn't tappable — mobile users must dial manually, and many won't bother",
+                  warn: c.hasAnyPhone === false ? (hu ? "Nem találtunk telefonszámot az oldalon" : "No phone number found on the page") : null,
                 },
                 {
                   ok: c.metaDescription,
-                  label: hu ? "Google keresési leírás (meta description)" : "Google search snippet (meta description)",
-                  good: hu ? "Van keresési leírás — a Google megmutatja az oldal alatt" : "Search description present — Google shows it below the result",
-                  bad:  hu ? "Hiányzik a keresési leírás — a Google találatok közt üres az oldal alatt" : "Missing search description — Google shows nothing below the result",
+                  label: hu ? "Google keresési leírás" : "Google search description",
+                  good: hu ? "Van leírás — a Google megmutatja a találat alatt, több kattintást hoz" : "Description present — Google shows it below the result, driving more clicks",
+                  bad:  hu ? "Hiányzik a leírás — Google-ban üres a találat alatt, kevesebben kattintanak rá" : "Missing description — empty snippet in Google results means fewer clicks",
+                },
+                {
+                  ok: c.hasLocalBizSchema,
+                  skip: c.hasSchemaOrg === null,
+                  label: hu ? "Strukturált adat (Google tudáspanel)" : "Structured data (Google knowledge panel)",
+                  good: hu ? "Van strukturált adat — a Google automatikusan megjelenítheti a nyitvatartást, telefonszámot" : "Structured data present — Google can automatically show hours, phone in search",
+                  bad:  hu ? "Nincs strukturált adat — a Google nem tudja automatikusan megjeleníteni a cég adatait" : "No structured data — Google can't automatically display business info",
+                },
+                {
+                  ok: c.hasMapsEmbed,
+                  skip: c.hasMapsEmbed === null,
+                  label: hu ? "Google Térkép az oldalon" : "Google Maps on the page",
+                  good: hu ? "Van Google Térkép — az érdeklődők könnyen megtalálják a helyszínt" : "Google Maps present — visitors can easily find the location",
+                  bad:  hu ? "Nincs Google Térkép az oldalon — a helyszín megtalálása nehezebb" : "No Google Maps embed — harder for visitors to find the location",
+                },
+                {
+                  ok: c.hasFacebook || c.hasInstagram,
+                  skip: c.hasFacebook === null,
+                  label: hu ? "Social media jelenlét" : "Social media presence",
+                  good: hu ? `Van social média link${c.hasFacebook && c.hasInstagram ? " (Facebook + Instagram)" : c.hasFacebook ? " (Facebook)" : " (Instagram)"}` : `Social media linked${c.hasFacebook && c.hasInstagram ? " (Facebook + Instagram)" : c.hasFacebook ? " (Facebook)" : " (Instagram)"}`,
+                  bad:  hu ? "Nem találtunk social média linket — helyi vállalkozásoknál a Facebook/Instagram sokat számít" : "No social media links found — for local businesses, Facebook/Instagram matters a lot",
+                },
+                {
+                  ok: c.siteIsRecent !== false,
+                  skip: c.copyrightYear === null,
+                  label: hu ? `Oldal frissessége (© ${c.copyrightYear || "?"})` : `Site freshness (© ${c.copyrightYear || "?"})`,
+                  good: hu ? "Az oldal frissnek tűnik — naprakész tartalommal" : "Site appears up to date",
+                  bad:  hu ? `Az oldal ${currentYear - (c.copyrightYear || currentYear)} éve nem lett frissítve — elavult tartalom bizalmatlanságot kelt` : `Site hasn't been updated for ${currentYear - (c.copyrightYear || currentYear)} years — stale content erodes trust`,
                 },
                 {
                   ok: c.tapTargets,
                   skip: c.tapTargets === null || c.tapTargets === undefined,
-                  label: hu ? "Gombok és linkek mérete mobilon" : "Button and link size on mobile",
-                  good: hu ? "A gombok és linkek könnyen megnyomhatók mobilon" : "Buttons and links are easy to tap on mobile",
-                  bad:  hu ? "Néhány gomb vagy link túl kicsi mobilon — könnyű mellé nyomni" : "Some buttons or links are too small on mobile — easy to miss",
+                  label: hu ? "Gombok mérete mobilon" : "Button size on mobile",
+                  good: hu ? "A gombok könnyen megnyomhatók mobilon" : "Buttons are easy to tap on mobile",
+                  bad:  hu ? "Néhány gomb túl kicsi mobilon — könnyű mellé nyomni" : "Some buttons too small on mobile — easy to miss",
                 },
               ];
               return (

@@ -45,8 +45,8 @@ export default async function handler(req, res) {
     }
   };
 
-  // ── Telefonszám-link ellenőrzés (HTML fetch) ─────────────────────────────────
-  const checkPhone = async () => {
+  // ── HTML alapú ellenőrzések ───────────────────────────────────────────────────
+  const checkPage = async () => {
     try {
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8000);
@@ -59,30 +59,59 @@ export default async function handler(req, res) {
       });
       clearTimeout(timeout);
       const html = await response.text();
+
+      // Telefonszám
       const hasPhoneLink = /href=["']tel:/i.test(html);
       const hasAnyPhone  = /(\+36|06)[\s\-\(]?[0-9]{1,2}[\s\-\(]?[0-9]{3,4}[\s\-]?[0-9]{3,4}/.test(html);
-      return { hasPhoneLink, hasAnyPhone };
+
+      // Strukturált adat (Schema.org)
+      const hasSchemaOrg     = /<script[^>]+application\/ld\+json/i.test(html);
+      const hasLocalBizSchema = hasSchemaOrg && /LocalBusiness|Organization|HairSalon|FoodEstablishment|Store|Restaurant|MedicalBusiness|HealthAndBeautyBusiness/i.test(html);
+
+      // Google Maps
+      const hasMapsEmbed = /maps\.google\.com|google\.com\/maps|maps\.app\.goo\.gl/i.test(html);
+
+      // Social media
+      const hasFacebook  = /facebook\.com\/[a-zA-Z0-9]/i.test(html);
+      const hasInstagram = /instagram\.com\/[a-zA-Z0-9]/i.test(html);
+
+      // Oldal frissessége — copyright év
+      const copyrightMatch = html.match(/[©&copy;]\s*(\d{4})|[Cc]opyright\s+(\d{4})/);
+      const copyrightYear  = copyrightMatch ? parseInt(copyrightMatch[1] || copyrightMatch[2]) : null;
+      const currentYear    = new Date().getFullYear();
+      const siteIsRecent   = copyrightYear ? (currentYear - copyrightYear) <= 2 : null;
+
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent };
     } catch {
-      return { hasPhoneLink: null, hasAnyPhone: null }; // nem sikerült ellenőrizni
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null };
     }
   };
 
   try {
-    const [mobile, desktop, phone] = await Promise.all([
+    const [mobile, desktop, page] = await Promise.all([
       fetchStrategy("mobile"),
       fetchStrategy("desktop"),
-      checkPhone(),
+      checkPage(),
     ]);
 
     // ── Extra ellenőrzések kinyerése a Lighthouse auditokból ──────────────────
     const audits = mobile.lighthouseResult?.audits || {};
     const checks = {
+      // Lighthouse alapú
       https:           url.startsWith("https://"),
       metaDescription: audits["meta-description"]?.score === 1,
       tapTargets:      audits["tap-targets"]?.score === 1,
       fontSizeOk:      audits["font-size"]?.score === 1,
-      hasPhoneLink:    phone.hasPhoneLink,
-      hasAnyPhone:     phone.hasAnyPhone,
+      // HTML alapú
+      hasPhoneLink:    page.hasPhoneLink,
+      hasAnyPhone:     page.hasAnyPhone,
+      hasSchemaOrg:    page.hasSchemaOrg,
+      hasLocalBizSchema: page.hasLocalBizSchema,
+      hasMapsEmbed:    page.hasMapsEmbed,
+      hasFacebook:     page.hasFacebook,
+      hasInstagram:    page.hasInstagram,
+      copyrightYear:   page.copyrightYear,
+      siteIsRecent:    page.siteIsRecent,
     };
 
     res.setHeader("Cache-Control", "s-maxage=300");

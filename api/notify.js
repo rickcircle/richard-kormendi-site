@@ -168,6 +168,10 @@ ${analysis.hours ? `⏱️ **Becsült munkaidő: ${analysis.hours}**` : ""}
 | Biztonságos (HTTPS) | ${checks.https ? "✅ Igen" : "❌ Nem"} |
 | Kattintható telefonszám | ${checks.hasPhoneLink === null ? "⚪ Nem ellenőrizhető" : checks.hasPhoneLink ? "✅ Igen" : checks.hasAnyPhone === false ? "❌ Nincs telefonszám" : "❌ Nem kattintható"} |
 | Google keresési leírás | ${checks.metaDescription === null || checks.metaDescription === undefined ? "⚪ Nem ellenőrizhető" : checks.metaDescription ? "✅ Van" : "❌ Hiányzik"} |
+| Strukturált adat (Schema) | ${checks.hasLocalBizSchema === null ? "⚪ Nem ellenőrizhető" : checks.hasLocalBizSchema ? "✅ Van" : checks.hasSchemaOrg ? "🟡 Általános (nem LocalBusiness)" : "❌ Hiányzik"} |
+| Google Térkép az oldalon | ${checks.hasMapsEmbed === null ? "⚪ Nem ellenőrizhető" : checks.hasMapsEmbed ? "✅ Van" : "❌ Nincs"} |
+| Social média (FB/IG) | ${checks.hasFacebook === null ? "⚪ Nem ellenőrizhető" : (checks.hasFacebook || checks.hasInstagram) ? `✅ Van (${[checks.hasFacebook && "Facebook", checks.hasInstagram && "Instagram"].filter(Boolean).join(", ")})` : "❌ Nincs link"} |
+| Oldal frissessége | ${checks.copyrightYear === null ? "⚪ Nem ellenőrizhető" : checks.siteIsRecent ? `✅ Friss (© ${checks.copyrightYear})` : `❌ Elavult (© ${checks.copyrightYear})`} |
 | Gombok mérete mobilon | ${checks.tapTargets === null || checks.tapTargets === undefined ? "⚪ Nem ellenőrizhető" : checks.tapTargets ? "✅ Rendben" : "❌ Túl kicsi"} |
 
 ## Fő problémák (mobilon)
