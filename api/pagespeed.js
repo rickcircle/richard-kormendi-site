@@ -56,8 +56,10 @@ export default async function handler(req, res) {
   };
 
   try {
-    const mobile = await fetchStrategy("mobile");
-    const desktop = await fetchStrategy("desktop");
+    const [mobile, desktop] = await Promise.all([
+      fetchStrategy("mobile"),
+      fetchStrategy("desktop"),
+    ]);
 
     res.setHeader("Cache-Control", "s-maxage=300");
     return res.status(200).json({ mobile, desktop });

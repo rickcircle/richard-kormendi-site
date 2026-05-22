@@ -259,6 +259,7 @@ export default function Audit() {
 
   const [url, setUrl] = useState("");
   const [status, setStatus] = useState("idle");
+  const [errorDetail, setErrorDetail] = useState("");
   const [results, setResults] = useState(null);
   const [activeTab, setActiveTab] = useState("mobile");
 
@@ -271,8 +272,9 @@ export default function Audit() {
     setResults(null);
     try {
       const res = await fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}`);
-      if (!res.ok) throw new Error("API error");
-      const { mobile, desktop } = await res.json();
+      const json = await res.json().catch(() => null);
+      if (!res.ok) throw new Error(json?.detail || json?.error || `HTTP ${res.status}`);
+      const { mobile, desktop } = json;
       const parse = (data) => {
         const audits = data.lighthouseResult?.audits || {};
         const score = Math.round((data.lighthouseResult?.categories?.performance?.score || 0) * 100);
@@ -301,7 +303,8 @@ export default function Audit() {
           issues: mobileData.issues.map(({ key, audit: a }) => ({ key, score: a?.score ?? null })),
         }),
       }).catch(() => {}); // silent fail — az audit eredmény fontos, a log nem blokkolhat
-    } catch {
+    } catch (err) {
+      setErrorDetail(err.message || "");
       setStatus("error");
     }
   };
@@ -370,6 +373,7 @@ export default function Audit() {
             {status === "error" && (
               <p style={{ fontSize: "0.85rem", color: "#e74c3c", marginTop: "1rem" }}>
                 {hu ? "Nem sikerült lekérni az adatokat. Ellenőrizd az URL-t és próbáld újra." : "Could not fetch data. Check the URL and try again."}
+                {errorDetail ? <span style={{ display: "block", fontSize: "0.75rem", color: "#aaa", marginTop: "0.25rem" }}>{errorDetail}</span> : null}
               </p>
             )}
           </form>
