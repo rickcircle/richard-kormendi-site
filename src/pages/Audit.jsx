@@ -150,20 +150,22 @@ function getSummary(mobile, desktop, hu) {
   };
 }
 
-function generateOutreach(mobileScore, desktopScore) {
-  const bigGap = (desktopScore - mobileScore) > 30;
-  if (mobileScore < 25) {
-    return "Szia! Megnéztem a weboldalatokat, és sajnos komoly technikai problémákat látok — mobilon szinte használhatatlan. Ennél a szintnél egy modern új oldal jobban megéri, mint a javítgatás, és az ár általában nem akkora, mint gondolnák. Ha érdekel, szívesen átbeszéljük a lehetőségeket.";
-  }
-  if (bigGap && mobileScore >= 50) {
-    return "Szia! Megnéztem a weboldalatokat — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok érdeklődőt eltérít. Pár fejlesztéssel könnyen orvosolható lenne. Ha érdekel, szívesen megmutatom.";
-  }
-  if (mobileScore < 40) {
-    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon nehézkesen tölt be. Ma már az ügyfelek nagy része telefonon keres — ha az oldal lassan tölt be, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a különbség. Ha kíváncsi vagy rá, szívesen átbeszéljük.";
-  }
-  if (mobileScore < 70) {
-    return "Szia! Megnéztem a weboldalatokat — az alap rendben van, de mobilon van néhány lassító tényező. Pár fejlesztéssel gyorsabb és könnyebben megtalálható lehetne Google-ban is. Ha érdekel, szívesen megmutatom, mi kellene hozzá.";
-  }
+function generateOutreach(mobileScore, desktopScore, checks = {}) {
+  const bigGap      = (desktopScore - mobileScore) > 30;
+  const noHttps     = checks.https === false;
+  const noPhoneLink = checks.hasPhoneLink === false && checks.hasAnyPhone !== false;
+  const noMetaDesc  = checks.metaDescription === false;
+
+  if (noHttps)
+    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Könnyen javítható lenne. Ha érdekel, szívesen segítek.";
+  if (noPhoneLink)
+    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy a telefonszám mobilon nem kattintható — hívni csak a szám kézzel történő beírásával lehet. Ma már az érdeklődők nagy része telefonon keres, és sokan egyszerűen nem fognak manuálisan számot beírni. Ez percek alatt javítható. Ha érdekel, megmutatom.";
+  if (noMetaDesc)
+    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy Google-ban nincs szöveg az oldal találata alatt — csak az URL jelenik meg. Ez azt jelenti, hogy az érdeklődők kevésbé kattintanak rá. Pár sorral sokkal jobban nézne ki és több látogatót hozna. Ha érdekel, segítek megírni.";
+  if (bigGap)
+    return "Szia! Megnéztem a weboldalatokat — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok látogatót eltérít. Pár fejlesztéssel könnyen orvosolható lenne. Ha érdekel, szívesen megmutatom.";
+  if (mobileScore < 50)
+    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon lassabban tölt be a kelleténél. Ma már az ügyfelek nagy része telefonon keres — ha az oldal sokat vár, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a különbség. Ha kíváncsi vagy rá, szívesen átbeszéljük.";
   return null;
 }
 
@@ -346,7 +348,7 @@ export default function Audit() {
   const current = results?.[activeTab];
   const summary = results ? getSummary(results.mobile, results.desktop, hu) : null;
   const summaryBg = summary?.tone === "good" ? "#f0fdf6" : summary?.tone === "bad" ? "#fff5f5" : "#fffbf0";
-  const outreachMsg = results ? generateOutreach(results.mobile.score, results.desktop.score) : null;
+  const outreachMsg = results ? generateOutreach(results.mobile.score, results.desktop.score, results.checks) : null;
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
