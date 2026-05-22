@@ -18,17 +18,19 @@ const ISSUE_HUMAN = {
   "mainthread-work-breakdown":  "JavaScript túlterheli a böngészőt",
 };
 
-function clientMsg(noHttps, noPhoneLink, noMetaDesc, bigGap, mobileScore) {
+// ── Ügyfélfogható problémák — csak amitől egy vállalkozó tényleg lép ─────────
+// 1. HTTPS hiányzik → böngésző "Nem biztonságos" feliratot mutat minden látogatónak
+// 2. Mobil < 40    → telefonon szinte használhatatlan, a tulajdonos maga is érzi
+// 3. Nagy rés ÉS mobil < 55 → az oldal lényegében nincs mobilra optimalizálva
+// Minden más (telefon link, meta, schema, maps) extra info — nem önálló megkeresési ok
+
+function clientMsg(noHttps, mobileTrulySlow, mobileBroken, mobileScore) {
   if (noHttps)
-    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Könnyen javítható lenne. Ha érdekel, szívesen segítek.";
-  if (noPhoneLink)
-    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy a telefonszám mobilon nem kattintható — hívni csak a szám kézzel történő beírásával lehet. Ma már az érdeklődők nagy része telefonon keres, és sokan egyszerűen nem fognak manuálisan számot beírni. Ez percek alatt javítható. Ha érdekel, megmutatom.";
-  if (noMetaDesc)
-    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy Google-ban nincs szöveg az oldal találata alatt — csak az URL jelenik meg. Ez azt jelenti, hogy az érdeklődők kevésbé kattintanak rá. Pár sorral sokkal jobban nézne ki és több látogatót hozna. Ha érdekel, segítek megírni.";
-  if (bigGap)
-    return "Szia! Megnéztem a weboldalatokat — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok látogatót eltérít. Pár fejlesztéssel könnyen orvosolható lenne. Ha érdekel, szívesen megmutatom.";
-  if (mobileScore < 50)
-    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon lassabban tölt be a kelleténél. Ma már az ügyfelek nagy része telefonon keres — ha az oldal sokat vár, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a különbség. Ha kíváncsi vagy rá, szívesen átbeszéljük.";
+    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Ha érdekel, szívesen segítek rajta.";
+  if (mobileBroken)
+    return "Szia! Megnéztem a weboldalatokat — asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok látogatót eltérít, mielőtt még kapcsolatba lépnének. Ha érdekel, szívesen megmutatom, mi okozza és hogyan lehet megoldani.";
+  if (mobileTrulySlow)
+    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon igen lassan tölt be — a Google mérése szerint " + mobileScore + "/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe. Ma már az ügyfelek nagy része telefonon keres, és ha az oldal sokat várat, sokan inkább továbblépnek. Ha kíváncsi vagy rá, szívesen átbeszéljük.";
   return null;
 }
 
@@ -37,31 +39,29 @@ function analyzeFixability(mobileScore, desktopScore, issues, checks = {}) {
   const hasDeepIssues  = issues.some(
     i => ["dom-size", "mainthread-work-breakdown"].includes(i.key) && (i.score || 0) < 0.5
   );
-  const bigGap       = (desktopScore - mobileScore) > 30;
-  const noHttps      = checks.https === false;
-  const noPhoneLink  = checks.hasPhoneLink === false && checks.hasAnyPhone !== false;
-  const noMetaDesc   = checks.metaDescription === false;
+  const bigGap         = (desktopScore - mobileScore) > 30;
+  const noHttps        = checks.https === false;
+  const mobileTrulySlow = mobileScore < 40;
+  const mobileBroken   = bigGap && mobileScore < 55;
 
-  // Konkrét, kézzelfogható problémák → érdemes megkeresni
+  // Csak a valóban látható, ügyfélkört érintő problémák → ezek alapján érdemes megkeresni
   const reasons = [
-    noHttps      && "Nem biztonságos (HTTPS hiányzik)",
-    noPhoneLink  && "Telefonszám nem kattintható mobilon",
-    noMetaDesc   && "Hiányzó Google keresési leírás",
-    bigGap       && "Valószínűleg nem mobilbarát",
-    mobileScore < 50 && `Lassan tölt be mobilon (${mobileScore}/100)`,
+    noHttps         && "Nem biztonságos (HTTPS hiányzik) — böngészők figyelmeztetnek",
+    mobileBroken    && `Mobilon tört (${mobileScore}/100), asztali jó (${desktopScore}/100)`,
+    mobileTrulySlow && `Mobilon szinte használhatatlanul lassú (${mobileScore}/100)`,
   ].filter(Boolean);
 
   const contactWorthy = reasons.length > 0;
   const contactNote = contactWorthy
     ? `📞 ÉRDEMES MEGKERESNI — ${reasons[0]}`
-    : "⏭ KIHAGYHATÓ — nincs konkrét, kézzelfogható probléma";
+    : "⏭ KIHAGYHATÓ — nincs látható, ügyfélkört érintő probléma";
 
-  const msg = clientMsg(noHttps, noPhoneLink, noMetaDesc, bigGap, mobileScore);
+  const msg = clientMsg(noHttps, mobileTrulySlow, mobileBroken, mobileScore);
 
-  // Munkaóra becslés a sebesség alapján
+  // Munkaóra becslés
   if (mobileScore < 25 && criticalCount >= 4 && hasDeepIssues) {
     return { label: "⚠️ Új oldalt javaslunk", hours: null,
-      reason: "Mély strukturális problémák vannak. Az újraépítés jobban megéri.",
+      reason: "Mély strukturális problémák vannak. Az újraépítés jobban megéri, mint a javítgatás.",
       contactWorthy, contactNote,
       clientMessage: msg || "Szia! Megnéztem a weboldalatokat, és sajnos komoly technikai problémákat látok — mobilon szinte használhatatlan. Ennél a szintnél egy modern új oldal jobban megéri, mint a javítgatás. Ha érdekel, szívesen átbeszéljük." };
   }
@@ -70,19 +70,16 @@ function analyzeFixability(mobileScore, desktopScore, issues, checks = {}) {
       reason: "Több kritikus probléma van, amelyek kód szintű beavatkozást igényelnek.",
       contactWorthy, contactNote, clientMessage: msg };
   }
-  if (mobileScore < 60 || bigGap) {
+  if (mobileScore < 55 || (bigGap && mobileScore < 70)) {
     return { label: "✅ Megcsináljuk — közepes munka", hours: "5–15 óra",
       reason: "Van néhány javítandó pont, de az alap rendben van.",
       contactWorthy, contactNote, clientMessage: msg };
   }
-  if (contactWorthy) {
-    return { label: "✅ Gyors javítás", hours: "1–3 óra",
-      reason: "Az oldal jól teljesít, de van egy-két konkrét hiba amit érdemes megoldani.",
-      contactWorthy, contactNote, clientMessage: msg };
-  }
   return { label: "✅ Rendben van", hours: null,
-    reason: "Nem találtunk konkrét, kézzelfogható problémát.",
-    contactWorthy: false, contactNote, clientMessage: null };
+    reason: contactWorthy
+      ? "Az oldal jól teljesít, de az alábbi konkrét probléma miatt érdemes kapcsolatba lépni."
+      : "Nem találtunk látható, ügyfélkört érintő problémát.",
+    contactWorthy, contactNote, clientMessage: msg };
 }
 
 export default async function handler(req, res) {

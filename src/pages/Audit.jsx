@@ -150,22 +150,20 @@ function getSummary(mobile, desktop, hu) {
   };
 }
 
+// Csak akkor generál üzenetet, ha VALÓBAN látható, ügyfélkört érintő probléma van
+// (telefon link, meta leírás stb. egyedül nem elég ok a hideg megkereséshez)
 function generateOutreach(mobileScore, desktopScore, checks = {}) {
-  const bigGap      = (desktopScore - mobileScore) > 30;
-  const noHttps     = checks.https === false;
-  const noPhoneLink = checks.hasPhoneLink === false && checks.hasAnyPhone !== false;
-  const noMetaDesc  = checks.metaDescription === false;
+  const bigGap         = (desktopScore - mobileScore) > 30;
+  const noHttps        = checks.https === false;
+  const mobileTrulySlow = mobileScore < 40;
+  const mobileBroken   = bigGap && mobileScore < 55;
 
   if (noHttps)
-    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Könnyen javítható lenne. Ha érdekel, szívesen segítek.";
-  if (noPhoneLink)
-    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy a telefonszám mobilon nem kattintható — hívni csak a szám kézzel történő beírásával lehet. Ma már az érdeklődők nagy része telefonon keres, és sokan egyszerűen nem fognak manuálisan számot beírni. Ez percek alatt javítható. Ha érdekel, megmutatom.";
-  if (noMetaDesc)
-    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy Google-ban nincs szöveg az oldal találata alatt — csak az URL jelenik meg. Ez azt jelenti, hogy az érdeklődők kevésbé kattintanak rá. Pár sorral sokkal jobban nézne ki és több látogatót hozna. Ha érdekel, segítek megírni.";
-  if (bigGap)
-    return "Szia! Megnéztem a weboldalatokat — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok látogatót eltérít. Pár fejlesztéssel könnyen orvosolható lenne. Ha érdekel, szívesen megmutatom.";
-  if (mobileScore < 50)
-    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon lassabban tölt be a kelleténél. Ma már az ügyfelek nagy része telefonon keres — ha az oldal sokat vár, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a különbség. Ha kíváncsi vagy rá, szívesen átbeszéljük.";
+    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Ha érdekel, szívesen segítek rajta.";
+  if (mobileBroken)
+    return "Szia! Megnéztem a weboldalatokat — asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok látogatót eltérít, mielőtt még kapcsolatba lépnének. Ha érdekel, szívesen megmutatom, mi okozza és hogyan lehet megoldani.";
+  if (mobileTrulySlow)
+    return `Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon igen lassan tölt be — a Google mérése szerint ${mobileScore}/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe. Ma már az ügyfelek nagy része telefonon keres, és ha az oldal sokat várat, sokan inkább továbblépnek. Ha kíváncsi vagy rá, szívesen átbeszéljük.`;
   return null;
 }
 
