@@ -58,6 +58,7 @@ export default function Shows() {
                 <motion.div key={i}
                   variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
                   transition={{ delay: i * 0.08 }}
+                  className="show-item"
                   style={{
                     display: "grid", gridTemplateColumns: "120px 1fr auto",
                     alignItems: "center", gap: "1.5rem",
@@ -104,7 +105,7 @@ export default function Shows() {
             </p>
           ) : (
             <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div className="form-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <input name="name" required value={form.name} onChange={handleChange}
                   placeholder={tx.bookingName}
                   style={inputStyle} />
@@ -112,7 +113,7 @@ export default function Shows() {
                   placeholder={tx.bookingEmail}
                   style={inputStyle} />
               </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+              <div className="form-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                 <input name="venue" value={form.venue} onChange={handleChange}
                   placeholder={tx.bookingVenue}
                   style={inputStyle} />
@@ -151,6 +152,12 @@ export default function Shows() {
           )}
         </motion.div>
       </div>
+      <style>{`
+        @media (max-width: 520px) {
+          .show-item { grid-template-columns: 1fr !important; gap: 0.3rem !important; }
+          .form-grid-2 { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </section>
   );
 }

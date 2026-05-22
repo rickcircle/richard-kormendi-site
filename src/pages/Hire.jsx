@@ -244,13 +244,13 @@ export default function Hire() {
               </p>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="hire-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                   <input name="name" required value={form.name} onChange={handleChange}
                     placeholder={hu ? "Neved" : "Your name"} style={inputStyle} />
                   <input name="email" type="email" required value={form.email} onChange={handleChange}
                     placeholder={hu ? "Email cím" : "Email address"} style={inputStyle} />
                 </div>
-                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="hire-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                   <input name="company" value={form.company} onChange={handleChange}
                     placeholder={hu ? "Cégnév / Projekt neve" : "Company / Project"} style={inputStyle} />
                   <select name="budget" value={form.budget} onChange={handleChange} style={inputStyle}>
@@ -278,6 +278,11 @@ export default function Hire() {
       </section>
 
       <Footer />
+      <style>{`
+        @media (max-width: 520px) {
+          .hire-form-grid { grid-template-columns: 1fr !important; }
+        }
+      `}</style>
     </div>
   );
 }

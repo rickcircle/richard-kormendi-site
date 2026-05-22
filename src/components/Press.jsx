@@ -45,6 +45,7 @@ export default function Press() {
           style={{ display: "flex", flexDirection: "column" }}>
           {pressItems.map((item, i) => (
             <motion.div key={i} variants={staggerItem}
+              className="press-item"
               style={{
                 display: "grid",
                 gridTemplateColumns: "80px 1fr auto",
@@ -87,6 +88,17 @@ export default function Press() {
           ))}
         </motion.div>
       </div>
+      <style>{`
+        @media (max-width: 520px) {
+          .press-item {
+            grid-template-columns: 1fr !important;
+            gap: 0.4rem !important;
+          }
+          .press-item > span:first-child {
+            display: none;
+          }
+        }
+      `}</style>
     </section>
   );
 }
