@@ -41,6 +41,12 @@ function scoreColor(score) {
   return "#ff4e42";
 }
 
+function scoreBg(score) {
+  if (score >= 90) return "#f0fdf6";
+  if (score >= 50) return "#fffbf0";
+  return "#fff5f5";
+}
+
 function scoreLabel(score, hu) {
   if (score >= 90) return hu ? "Kiváló" : "Good";
   if (score >= 50) return hu ? "Fejleszthető" : "Needs improvement";
@@ -52,18 +58,21 @@ function ScoreCircle({ score, label, animate }) {
   const circ = 2 * Math.PI * r;
   const offset = circ - (score / 100) * circ;
   const color = scoreColor(score);
+  const bg = scoreBg(score);
 
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem" }}>
+    <div style={{
+      display: "flex", flexDirection: "column", alignItems: "center", gap: "0.75rem",
+      background: bg, borderRadius: "12px", padding: "2rem 2.5rem",
+      border: `1px solid ${color}40`,
+    }}>
       <motion.svg
         width="130" height="130" viewBox="0 0 130 130"
         initial={animate ? { opacity: 0, scale: 0.8 } : false}
         animate={animate ? { opacity: 1, scale: 1 } : false}
         transition={{ duration: 0.6, ease: "easeOut" }}
       >
-        {/* Track */}
-        <circle cx="65" cy="65" r={r} fill="none" stroke="#2a2a2a" strokeWidth="10" />
-        {/* Progress */}
+        <circle cx="65" cy="65" r={r} fill="none" stroke="#e8e8e8" strokeWidth="10" />
         <motion.circle
           cx="65" cy="65" r={r}
           fill="none" stroke={color} strokeWidth="10"
@@ -74,20 +83,17 @@ function ScoreCircle({ score, label, animate }) {
           animate={animate ? { strokeDashoffset: offset } : { strokeDashoffset: offset }}
           transition={{ duration: 1.2, ease: "easeOut", delay: 0.3 }}
         />
-        {/* Score text */}
         <text x="65" y="60" textAnchor="middle" dominantBaseline="middle"
           fontSize="28" fontWeight="700" fill={color} fontFamily="Inter, sans-serif">
           {score}
         </text>
         <text x="65" y="82" textAnchor="middle" dominantBaseline="middle"
-          fontSize="10" fill="#666" fontFamily="Inter, sans-serif" letterSpacing="1">
+          fontSize="10" fill="#aaa" fontFamily="Inter, sans-serif" letterSpacing="1">
           /100
         </text>
       </motion.svg>
-      <p style={{ fontSize: "0.85rem", fontWeight: 600, color: "#fff", letterSpacing: "0.05em", margin: 0 }}>
-        {label}
-      </p>
-      <span style={{ fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", color, margin: 0 }}>
+      <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>{label}</p>
+      <span style={{ fontSize: "0.7rem", letterSpacing: "0.1em", textTransform: "uppercase", color, fontWeight: 600 }}>
         {scoreLabel(score, false)}
       </span>
     </div>
@@ -97,48 +103,44 @@ function ScoreCircle({ score, label, animate }) {
 function MetricCard({ metricKey, data, lang }) {
   const config = METRIC_CONFIG[metricKey];
   if (!config || !data) return null;
-
   const score = data.score !== null ? Math.round(data.score * 100) : null;
   const color = score !== null ? scoreColor(score) : "#888";
 
   return (
     <motion.div variants={staggerItem}
       style={{
-        background: "#1e1e1e",
-        border: `1px solid ${color}30`,
+        background: "#fff",
+        border: "1px solid #e8e8e8",
+        borderTop: `3px solid ${color}`,
         borderRadius: "6px",
         padding: "1.25rem",
-        display: "flex",
-        flexDirection: "column",
-        gap: "0.4rem",
+        display: "flex", flexDirection: "column", gap: "0.4rem",
       }}>
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-        <span style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: "#555", textTransform: "uppercase" }}>
+        <span style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: "#bbb", textTransform: "uppercase", fontWeight: 600 }}>
           {config.short}
         </span>
         {score !== null && (
-          <span style={{ fontSize: "0.65rem", letterSpacing: "0.08em", color, textTransform: "uppercase" }}>
+          <span style={{ fontSize: "0.65rem", letterSpacing: "0.08em", color, textTransform: "uppercase", fontWeight: 600 }}>
             {scoreLabel(score, lang === "hu")}
           </span>
         )}
       </div>
-      <p style={{ fontSize: "1.4rem", fontWeight: 700, color, margin: 0, letterSpacing: "-0.02em" }}>
+      <p style={{ fontSize: "1.4rem", fontWeight: 700, color: "#1a1a1a", margin: 0, letterSpacing: "-0.02em" }}>
         {data.displayValue || "–"}
       </p>
-      <p style={{ fontSize: "0.78rem", color: "#777", margin: 0, lineHeight: 1.4 }}>
+      <p style={{ fontSize: "0.78rem", color: "#999", margin: 0, lineHeight: 1.4 }}>
         {lang === "hu" ? config.hu : config.en}
       </p>
     </motion.div>
   );
 }
 
-function IssueItem({ audit, index, lang }) {
+function IssueItem({ audit, lang }) {
   if (!audit || audit.score === 1 || audit.score === null) return null;
-
   const savings = audit.details?.overallSavingsMs
-    ? `${(audit.details.overallSavingsMs / 1000).toFixed(1)}s megtakarítás`
+    ? `~${(audit.details.overallSavingsMs / 1000).toFixed(1)}s`
     : null;
-
   const priority = audit.score < 0.5 ? "high" : "medium";
   const priorityColor = priority === "high" ? "#ff4e42" : "#ffa400";
   const priorityLabel = priority === "high"
@@ -148,37 +150,32 @@ function IssueItem({ audit, index, lang }) {
   return (
     <motion.div variants={staggerItem}
       style={{
-        display: "flex",
-        gap: "1rem",
-        padding: "1.25rem",
-        background: "#1a1a1a",
-        borderRadius: "4px",
-        border: `1px solid ${priorityColor}25`,
+        display: "flex", gap: "1rem",
+        padding: "1.25rem 1.5rem",
+        background: "#fff",
+        borderRadius: "6px",
+        border: "1px solid #e8e8e8",
+        borderLeft: `4px solid ${priorityColor}`,
         alignItems: "flex-start",
       }}>
-      <div style={{
-        width: "8px", height: "8px", borderRadius: "50%",
-        background: priorityColor, flexShrink: 0, marginTop: "5px"
-      }} />
       <div style={{ flex: 1 }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
-          <p style={{ fontSize: "0.9rem", fontWeight: 500, color: "#e8e8e8", margin: "0 0 0.3rem" }}>
+          <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "#1a1a1a", margin: "0 0 0.25rem" }}>
             {audit.title}
           </p>
-          <span style={{ fontSize: "0.65rem", letterSpacing: "0.08em", color: priorityColor, textTransform: "uppercase", flexShrink: 0 }}>
+          <span style={{
+            fontSize: "0.65rem", letterSpacing: "0.08em", color: priorityColor,
+            textTransform: "uppercase", fontWeight: 700, flexShrink: 0,
+            background: `${priorityColor}15`, padding: "2px 8px", borderRadius: "999px",
+          }}>
             {priorityLabel}
           </span>
         </div>
-        {savings && (
-          <p style={{ fontSize: "0.78rem", color: "#555", margin: 0 }}>
-            {lang === "hu" ? `~${savings}` : `~${(parseFloat(savings)).toFixed(1)}s potential savings`}
-          </p>
-        )}
-        {!savings && audit.displayValue && (
-          <p style={{ fontSize: "0.78rem", color: "#555", margin: 0 }}>
-            {audit.displayValue}
-          </p>
-        )}
+        <p style={{ fontSize: "0.82rem", color: "#999", margin: 0 }}>
+          {savings
+            ? (lang === "hu" ? `Potenciális megtakarítás: ${savings}` : `Potential savings: ${savings}`)
+            : audit.displayValue || ""}
+        </p>
       </div>
     </motion.div>
   );
@@ -189,14 +186,13 @@ export default function Audit() {
   const hu = lang === "hu";
 
   const [url, setUrl] = useState("");
-  const [status, setStatus] = useState("idle"); // idle | loading | done | error
+  const [status, setStatus] = useState("idle");
   const [results, setResults] = useState(null);
   const [activeTab, setActiveTab] = useState("mobile");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!url.trim()) return;
-
     let cleanUrl = url.trim();
     if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = "https://" + cleanUrl;
 
@@ -208,17 +204,13 @@ export default function Audit() {
         fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}&strategy=mobile`),
         fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}&strategy=desktop`),
       ]);
-
       if (!mobileRes.ok || !desktopRes.ok) throw new Error("API error");
-
       const [mobile, desktop] = await Promise.all([mobileRes.json(), desktopRes.json()]);
 
       const parse = (data) => {
         const audits = data.lighthouseResult?.audits || {};
         const score = Math.round((data.lighthouseResult?.categories?.performance?.score || 0) * 100);
-        const metrics = Object.fromEntries(
-          Object.keys(METRIC_CONFIG).map(k => [k, audits[k] || null])
-        );
+        const metrics = Object.fromEntries(Object.keys(METRIC_CONFIG).map(k => [k, audits[k] || null]));
         const issues = OPPORTUNITY_KEYS
           .map(k => audits[k])
           .filter(a => a && a.score !== null && a.score < 1)
@@ -237,42 +229,34 @@ export default function Audit() {
   const current = results?.[activeTab];
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#111", minHeight: "100vh" }}>
+    <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
       <Navbar />
 
-      {/* Hero + Form */}
-      <section style={{ background: "#111", color: "#fff", padding: "10rem 2rem 5rem", textAlign: "center" }}>
+      {/* Hero — sötét, de kompakt */}
+      <section style={{ background: "#1a1a1a", color: "#fff", padding: "9rem 2rem 5rem", textAlign: "center" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
           <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {hu ? "Ingyenes eszköz" : "Free tool"}
           </p>
-          <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem" }}>
+          <h1 style={{ fontSize: "clamp(2rem, 5vw, 3.5rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem" }}>
             {hu ? "Weboldal audit" : "Website audit"}
           </h1>
-          <p style={{ fontSize: "1.05rem", color: "#666", lineHeight: 1.7, maxWidth: "480px", margin: "0 auto 3rem" }}>
+          <p style={{ fontSize: "1rem", color: "#888", lineHeight: 1.7, maxWidth: "460px", margin: "0 auto 3rem" }}>
             {hu
-              ? "Add meg egy weboldal URL-jét, és azonnal látod a teljesítmény, sebességi és technikai problémákat."
-              : "Enter any website URL and instantly see performance, speed and technical issues."}
+              ? "Írd be a weboldal URL-jét — megmutatjuk a teljesítmény, sebesség és technikai problémákat."
+              : "Enter any website URL — we'll show you performance, speed and technical issues."}
           </p>
 
           <form onSubmit={handleSubmit} style={{ maxWidth: "560px", margin: "0 auto" }}>
             <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
               <input
-                type="text"
-                value={url}
-                onChange={e => setUrl(e.target.value)}
-                placeholder="pl. example.com vagy https://example.com"
+                type="text" value={url} onChange={e => setUrl(e.target.value)}
+                placeholder="pl. pelda.hu vagy https://pelda.hu"
                 required
                 style={{
-                  flex: "1 1 280px",
-                  padding: "0.95rem 1.25rem",
-                  background: "#1a1a1a",
-                  border: "1px solid #333",
-                  borderRadius: "4px",
-                  color: "#fff",
-                  fontSize: "0.95rem",
-                  fontFamily: "inherit",
-                  outline: "none",
+                  flex: "1 1 260px", padding: "0.95rem 1.25rem",
+                  background: "#111", border: "1px solid #333", borderRadius: "4px",
+                  color: "#fff", fontSize: "0.95rem", fontFamily: "inherit", outline: "none",
                 }}
               />
               <button type="submit" disabled={status === "loading"}
@@ -280,26 +264,16 @@ export default function Audit() {
                   padding: "0.95rem 2rem",
                   background: status === "loading" ? "#333" : "#fff",
                   color: status === "loading" ? "#666" : "#1a1a1a",
-                  border: "none",
-                  borderRadius: "4px",
-                  fontSize: "0.9rem",
-                  fontWeight: 600,
-                  letterSpacing: "0.05em",
-                  cursor: status === "loading" ? "not-allowed" : "pointer",
-                  fontFamily: "inherit",
-                  transition: "all 0.2s",
-                  whiteSpace: "nowrap",
+                  border: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600,
+                  letterSpacing: "0.05em", cursor: status === "loading" ? "not-allowed" : "pointer",
+                  fontFamily: "inherit", transition: "all 0.2s", whiteSpace: "nowrap",
                 }}>
-                {status === "loading"
-                  ? (hu ? "Elemzés..." : "Analyzing...")
-                  : (hu ? "Audit indítása →" : "Run audit →")}
+                {status === "loading" ? (hu ? "Elemzés..." : "Analyzing...") : (hu ? "Audit →" : "Run audit →")}
               </button>
             </div>
             {status === "error" && (
-              <p style={{ fontSize: "0.85rem", color: "#ff4e42", marginTop: "1rem" }}>
-                {hu
-                  ? "Nem sikerült lekérni az adatokat. Ellenőrizd az URL-t és próbáld újra."
-                  : "Could not fetch data. Check the URL and try again."}
+              <p style={{ fontSize: "0.85rem", color: "#ff6b6b", marginTop: "1rem" }}>
+                {hu ? "Nem sikerült lekérni az adatokat. Ellenőrizd az URL-t és próbáld újra." : "Could not fetch data. Check the URL and try again."}
               </p>
             )}
           </form>
@@ -309,16 +283,15 @@ export default function Audit() {
       {/* Loading */}
       <AnimatePresence>
         {status === "loading" && (
-          <motion.div
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-            style={{ textAlign: "center", padding: "4rem 2rem", color: "#555" }}>
+          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+            style={{ textAlign: "center", padding: "5rem 2rem", background: "#f7f6f3" }}>
             <motion.div
               animate={{ rotate: 360 }}
               transition={{ repeat: Infinity, duration: 1.2, ease: "linear" }}
-              style={{ width: "32px", height: "32px", border: "2px solid #333", borderTopColor: "#fff", borderRadius: "50%", margin: "0 auto 1.5rem" }}
+              style={{ width: "32px", height: "32px", border: "2px solid #ddd", borderTopColor: "#1a1a1a", borderRadius: "50%", margin: "0 auto 1.5rem" }}
             />
-            <p style={{ fontSize: "0.9rem", letterSpacing: "0.08em" }}>
-              {hu ? "Google PageSpeed elemzés fut... (~15 másodperc)" : "Running Google PageSpeed analysis... (~15 seconds)"}
+            <p style={{ fontSize: "0.9rem", color: "#999", letterSpacing: "0.05em" }}>
+              {hu ? "Google PageSpeed elemzés fut... (~15 mp)" : "Running Google PageSpeed analysis... (~15 sec)"}
             </p>
           </motion.div>
         )}
@@ -327,30 +300,30 @@ export default function Audit() {
       {/* Results */}
       <AnimatePresence>
         {status === "done" && results && (
-          <motion.div initial={{ opacity: 0, y: 24 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
 
-            {/* Scores */}
-            <section style={{ padding: "5rem 2rem", background: "#161616" }}>
-              <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+            {/* Score section */}
+            <section style={{ padding: "5rem 2rem", background: "#f7f6f3" }}>
+              <div style={{ maxWidth: "860px", margin: "0 auto" }}>
                 <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                  <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                  <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
                     {results.url}
                   </p>
-                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#444", textTransform: "uppercase", marginBottom: "3rem" }}>
+                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "3rem" }}>
                     {hu ? "Teljesítmény pontszám" : "Performance score"}
                   </p>
 
-                  <div style={{ display: "flex", justifyContent: "center", gap: "4rem", flexWrap: "wrap", marginBottom: "2rem" }}>
+                  <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap", marginBottom: "3rem" }}>
                     <ScoreCircle score={results.mobile.score} label={hu ? "📱 Mobil" : "📱 Mobile"} animate />
                     <ScoreCircle score={results.desktop.score} label={hu ? "🖥 Asztali" : "🖥 Desktop"} animate />
                   </div>
 
-                  {/* Score legend */}
-                  <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap", marginTop: "2rem" }}>
+                  {/* Legend */}
+                  <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap" }}>
                     {[["#0cce6b", hu ? "90–100: Kiváló" : "90–100: Good"], ["#ffa400", hu ? "50–89: Fejleszthető" : "50–89: Needs improvement"], ["#ff4e42", hu ? "0–49: Kritikus" : "0–49: Poor"]].map(([color, label]) => (
                       <div key={label} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                         <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: color }} />
-                        <span style={{ fontSize: "0.75rem", color: "#555" }}>{label}</span>
+                        <span style={{ fontSize: "0.75rem", color: "#999" }}>{label}</span>
                       </div>
                     ))}
                   </div>
@@ -358,24 +331,20 @@ export default function Audit() {
               </div>
             </section>
 
-            {/* Tab váltó */}
-            <section style={{ background: "#111", padding: "5rem 2rem" }}>
-              <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+            {/* Metrics + Issues */}
+            <section style={{ padding: "5rem 2rem", background: "#fff" }}>
+              <div style={{ maxWidth: "860px", margin: "0 auto" }}>
 
-                <div style={{ display: "flex", gap: "0.5rem", marginBottom: "3rem", background: "#1a1a1a", borderRadius: "6px", padding: "4px", width: "fit-content" }}>
+                {/* Tab */}
+                <div style={{ display: "flex", gap: "0.5rem", marginBottom: "3rem", background: "#f0f0f0", borderRadius: "6px", padding: "4px", width: "fit-content" }}>
                   {[["mobile", hu ? "📱 Mobil" : "📱 Mobile"], ["desktop", hu ? "🖥 Asztali" : "🖥 Desktop"]].map(([key, label]) => (
                     <button key={key} onClick={() => setActiveTab(key)}
                       style={{
                         padding: "0.5rem 1.5rem",
-                        background: activeTab === key ? "#fff" : "transparent",
-                        color: activeTab === key ? "#1a1a1a" : "#555",
-                        border: "none",
-                        borderRadius: "4px",
-                        fontSize: "0.85rem",
-                        fontWeight: 500,
-                        cursor: "pointer",
-                        fontFamily: "inherit",
-                        transition: "all 0.2s",
+                        background: activeTab === key ? "#1a1a1a" : "transparent",
+                        color: activeTab === key ? "#fff" : "#888",
+                        border: "none", borderRadius: "4px", fontSize: "0.85rem", fontWeight: 500,
+                        cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s",
                       }}>
                       {label}
                     </button>
@@ -384,11 +353,11 @@ export default function Audit() {
 
                 {/* Core Web Vitals */}
                 <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }} style={{ marginBottom: "3rem" }}>
-                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-                    {hu ? "Core Web Vitals" : "Core Web Vitals"}
+                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+                    Core Web Vitals
                   </p>
                   <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}
-                    style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "1rem" }}>
+                    style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: "1rem" }}>
                     {Object.keys(METRIC_CONFIG).map(k => (
                       <MetricCard key={k} metricKey={k} data={current?.metrics[k]} lang={lang} />
                     ))}
@@ -398,13 +367,13 @@ export default function Audit() {
                 {/* Issues */}
                 {current?.issues?.length > 0 && (
                   <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                    <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+                    <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1.5rem" }}>
                       {hu ? "Fejlesztési lehetőségek" : "Opportunities to improve"}
                     </p>
                     <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true }}
                       style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
                       {current.issues.map((issue, i) => (
-                        <IssueItem key={i} audit={issue} index={i} lang={lang} />
+                        <IssueItem key={i} audit={issue} lang={lang} />
                       ))}
                     </motion.div>
                   </motion.div>
@@ -412,26 +381,23 @@ export default function Audit() {
 
                 {/* CTA */}
                 <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-                  style={{ marginTop: "4rem", padding: "2.5rem", background: "#1a1a1a", borderRadius: "6px", border: "1px solid #2a2a2a", textAlign: "center" }}>
-                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1rem" }}>
+                  style={{ marginTop: "4rem", padding: "3rem", background: "#f7f6f3", borderRadius: "8px", border: "1px solid #e8e8e8", textAlign: "center" }}>
+                  <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1rem" }}>
                     {hu ? "Segíthetünk?" : "Need help?"}
                   </p>
-                  <h3 style={{ fontSize: "clamp(1.2rem, 3vw, 1.8rem)", fontWeight: 600, color: "#fff", marginBottom: "1rem", lineHeight: 1.3 }}>
-                    {hu
-                      ? "Javítanád ezeket a problémákat?"
-                      : "Want these issues fixed?"}
+                  <h3 style={{ fontSize: "clamp(1.3rem, 3vw, 1.9rem)", fontWeight: 600, color: "#1a1a1a", marginBottom: "0.75rem", lineHeight: 1.3 }}>
+                    {hu ? "Javítanád ezeket a problémákat?" : "Want these issues fixed?"}
                   </h3>
-                  <p style={{ fontSize: "0.9rem", color: "#666", lineHeight: 1.7, marginBottom: "2rem", maxWidth: "440px", margin: "0 auto 2rem" }}>
+                  <p style={{ fontSize: "0.9rem", color: "#888", lineHeight: 1.7, maxWidth: "420px", margin: "0 auto 2rem" }}>
                     {hu
                       ? "14 év tapasztalattal segítünk a weboldal optimalizálásban — SEO, sebesség, mobilbarát dizájn."
                       : "14 years of experience in web optimisation — SEO, speed, mobile-friendly design."}
                   </p>
                   <a href="/hire"
-                    style={{ display: "inline-block", padding: "0.9rem 2rem", background: "#fff", color: "#1a1a1a", textDecoration: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em" }}>
+                    style={{ display: "inline-block", padding: "0.9rem 2rem", background: "#1a1a1a", color: "#fff", textDecoration: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em" }}>
                     {hu ? "Kérek ajánlatot →" : "Get a quote →"}
                   </a>
                 </motion.div>
-
               </div>
             </section>
 
