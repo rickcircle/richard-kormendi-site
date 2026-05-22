@@ -33,7 +33,7 @@ function analyzeFixability(mobileScore, desktopScore, issues) {
       reason: "Mély strukturális problémák vannak. Az újraépítés jobban megéri, mint a javítgatás.",
       contactWorthy: true,
       contactNote: "📞 ÉRDEMES MEGKERESNI — új oldal lehetséges",
-      clientMessage: "Szia! Megnéztem az önök weboldalát, és sajnos komoly technikai problémákat látok — mobilon szinte használhatatlan. Ennél a szintnél egy modern új oldal jobban megéri, mint a javítgatás, és az ár általában nem akkora, mint gondolnák. Ha érdekel, szívesen átbeszéljük a lehetőségeket.",
+      clientMessage: "Szia! Megnéztem a weboldalatokat, és sajnos komoly technikai problémákat látok — mobilon szinte használhatatlan. Ennél a szintnél egy modern új oldal jobban megéri, mint a javítgatás, és az ár általában nem akkora, mint gondolnák. Ha érdekel, szívesen átbeszéljük a lehetőségeket.",
     };
   }
   if (bigGap && mobileScore >= 50) {
@@ -43,7 +43,7 @@ function analyzeFixability(mobileScore, desktopScore, issues) {
       reason: "Az oldal asztali gépen rendben van, de mobilon nem megfelelően jelenik meg.",
       contactWorthy: true,
       contactNote: "📞 ÉRDEMES MEGKERESNI — mobilbarátosítás kell",
-      clientMessage: "Szia! Megnéztem az önök weboldalát — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok érdeklődőt eltérít. Pár fejlesztéssel könnyen orvosolható. Ha érdekel, szívesen megmutatom.",
+      clientMessage: "Szia! Megnéztem a weboldalatokat — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok érdeklődőt eltérít. Pár fejlesztéssel könnyen orvosolható lenne. Ha érdekel, szívesen megmutatom.",
     };
   }
   if (mobileScore < 40 && criticalCount >= 3) {
@@ -53,7 +53,7 @@ function analyzeFixability(mobileScore, desktopScore, issues) {
       reason: "Több kritikus probléma van, amelyek kód szintű beavatkozást igényelnek.",
       contactWorthy: true,
       contactNote: "📞 ÉRDEMES MEGKERESNI — 15–25 óra",
-      clientMessage: "Szia! Ránéztem az önök weboldalára, és azt látom, hogy mobilon nehézkesen tölt be és használható. Ma már az ügyfelek nagy része telefonon keres — ha az oldal lassan tölt be, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a javulás. Ha kíváncsi rá, szívesen átbeszéljük.",
+      clientMessage: "Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon nehézkesen tölt be. Ma már az ügyfelek nagy része telefonon keres — ha az oldal lassan tölt be, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a különbség. Ha kíváncsi vagy rá, szívesen átbeszéljük.",
     };
   }
   if (mobileScore < 70) {
@@ -63,7 +63,7 @@ function analyzeFixability(mobileScore, desktopScore, issues) {
       reason: "Van néhány javítandó pont, de az alap rendben van.",
       contactWorthy: true,
       contactNote: "📞 ÉRDEMES MEGKERESNI — 5–15 óra",
-      clientMessage: "Szia! Megnéztem az önök weboldalát — az alap rendben van, de mobilon van néhány lassító tényező. Néhány fejlesztéssel gyorsabb és könnyebben megtalálható lehetne Google-ban is. Ha érdekel, szívesen megmutatom mi kellene hozzá.",
+      clientMessage: "Szia! Megnéztem a weboldalatokat — az alap rendben van, de mobilon van néhány lassító tényező. Pár fejlesztéssel gyorsabb és könnyebben megtalálható lehetne Google-ban is. Ha érdekel, szívesen megmutatom, mi kellene hozzá.",
     };
   }
   return {
@@ -128,6 +128,7 @@ fixable_hours: "${analysis.hours || "—"}"
 fixable_reason: "${analysis.reason}"
 contact_worthy: ${analysis.contactWorthy}
 contact_note: "${analysis.contactNote}"
+client_message: "${analysis.clientMessage ? analysis.clientMessage.replace(/"/g, '\\"') : ""}"
 ---
 
 # Audit: ${url}

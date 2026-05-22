@@ -153,16 +153,16 @@ function getSummary(mobile, desktop, hu) {
 function generateOutreach(mobileScore, desktopScore) {
   const bigGap = (desktopScore - mobileScore) > 30;
   if (mobileScore < 25) {
-    return "Szia! Megnéztem az önök weboldalát, és sajnos komoly technikai problémákat látok — mobilon szinte használhatatlan. Ennél a szintnél egy modern új oldal jobban megéri, mint a javítgatás, és az ár általában nem akkora, mint gondolnák. Ha érdekel, szívesen átbeszéljük a lehetőségeket.";
+    return "Szia! Megnéztem a weboldalatokat, és sajnos komoly technikai problémákat látok — mobilon szinte használhatatlan. Ennél a szintnél egy modern új oldal jobban megéri, mint a javítgatás, és az ár általában nem akkora, mint gondolnák. Ha érdekel, szívesen átbeszéljük a lehetőségeket.";
   }
   if (bigGap && mobileScore >= 50) {
-    return "Szia! Megnéztem az önök weboldalát — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok érdeklődőt eltérít. Pár fejlesztéssel könnyen orvosolható. Ha érdekel, szívesen megmutatom.";
+    return "Szia! Megnéztem a weboldalatokat — asztali gépen rendben van, de mobilon nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok érdeklődőt eltérít. Pár fejlesztéssel könnyen orvosolható lenne. Ha érdekel, szívesen megmutatom.";
   }
   if (mobileScore < 40) {
-    return "Szia! Ránéztem az önök weboldalára, és azt látom, hogy mobilon nehézkesen tölt be és használható. Ma már az ügyfelek nagy része telefonon keres — ha az oldal lassan tölt be, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a javulás. Ha kíváncsi rá, szívesen átbeszéljük.";
+    return "Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon nehézkesen tölt be. Ma már az ügyfelek nagy része telefonon keres — ha az oldal lassan tölt be, sokan inkább továbblépnek. Ez megoldható, általában pár héten belül érezhető a különbség. Ha kíváncsi vagy rá, szívesen átbeszéljük.";
   }
   if (mobileScore < 70) {
-    return "Szia! Megnéztem az önök weboldalát — az alap rendben van, de mobilon van néhány lassító tényező. Néhány fejlesztéssel gyorsabb és könnyebben megtalálható lehetne Google-ban is. Ha érdekel, szívesen megmutatom mi kellene hozzá.";
+    return "Szia! Megnéztem a weboldalatokat — az alap rendben van, de mobilon van néhány lassító tényező. Pár fejlesztéssel gyorsabb és könnyebben megtalálható lehetne Google-ban is. Ha érdekel, szívesen megmutatom, mi kellene hozzá.";
   }
   return null;
 }
