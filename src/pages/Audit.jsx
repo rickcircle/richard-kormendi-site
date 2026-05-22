@@ -227,10 +227,19 @@ export default function Audit() {
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
-      <Navbar />
+      <style>{`
+        @media print {
+          .audit-navbar, .audit-footer, .audit-hero, .audit-loading, .audit-tabs, .audit-cta, .audit-print-btn { display: none !important; }
+          .audit-print-header { display: block !important; }
+          body { background: #fff !important; }
+          @page { margin: 1.5cm; }
+        }
+        .audit-print-header { display: none; }
+      `}</style>
+      <div className="audit-navbar"><Navbar /></div>
 
       {/* Hero — fehér */}
-      <section style={{ background: "#fff", padding: "9rem 2rem 5rem", textAlign: "center", borderBottom: "1px solid #e8e8e8" }}>
+      <section className="audit-hero" style={{ background: "#fff", padding: "9rem 2rem 5rem", textAlign: "center", borderBottom: "1px solid #e8e8e8" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
           <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {hu ? "Ingyenes eszköz" : "Free tool"}
@@ -280,7 +289,7 @@ export default function Audit() {
       {/* Loading */}
       <AnimatePresence>
         {status === "loading" && (
-          <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+          <motion.div className="audit-loading" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
             style={{ textAlign: "center", padding: "5rem 2rem", background: "#f7f6f3" }}>
             <motion.div
               animate={{ rotate: 360 }}
@@ -302,10 +311,41 @@ export default function Audit() {
             {/* Score section */}
             <section style={{ padding: "5rem 2rem", background: "#f7f6f3" }}>
               <div style={{ maxWidth: "860px", margin: "0 auto" }}>
+
+                {/* Print-only header */}
+                <div className="audit-print-header" style={{ marginBottom: "2rem", paddingBottom: "1.5rem", borderBottom: "2px solid #1a1a1a" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end" }}>
+                    <div>
+                      <p style={{ fontSize: "1.1rem", fontWeight: 700, color: "#1a1a1a", margin: "0 0 0.25rem" }}>Website Audit Report</p>
+                      <p style={{ fontSize: "0.8rem", color: "#888", margin: 0 }}>{results.url}</p>
+                    </div>
+                    <div style={{ textAlign: "right" }}>
+                      <p style={{ fontSize: "0.75rem", color: "#bbb", margin: "0 0 0.15rem" }}>richardkormendi.com</p>
+                      <p style={{ fontSize: "0.75rem", color: "#bbb", margin: 0 }}>{new Date().toLocaleDateString("hu-HU")}</p>
+                    </div>
+                  </div>
+                </div>
+
                 <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}>
-                  <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
-                    {results.url}
-                  </p>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", flexWrap: "wrap", gap: "1rem", marginBottom: "0.5rem" }}>
+                    <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", margin: 0 }}>
+                      {results.url}
+                    </p>
+                    <button className="audit-print-btn" onClick={() => window.print()}
+                      style={{
+                        padding: "0.55rem 1.25rem",
+                        background: "#fff", border: "1px solid #ddd",
+                        borderRadius: "4px", fontSize: "0.8rem", fontWeight: 500,
+                        color: "#555", cursor: "pointer", fontFamily: "inherit",
+                        display: "flex", alignItems: "center", gap: "0.4rem",
+                        transition: "all 0.2s",
+                      }}
+                      onMouseOver={e => { e.currentTarget.style.borderColor = "#1a1a1a"; e.currentTarget.style.color = "#1a1a1a"; }}
+                      onMouseOut={e => { e.currentTarget.style.borderColor = "#ddd"; e.currentTarget.style.color = "#555"; }}
+                    >
+                      ↓ {hu ? "Mentés PDF-ként" : "Save as PDF"}
+                    </button>
+                  </div>
                   <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "3rem" }}>
                     {hu ? "Teljesítmény pontszám" : "Performance score"}
                   </p>
@@ -333,7 +373,7 @@ export default function Audit() {
               <div style={{ maxWidth: "860px", margin: "0 auto" }}>
 
                 {/* Tab */}
-                <div style={{ display: "flex", gap: "0.5rem", marginBottom: "3rem", background: "#f0f0f0", borderRadius: "6px", padding: "4px", width: "fit-content" }}>
+                <div className="audit-tabs" style={{ display: "flex", gap: "0.5rem", marginBottom: "3rem", background: "#f0f0f0", borderRadius: "6px", padding: "4px", width: "fit-content" }}>
                   {[["mobile", hu ? "📱 Mobil" : "📱 Mobile"], ["desktop", hu ? "🖥 Asztali" : "🖥 Desktop"]].map(([key, label]) => (
                     <button key={key} onClick={() => setActiveTab(key)}
                       style={{
@@ -377,7 +417,7 @@ export default function Audit() {
                 )}
 
                 {/* CTA */}
-                <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                <motion.div className="audit-cta" variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
                   style={{ marginTop: "4rem", padding: "3rem", background: "#f7f6f3", borderRadius: "8px", border: "1px solid #e8e8e8", textAlign: "center" }}>
                   <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "1rem" }}>
                     {hu ? "Segíthetünk?" : "Need help?"}
@@ -402,7 +442,7 @@ export default function Audit() {
         )}
       </AnimatePresence>
 
-      <Footer />
+      <div className="audit-footer"><Footer /></div>
     </div>
   );
 }
