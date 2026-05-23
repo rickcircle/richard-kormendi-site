@@ -563,6 +563,13 @@ export default function Audit() {
                   bad:  hu ? `Az oldal ${currentYear - (c.copyrightYear || currentYear)} éve nem lett frissítve — elavult tartalom bizalmatlanságot kelt` : `Site hasn't been updated for ${currentYear - (c.copyrightYear || currentYear)} years — stale content erodes trust`,
                 },
                 {
+                  ok: c.hasAnalytics,
+                  skip: c.hasAnalytics === null,
+                  label: hu ? "Google Analytics / látogatásmérés" : "Google Analytics / tracking",
+                  good: hu ? "Van látogatásmérés — tudják hányan járnak az oldalon és honnan" : "Tracking in place — they know how many visitors and where from",
+                  bad:  hu ? "Nincs látogatásmérés — fogalmuk sincs hány érdeklődőjük van az oldalon" : "No tracking — they have no idea how many visitors they get",
+                },
+                {
                   ok: c.tapTargets,
                   skip: c.tapTargets === null || c.tapTargets === undefined,
                   label: hu ? "Gombok mérete mobilon" : "Button size on mobile",
@@ -741,6 +748,73 @@ export default function Audit() {
                     </motion.div>
                   </motion.div>
                 )}
+
+                {/* ── Google jelenlét — gyors ellenőrzők ── */}
+                {results.checks?.pageTitle && (() => {
+                  const name = results.checks.pageTitle;
+                  const links = [
+                    {
+                      emoji: "🔍",
+                      label: hu ? "Megjelenik-e Google-on?" : "Appears on Google?",
+                      sub:   hu ? "Keresés a cég nevére — van-e Google Business profil?" : "Search by name — is there a Google Business profile?",
+                      href:  `https://www.google.com/search?q=${encodeURIComponent('"' + name + '"')}`,
+                      cta:   hu ? "Megnyitás" : "Open",
+                    },
+                    {
+                      emoji: "🗺",
+                      label: hu ? "Hol van a Google Maps-en?" : "Where on Google Maps?",
+                      sub:   hu ? "Megjelenik-e a térképes találatok között?" : "Does it appear in map results?",
+                      href:  `https://www.google.com/maps/search/${encodeURIComponent(name)}`,
+                      cta:   hu ? "Megnyitás" : "Open",
+                    },
+                    {
+                      emoji: "⭐",
+                      label: hu ? "Hány értékelése van?" : "How many reviews?",
+                      sub:   hu ? "Google-értékelések száma és átlaga" : "Number and average of Google reviews",
+                      href:  `https://www.google.com/search?q=${encodeURIComponent(name + " vélemények")}`,
+                      cta:   hu ? "Megnyitás" : "Open",
+                    },
+                  ];
+                  return (
+                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                      style={{ marginTop: "3rem", padding: "2rem", background: "#f8f8f8", borderRadius: "8px", border: "1px solid #e8e8e8" }}>
+                      <p style={{ fontSize: "0.7rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+                        🔍 {hu ? "Google jelenlét" : "Google presence"}
+                      </p>
+                      <p style={{ fontSize: "0.8rem", color: "#999", marginBottom: "1.25rem", lineHeight: 1.5 }}>
+                        {hu
+                          ? `"${name}" — ellenőrizd manuálisan, 1-1 kattintás:`
+                          : `"${name}" — check manually, one click each:`}
+                      </p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                        {links.map(l => (
+                          <a key={l.href} href={l.href} target="_blank" rel="noopener noreferrer"
+                            style={{
+                              display: "flex", alignItems: "center", justifyContent: "space-between",
+                              padding: "0.8rem 1rem", background: "#fff",
+                              border: "1px solid #e8e8e8", borderRadius: "6px",
+                              textDecoration: "none", color: "inherit",
+                              transition: "border-color 0.15s",
+                            }}
+                            onMouseEnter={e => e.currentTarget.style.borderColor = "#1a1a1a"}
+                            onMouseLeave={e => e.currentTarget.style.borderColor = "#e8e8e8"}
+                          >
+                            <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+                              <span style={{ fontSize: "1.1rem" }}>{l.emoji}</span>
+                              <div>
+                                <p style={{ fontSize: "0.85rem", fontWeight: 600, margin: "0 0 0.1rem", color: "#1a1a1a" }}>{l.label}</p>
+                                <p style={{ fontSize: "0.75rem", color: "#999", margin: 0 }}>{l.sub}</p>
+                              </div>
+                            </div>
+                            <span style={{ fontSize: "0.75rem", color: "#1a1a1a", fontWeight: 600, whiteSpace: "nowrap", marginLeft: "1rem" }}>
+                              {l.cta} →
+                            </span>
+                          </a>
+                        ))}
+                      </div>
+                    </motion.div>
+                  );
+                })()}
 
                 {/* ── Másolható üzenet ── */}
                 {outreachMsg && (

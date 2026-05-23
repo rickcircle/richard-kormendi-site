@@ -124,6 +124,14 @@ export default async function handler(req, res) {
     .map(i => `- ${ISSUE_HUMAN[i.key] || i.key}`)
     .join("\n");
 
+  // Google gyors ellenőrzők
+  const searchName = checks.pageTitle || url.replace(/^https?:\/\//, "").replace(/\/$/, "");
+  const gSearch  = `https://www.google.com/search?q=${encodeURIComponent('"' + searchName + '"')}`;
+  const gMaps    = `https://www.google.com/maps/search/${encodeURIComponent(searchName)}`;
+  const gReviews = `https://www.google.com/search?q=${encodeURIComponent(searchName + " vélemények")}`;
+  const gCompete = `https://www.google.com/maps/search/${encodeURIComponent(searchName.replace(/\s+\S+$/, ""))}`;
+  // gCompete: az utolsó szót (pl. városnév) megtartja, az üzlet nevét leveszi → kategória keresés
+
   const markdownContent = `---
 url: "${url}"
 date: "${now.toISOString()}"
@@ -169,7 +177,18 @@ ${analysis.hours ? `⏱️ **Becsült munkaidő: ${analysis.hours}**` : ""}
 | Google Térkép az oldalon | ${checks.hasMapsEmbed === null ? "⚪ Nem ellenőrizhető" : checks.hasMapsEmbed ? "✅ Van" : "❌ Nincs"} |
 | Social média (FB/IG) | ${checks.hasFacebook === null ? "⚪ Nem ellenőrizhető" : (checks.hasFacebook || checks.hasInstagram) ? `✅ Van (${[checks.hasFacebook && "Facebook", checks.hasInstagram && "Instagram"].filter(Boolean).join(", ")})` : "❌ Nincs link"} |
 | Oldal frissessége | ${checks.copyrightYear === null ? "⚪ Nem ellenőrizhető" : checks.siteIsRecent ? `✅ Friss (© ${checks.copyrightYear})` : `❌ Elavult (© ${checks.copyrightYear})`} |
+| Google Analytics | ${checks.hasAnalytics === null ? "⚪ Nem ellenőrizhető" : checks.hasAnalytics ? "✅ Van" : "❌ Nincs — nem tudják hány látogatójuk van"} |
 | Gombok mérete mobilon | ${checks.tapTargets === null || checks.tapTargets === undefined ? "⚪ Nem ellenőrizhető" : checks.tapTargets ? "✅ Rendben" : "❌ Túl kicsi"} |
+
+## 🔍 Google jelenlét — gyors ellenőrzők
+
+> Kattints, nézd meg manuálisan (1-1 perc)
+
+| | |
+|---|---|
+| Megjelenik-e Google-on? | [🔍 Keresés: ${searchName}](${gSearch}) |
+| Hol van a Maps-en? | [🗺 Google Maps](${gMaps}) |
+| Hány értékelése van? | [⭐ Értékelések](${gReviews}) |
 
 ## Fő problémák (mobilon)
 

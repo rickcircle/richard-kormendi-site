@@ -81,9 +81,18 @@ export default async function handler(req, res) {
       const currentYear    = new Date().getFullYear();
       const siteIsRecent   = copyrightYear ? (currentYear - copyrightYear) <= 2 : null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent };
+      // Google Analytics / Tag Manager
+      const hasAnalytics = /gtag\(|google-analytics\.com|googletagmanager\.com|UA-\d|G-[A-Z0-9]/i.test(html);
+
+      // Oldal neve a <title>-ből (a "|" vagy "-" utáni részt levágjuk)
+      const titleMatch = html.match(/<title[^>]*>([^<]{2,80})<\/title>/i);
+      const pageTitle  = titleMatch
+        ? titleMatch[1].trim().replace(/\s*[\|\-–—]\s*.{0,40}$/, "").trim()
+        : null;
+
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle };
     } catch {
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null };
     }
   };
 
@@ -112,6 +121,8 @@ export default async function handler(req, res) {
       hasInstagram:    page.hasInstagram,
       copyrightYear:   page.copyrightYear,
       siteIsRecent:    page.siteIsRecent,
+      hasAnalytics:    page.hasAnalytics,
+      pageTitle:       page.pageTitle,
     };
 
     res.setHeader("Cache-Control", "s-maxage=300");
