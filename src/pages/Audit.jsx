@@ -288,11 +288,47 @@ export default function Audit() {
   const [results, setResults] = useState(null);
   const [activeTab, setActiveTab] = useState("mobile");
   const [copied, setCopied] = useState(false);
+  const [proposalStatus, setProposalStatus] = useState("idle"); // idle | loading | done | error
+  const [proposalLink, setProposalLink]     = useState(null);
+  const [proposalCopied, setProposalCopied] = useState(false);
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
+    }).catch(() => {});
+  };
+
+  const handleGenerateProposal = async () => {
+    if (!results) return;
+    setProposalStatus("loading");
+    setProposalLink(null);
+    try {
+      const res = await fetch("/api/proposal", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          url: results.url,
+          mobileScore:  results.mobile.score,
+          desktopScore: results.desktop.score,
+          checks: results.checks,
+        }),
+      });
+      const json = await res.json();
+      if (!res.ok) throw new Error(json?.error || "Hiba");
+      const fullLink = `https://richardkormendi.com${json.path}`;
+      setProposalLink(fullLink);
+      setProposalStatus("done");
+    } catch {
+      setProposalStatus("error");
+    }
+  };
+
+  const handleCopyProposal = () => {
+    if (!proposalLink) return;
+    navigator.clipboard.writeText(proposalLink).then(() => {
+      setProposalCopied(true);
+      setTimeout(() => setProposalCopied(false), 2500);
     }).catch(() => {});
   };
 
@@ -839,6 +875,61 @@ export default function Audit() {
                       }}>
                       {copied ? "✓ Másolva!" : "Másolás"}
                     </button>
+                  </motion.div>
+                )}
+
+                {/* ── Ajánlat generálása ── */}
+                {results && (
+                  <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                    style={{ marginTop: "2rem", padding: "1.75rem 2rem", background: "#f8f8f8",
+                      borderRadius: "8px", border: "1px solid #e8e8e8" }}>
+                    <p style={{ fontSize: "0.7rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+                      📄 Ajánlat generálása
+                    </p>
+                    <p style={{ fontSize: "0.8rem", color: "#999", marginBottom: "1.25rem", lineHeight: 1.5 }}>
+                      Egy kattintás — kész, küldhető link az ügyfélnek. Tartalmazza a problémákat, a megoldást és az árat.
+                    </p>
+                    {proposalStatus === "idle" && (
+                      <button onClick={handleGenerateProposal}
+                        style={{ padding: "0.65rem 1.5rem", background: "#1a1a1a", color: "#fff",
+                          border: "none", borderRadius: "6px", fontSize: "0.85rem", fontWeight: 600,
+                          cursor: "pointer", fontFamily: "inherit" }}>
+                        Ajánlat generálása →
+                      </button>
+                    )}
+                    {proposalStatus === "loading" && (
+                      <p style={{ fontSize: "0.85rem", color: "#999" }}>Generálás folyamatban...</p>
+                    )}
+                    {proposalStatus === "error" && (
+                      <p style={{ fontSize: "0.85rem", color: "#ff4e42" }}>Hiba történt, próbáld újra.</p>
+                    )}
+                    {proposalStatus === "done" && proposalLink && (
+                      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", flexWrap: "wrap" }}>
+                          <a href={proposalLink} target="_blank" rel="noopener noreferrer"
+                            style={{ fontSize: "0.85rem", color: "#1a1a1a", fontWeight: 600,
+                              wordBreak: "break-all", textDecoration: "underline" }}>
+                            {proposalLink}
+                          </a>
+                        </div>
+                        <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                          <button onClick={handleCopyProposal}
+                            style={{ padding: "0.55rem 1.25rem",
+                              background: proposalCopied ? "#0cce6b" : "#1a1a1a",
+                              color: "#fff", border: "none", borderRadius: "4px",
+                              fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                              fontFamily: "inherit", transition: "background 0.2s" }}>
+                            {proposalCopied ? "✓ Másolva!" : "Link másolása"}
+                          </button>
+                          <button onClick={() => { setProposalStatus("idle"); setProposalLink(null); }}
+                            style={{ padding: "0.55rem 1.25rem", background: "transparent",
+                              color: "#999", border: "1px solid #e8e8e8", borderRadius: "4px",
+                              fontSize: "0.8rem", cursor: "pointer", fontFamily: "inherit" }}>
+                            Új ajánlat
+                          </button>
+                        </div>
+                      </div>
+                    )}
                   </motion.div>
                 )}
 
