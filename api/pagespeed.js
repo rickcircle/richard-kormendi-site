@@ -90,9 +90,54 @@ export default async function handler(req, res) {
         ? titleMatch[1].trim().replace(/\s*[\|\-–—]\s*.{0,40}$/, "").trim()
         : null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle };
+      // ── Chatbot detektálás ─────────────────────────────────────────────────
+      const CHATBOT_PATTERNS = [
+        { label: "Tidio",     pattern: /tidio/i },
+        { label: "Crisp",     pattern: /crisp\.chat|crispapp\.com/i },
+        { label: "Intercom",  pattern: /intercom/i },
+        { label: "Drift",     pattern: /drift\.com/i },
+        { label: "Tawk.to",   pattern: /tawk\.to/i },
+        { label: "LiveChat",  pattern: /livechatinc\.com|livechat\.com/i },
+        { label: "Zendesk",   pattern: /zopim|zendesk/i },
+        { label: "HubSpot",   pattern: /hs-script-loader|hubspot/i },
+        { label: "Freshchat", pattern: /freshchat|freshworks/i },
+        { label: "Smartsupp", pattern: /smartsupp/i },
+        { label: "JivoChat",  pattern: /jivosite|jivochat/i },
+        { label: "Userlike",  pattern: /userlike/i },
+        { label: "Olark",     pattern: /olark/i },
+        { label: "Chaport",   pattern: /chaport/i },
+      ];
+      const chatbotMatch = CHATBOT_PATTERNS.find(c => c.pattern.test(html));
+      const hasChatbot   = !!chatbotMatch;
+      const chatbotName  = chatbotMatch?.label || null;
+
+      // ── Foglalási rendszer detektálás ──────────────────────────────────────
+      const BOOKING_PATTERNS = [
+        { label: "Calendly",   pattern: /calendly/i },
+        { label: "SimplyBook", pattern: /simplybook/i },
+        { label: "Booksy",     pattern: /booksy/i },
+        { label: "Fresha",     pattern: /fresha\.com/i },
+        { label: "OpenTable",  pattern: /opentable/i },
+        { label: "Reservio",   pattern: /reservio/i },
+        { label: "Planyo",     pattern: /planyo/i },
+        { label: "Setmore",    pattern: /setmore/i },
+        { label: "Acuity",     pattern: /acuityscheduling/i },
+        { label: "Vagaro",     pattern: /vagaro/i },
+        { label: "Treatwell",  pattern: /treatwell/i },
+        { label: "Appointy",   pattern: /appointy/i },
+        { label: "BookingKit", pattern: /bookingkit/i },
+        { label: "Square",     pattern: /squareup\.com\/appointments|square\.site/i },
+        { label: "Resmio",     pattern: /resmio/i },
+        { label: "TheFork",    pattern: /thefork|lafourchette/i },
+        { label: "Timely",     pattern: /gettimely/i },
+      ];
+      const bookingMatch = BOOKING_PATTERNS.find(b => b.pattern.test(html));
+      const hasBooking   = !!bookingMatch;
+      const bookingName  = bookingMatch?.label || null;
+
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasBooking, bookingName };
     } catch {
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasBooking: null, bookingName: null };
     }
   };
 
@@ -105,6 +150,19 @@ export default async function handler(req, res) {
 
     // ── Extra ellenőrzések kinyerése a Lighthouse auditokból ──────────────────
     const audits = mobile.lighthouseResult?.audits || {};
+    const desktopPerf = Math.round((desktop.lighthouseResult?.categories?.performance?.score || 0) * 100);
+
+    // ── Cégminőség-pontszám (0–8) — mennyire befektető / jómódú a vállalkozás ──
+    let businessQuality = 0;
+    if (url.startsWith("https://"))                    businessQuality++;
+    if (page.hasAnalytics)                             businessQuality++;
+    if (page.hasFacebook || page.hasInstagram)         businessQuality++;
+    if (page.hasLocalBizSchema)                        businessQuality++;
+    if (page.hasMapsEmbed)                             businessQuality++;
+    if (page.hasPhoneLink)                             businessQuality++;
+    if (page.siteIsRecent !== false)                   businessQuality++;
+    if (desktopPerf >= 60)                             businessQuality++;
+
     const checks = {
       // Lighthouse alapú
       https:           url.startsWith("https://"),
@@ -123,6 +181,13 @@ export default async function handler(req, res) {
       siteIsRecent:    page.siteIsRecent,
       hasAnalytics:    page.hasAnalytics,
       pageTitle:       page.pageTitle,
+      // Chatbot + foglalás
+      hasChatbot:      page.hasChatbot,
+      chatbotName:     page.chatbotName,
+      hasBooking:      page.hasBooking,
+      bookingName:     page.bookingName,
+      // Cégminőség
+      businessQuality: businessQuality,
     };
 
     res.setHeader("Cache-Control", "s-maxage=300");

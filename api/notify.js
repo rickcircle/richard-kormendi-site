@@ -143,6 +143,11 @@ fixable_reason: "${analysis.reason}"
 contact_worthy: ${analysis.contactWorthy}
 contact_note: "${analysis.contactNote}"
 client_message: "${analysis.clientMessage ? analysis.clientMessage.replace(/"/g, '\\"') : ""}"
+has_chatbot: ${checks.hasChatbot || false}
+chatbot_name: "${checks.chatbotName || ""}"
+has_booking: ${checks.hasBooking || false}
+booking_name: "${checks.bookingName || ""}"
+business_quality: ${checks.businessQuality || 0}
 ---
 
 # Audit: ${url}
@@ -179,6 +184,9 @@ ${analysis.hours ? `⏱️ **Becsült munkaidő: ${analysis.hours}**` : ""}
 | Oldal frissessége | ${checks.copyrightYear === null ? "⚪ Nem ellenőrizhető" : checks.siteIsRecent ? `✅ Friss (© ${checks.copyrightYear})` : `❌ Elavult (© ${checks.copyrightYear})`} |
 | Google Analytics | ${checks.hasAnalytics === null ? "⚪ Nem ellenőrizhető" : checks.hasAnalytics ? "✅ Van" : "❌ Nincs — nem tudják hány látogatójuk van"} |
 | Gombok mérete mobilon | ${checks.tapTargets === null || checks.tapTargets === undefined ? "⚪ Nem ellenőrizhető" : checks.tapTargets ? "✅ Rendben" : "❌ Túl kicsi"} |
+| Chatbot / Élő chat | ${checks.hasChatbot === null ? "⚪ Nem ellenőrizhető" : checks.hasChatbot ? `✅ Van (${checks.chatbotName})` : "❌ Nincs"} |
+| Online foglalás | ${checks.hasBooking === null ? "⚪ Nem ellenőrizhető" : checks.hasBooking ? `✅ Van (${checks.bookingName})` : "❌ Nincs"} |
+| Cégminőség-pontszám | ${checks.businessQuality || 0}/8 |
 
 ## 🔍 Google jelenlét — gyors ellenőrzők
 
@@ -193,6 +201,20 @@ ${analysis.hours ? `⏱️ **Becsült munkaidő: ${analysis.hours}**` : ""}
 ## Fő problémák (mobilon)
 
 ${topIssuesText || "Nem volt azonosítható probléma — jól néz ki!"}
+
+${(() => {
+  const quality = checks.businessQuality || 0;
+  const THRESHOLD = 5;
+  const opps = [];
+  if (checks.hasChatbot === false && quality >= THRESHOLD)
+    opps.push(`🤖 **AI chatbot lehetőség** — Nincs chatbot, de aktív a cég (${quality}/8). Pitch: "Megnéztem a weboldalatokat — jól néz ki. Egy dolgot látok: sok vállalkozásnál ugyanazokat a kérdéseket kapják nap mint nap. Egy AI chatbot ezeket automatizálná. Megmutatnám 15 perc alatt?"`);
+  if (checks.hasBooking === false && quality >= THRESHOLD && (checks.hasMapsEmbed || checks.hasPhoneLink))
+    opps.push(`📅 **Online foglalás lehetőség** — Nincs foglalási rendszer, fizikai helyszín valószínű (${quality}/8). Pitch: "Megnéztem a weboldalatokat. Egy lehetőséget látok: este/hétvégén elvesznek a leadek mert nincs online foglalás. Érdemes lenne 15 percet rá szánni?"`);
+  return opps.length > 0
+    ? `## 💡 Üzleti lehetőségek (cégminőség: ${quality}/8)\n\n${opps.join("\n\n")}`
+    : "";
+})()}
+
 ${analysis.clientMessage ? `
 ## 📋 Másolható üzenet az ügyfélnek
 

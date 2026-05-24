@@ -277,6 +277,44 @@ function IssueItem({ audit, auditKey, lang }) {
   );
 }
 
+// ── Üzleti lehetőség kártya ──────────────────────────────────────────────────
+function OppCard({ icon, title, desc, pitch }) {
+  const [copied, setCopied] = useState(false);
+  const handleCopy = () => {
+    navigator.clipboard.writeText(pitch).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    }).catch(() => {});
+  };
+  return (
+    <div style={{
+      padding: "1.75rem 2rem", background: "#fff", borderRadius: "8px",
+      border: "1px solid #e0e0f0", borderLeft: "4px solid #6366f1",
+    }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "0.5rem" }}>
+        <span style={{ fontSize: "1.1rem" }}>{icon}</span>
+        <p style={{ fontSize: "0.92rem", fontWeight: 700, color: "#1a1a1a", margin: 0 }}>{title}</p>
+      </div>
+      <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: 1.7, marginBottom: "1rem" }}>{desc}</p>
+      <p style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+        Másolható pitch
+      </p>
+      <p style={{ fontSize: "0.88rem", color: "#333", lineHeight: 1.8, fontStyle: "italic", marginBottom: "1rem" }}>
+        "{pitch}"
+      </p>
+      <button onClick={handleCopy} style={{
+        padding: "0.5rem 1.25rem",
+        background: copied ? "#0cce6b" : "#6366f1",
+        color: "#fff", border: "none", borderRadius: "4px",
+        fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+        fontFamily: "inherit", transition: "background 0.2s",
+      }}>
+        {copied ? "✓ Másolva!" : "Másolás"}
+      </button>
+    </div>
+  );
+}
+
 // ── Főkomponens ──────────────────────────────────────────────────────────────
 export default function Audit() {
   const { lang } = useLang();
@@ -612,6 +650,24 @@ export default function Audit() {
                   good: hu ? "A gombok könnyen megnyomhatók mobilon" : "Buttons are easy to tap on mobile",
                   bad:  hu ? "Néhány gomb túl kicsi mobilon — könnyű mellé nyomni" : "Some buttons too small on mobile — easy to miss",
                 },
+                {
+                  ok: c.hasChatbot,
+                  skip: c.hasChatbot === null || c.hasChatbot === undefined,
+                  label: hu
+                    ? `Chatbot / Élő chat${c.chatbotName ? ` (${c.chatbotName})` : ""}`
+                    : `Chatbot / Live chat${c.chatbotName ? ` (${c.chatbotName})` : ""}`,
+                  good: hu ? `Van chatbot (${c.chatbotName}) — automatikusan kezeli az ismétlődő kérdéseket` : `Chatbot present (${c.chatbotName}) — handles repetitive questions automatically`,
+                  bad:  hu ? "Nincs chatbot — az ismétlődő kérdések kézzel kezelendők" : "No chatbot — repetitive questions handled manually",
+                },
+                {
+                  ok: c.hasBooking,
+                  skip: c.hasBooking === null || c.hasBooking === undefined,
+                  label: hu
+                    ? `Online foglalási rendszer${c.bookingName ? ` (${c.bookingName})` : ""}`
+                    : `Online booking system${c.bookingName ? ` (${c.bookingName})` : ""}`,
+                  good: hu ? `Van foglalási rendszer (${c.bookingName}) — éjjel-nappal fogadja az időpontokat` : `Booking system present (${c.bookingName}) — accepts appointments 24/7`,
+                  bad:  hu ? "Nincs online foglalás — valószínűleg telefonon szervezik az időpontokat" : "No online booking — appointments likely managed by phone",
+                },
               ];
               return (
                 <section style={{ padding: "3rem 2rem", background: "#fff", borderBottom: "1px solid #e8e8e8" }}>
@@ -877,6 +933,49 @@ export default function Audit() {
                     </button>
                   </motion.div>
                 )}
+
+                {/* ── Üzleti lehetőségek ── */}
+                {(() => {
+                  const c = results.checks;
+                  const quality = c.businessQuality || 0;
+                  const THRESHOLD = 5;
+                  const opps = [];
+
+                  if (c.hasChatbot === false && quality >= THRESHOLD) {
+                    opps.push({
+                      icon: "🤖",
+                      title: "AI chatbot — be lehetne vezetni",
+                      desc: `Aktív online jelenlétük van (cégminőség: ${quality}/8) és valószínűleg ismétlődő kérdéseket kapnak. Egy AI chatbot 24/7 automatizálhatja ezeket — nyitvatartás, árak, foglalás, irányok. Nincs meglévő chatbotjuk.`,
+                      pitch: "Szia! Megnéztem a weboldalatokat — jól néz ki, aktív az online jelenlétetek. Egy dolgot látok amivel tudnék segíteni: sok vállalkozásnál ugyanazokat a kérdéseket kapják nap mint nap. Egy AI chatbot ezekre automatikusan válaszolna a weboldalon, ti csak az ügyfelekre koncentrálhattok. Megmutatnám 15 perc alatt?",
+                    });
+                  }
+
+                  if (c.hasBooking === false && quality >= THRESHOLD && (c.hasMapsEmbed || c.hasPhoneLink)) {
+                    opps.push({
+                      icon: "📅",
+                      title: "Online foglalás — nincs automatizálva",
+                      desc: `Fizikai helyszínt üzemeltetnek és aktív a jelenlétük (cégminőség: ${quality}/8), de nincs online foglalási rendszer. Valószínűleg telefonon szervezik az időpontokat — este és hétvégén elvesznek a leadek.`,
+                      pitch: "Szia! Megnéztem a weboldalatokat — aktív, jó a jelenlétetek. Egy lehetőséget látok: jelenleg valószínűleg telefonon szervezitek az időpontokat. Rengeteg érdeklődő este vagy hétvégén keres, de nem tud egyből foglalni — ezek a leadek elvesznek. Egy egyszerű online rendszerrel éjjel-nappal lehetne fogadni a foglalásokat. Érdemes lenne 15 percet rá szánni?",
+                    });
+                  }
+
+                  if (opps.length === 0) return null;
+
+                  return (
+                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
+                      style={{ marginTop: "3rem", padding: "2rem", background: "#f5f5ff", borderRadius: "8px", border: "1px solid #e0e0f0" }}>
+                      <p style={{ fontSize: "0.7rem", letterSpacing: "0.15em", color: "#6366f1", textTransform: "uppercase", marginBottom: "0.4rem", fontWeight: 600 }}>
+                        💡 Üzleti lehetőségek
+                      </p>
+                      <p style={{ fontSize: "0.82rem", color: "#666", marginBottom: "1.5rem", lineHeight: 1.6 }}>
+                        Ez a vállalkozás aktív és befektető — nagy valószínűséggel megvennének egy jól megcsinált megoldást.
+                      </p>
+                      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                        {opps.map((opp, i) => <OppCard key={i} {...opp} />)}
+                      </div>
+                    </motion.div>
+                  );
+                })()}
 
                 {/* ── Ajánlat generálása ── */}
                 {results && (
