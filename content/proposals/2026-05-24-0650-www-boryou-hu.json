@@ -1,0 +1,43 @@
+{
+  "id": "2026-05-24-0650-www-boryou-hu",
+  "url": "https://www.boryou.hu",
+  "mobileScore": 60,
+  "desktopScore": 86,
+  "checks": {
+    "https": true,
+    "metaDescription": true,
+    "tapTargets": false,
+    "fontSizeOk": false,
+    "hasPhoneLink": true,
+    "hasAnyPhone": true,
+    "hasSchemaOrg": true,
+    "hasLocalBizSchema": true,
+    "hasMapsEmbed": true,
+    "hasFacebook": true,
+    "hasInstagram": true,
+    "copyrightYear": null,
+    "siteIsRecent": null,
+    "hasAnalytics": true,
+    "pageTitle": "BorYou bisztró: Esztergom legszerethetőbb étterme"
+  },
+  "pageTitle": "BorYou bisztró: Esztergom legszerethetőbb étterme",
+  "date": "2026-05-24T06:50:56.506Z",
+  "services": [
+    {
+      "key": "maintenance",
+      "title": "Havi karbantartás + teljesítményriport",
+      "desc": "Havonta egyoldalas összefoglaló: forgalom, sebesség, Google helyezés. Bármikor lemondható.",
+      "price": 15000,
+      "monthly": true,
+      "optional": true
+    }
+  ],
+  "total": 0,
+  "contact": {
+    "phone": "+36 30 148 0917",
+    "phoneRaw": "+36301480917",
+    "email": "richard.kormendi@gmail.com",
+    "web": "richardkormendi.com",
+    "instagram": "https://www.instagram.com/rickormendi/"
+  }
+}
