@@ -95,7 +95,7 @@ export default function Epk() {
           <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {hu ? "Sajtóanyag" : "Electronic Press Kit"}
           </p>
-          <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem" }}>
+          <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem", color: "#fff" }}>
             Richard Körmendi
           </h1>
           <p style={{ fontSize: "1.05rem", color: "#aaa", lineHeight: 1.7, maxWidth: "520px", margin: "0 auto 2.5rem" }}>
@@ -234,13 +234,13 @@ export default function Epk() {
             <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
               {hu ? "Technikai rider" : "Technical rider"}
             </p>
-            <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 600, marginBottom: "2.5rem" }}>
+            <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 600, marginBottom: "2.5rem", color: "#fff" }}>
               {hu ? "Helyszíni igények" : "Stage requirements"}
             </h2>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "1rem" }}>
               {(hu ? riderItems.hu : riderItems.en).map((item, i) => (
                 <li key={i} style={{ display: "flex", gap: "1rem", alignItems: "flex-start", fontSize: "0.95rem", color: "#aaa", lineHeight: 1.6 }}>
-                  <span style={{ color: "#444", flexShrink: 0, paddingTop: "2px" }}>—</span>
+                  <span style={{ color: "#777", flexShrink: 0, paddingTop: "2px" }}>—</span>
                   {item}
                 </li>
               ))}

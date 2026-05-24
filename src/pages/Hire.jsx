@@ -122,7 +122,7 @@ export default function Hire() {
           <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {hu ? "Digitális szolgáltatások" : "Digital services"}
           </p>
-          <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1.5rem" }}>
+          <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1.5rem", color: "#fff" }}>
             {hu ? "14 év.\nEpítsünk valamit." : "14 years.\nLet's build something."}
           </h1>
           <p style={{ fontSize: "1.1rem", color: "#aaa", lineHeight: 1.8, maxWidth: "540px", margin: "0 auto 3rem" }}>
