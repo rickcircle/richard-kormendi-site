@@ -119,13 +119,13 @@ export default function Hire() {
       {/* Hero */}
       <section style={{ background: "#1a1a1a", color: "#fff", padding: "10rem 2rem 6rem", textAlign: "center" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
-          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {hu ? "Digitális szolgáltatások" : "Digital services"}
           </p>
           <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1.5rem" }}>
             {hu ? "14 év.\nEpítsünk valamit." : "14 years.\nLet's build something."}
           </h1>
-          <p style={{ fontSize: "1.1rem", color: "#666", lineHeight: 1.8, maxWidth: "540px", margin: "0 auto 3rem" }}>
+          <p style={{ fontSize: "1.1rem", color: "#aaa", lineHeight: 1.8, maxWidth: "540px", margin: "0 auto 3rem" }}>
             {hu
               ? "Front-end fejlesztés, WordPress, SEO, Google Ads. Vállalkozásoknak és egyéni vállalkozóknak, akik eredményt akarnak — nem csak egy szép weboldalt."
               : "Front-end development, WordPress, SEO, Google Ads. For small businesses and freelancers who want results, not just a pretty website."
@@ -163,19 +163,19 @@ export default function Hire() {
                   borderRadius: "2px",
                   border: pkg.highlight ? "none" : "1px solid #e8e8e8",
                 }}>
-                <p style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: pkg.highlight ? "#666" : "#bbb", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                <p style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: pkg.highlight ? "#aaa" : "#bbb", textTransform: "uppercase", marginBottom: "0.75rem" }}>
                   {pkg.name}
                 </p>
                 <p style={{ fontSize: "2rem", fontWeight: 700, marginBottom: "1rem" }}>
                   {hu ? pkg.priceHu : pkg.price}
                 </p>
-                <p style={{ fontSize: "0.9rem", color: pkg.highlight ? "#999" : "#666", lineHeight: 1.6, marginBottom: "2rem" }}>
+                <p style={{ fontSize: "0.9rem", color: pkg.highlight ? "#bbb" : "#666", lineHeight: 1.6, marginBottom: "2rem" }}>
                   {hu ? pkg.descHu : pkg.desc}
                 </p>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}>
                   {(hu ? pkg.itemsHu : pkg.items).map(item => (
-                    <li key={item} style={{ fontSize: "0.85rem", color: pkg.highlight ? "#888" : "#555", display: "flex", gap: "0.6rem", alignItems: "flex-start" }}>
-                      <span style={{ color: pkg.highlight ? "#555" : "#bbb", flexShrink: 0 }}>—</span>
+                    <li key={item} style={{ fontSize: "0.85rem", color: pkg.highlight ? "#bbb" : "#555", display: "flex", gap: "0.6rem", alignItems: "flex-start" }}>
+                      <span style={{ color: pkg.highlight ? "#888" : "#bbb", flexShrink: 0 }}>—</span>
                       {item}
                     </li>
                   ))}

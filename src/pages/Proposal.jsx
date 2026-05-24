@@ -159,20 +159,20 @@ export default function Proposal() {
         <div className="proposal-header-inner" style={{ maxWidth: "700px", margin: "0 auto", padding: "2.5rem 2rem" }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", flexWrap: "wrap" }}>
             <div>
-              <p style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: "#888", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+              <p style={{ fontSize: "0.7rem", letterSpacing: "0.2em", color: "#aaa", textTransform: "uppercase", marginBottom: "0.4rem" }}>
                 Weboldal elemzés
               </p>
               <h1 style={{ fontSize: "clamp(1.3rem, 4vw, 1.9rem)", fontWeight: 700, lineHeight: 1.2, marginBottom: "0.4rem" }}>
                 {pageTitle}
               </h1>
               <a href={url} target="_blank" rel="noopener noreferrer"
-                style={{ fontSize: "0.78rem", color: "#888", textDecoration: "none" }}>
+                style={{ fontSize: "0.78rem", color: "#aaa", textDecoration: "none" }}>
                 {url.replace(/^https?:\/\//, "")} ↗
               </a>
             </div>
             <div style={{ textAlign: "right" }}>
-              <p style={{ fontSize: "0.78rem", color: "#888" }}>{dateFormatted}</p>
-              <p style={{ fontSize: "0.78rem", color: "#888", marginTop: "0.25rem" }}>richardkormendi.com</p>
+              <p style={{ fontSize: "0.78rem", color: "#aaa" }}>{dateFormatted}</p>
+              <p style={{ fontSize: "0.78rem", color: "#aaa", marginTop: "0.25rem" }}>richardkormendi.com</p>
             </div>
           </div>
 
@@ -181,7 +181,7 @@ export default function Proposal() {
             <ScoreBadge score={mobileScore}  label="Mobil" />
             <ScoreBadge score={desktopScore} label="Asztali" />
             <div style={{ flex: 1, display: "flex", alignItems: "center", paddingLeft: "0.5rem" }}>
-              <p style={{ fontSize: "0.78rem", color: "#888", lineHeight: 1.6 }}>
+              <p style={{ fontSize: "0.78rem", color: "#aaa", lineHeight: 1.6 }}>
                 Google PageSpeed Insights mérés alapján<br />
                 (0–100 skála, 90+ kiváló, 50 alatt kritikus)
               </p>

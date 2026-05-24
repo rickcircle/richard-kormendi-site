@@ -92,13 +92,13 @@ export default function Epk() {
       {/* Hero */}
       <section style={{ background: "#1a1a1a", color: "#fff", padding: "10rem 2rem 6rem", textAlign: "center" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
-          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {hu ? "Sajtóanyag" : "Electronic Press Kit"}
           </p>
           <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem" }}>
             Richard Körmendi
           </h1>
-          <p style={{ fontSize: "1.05rem", color: "#666", lineHeight: 1.7, maxWidth: "520px", margin: "0 auto 2.5rem" }}>
+          <p style={{ fontSize: "1.05rem", color: "#aaa", lineHeight: 1.7, maxWidth: "520px", margin: "0 auto 2.5rem" }}>
             {hu
               ? "Énekes-dalszerző · Klasszikus tenor · Cold Urban Sighs"
               : "Singer-songwriter · Classical tenor · Cold Urban Sighs"}
@@ -231,7 +231,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: "#1a1a1a", color: "#fff" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
               {hu ? "Technikai rider" : "Technical rider"}
             </p>
             <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 600, marginBottom: "2.5rem" }}>
@@ -245,7 +245,7 @@ export default function Epk() {
                 </li>
               ))}
             </ul>
-            <p style={{ marginTop: "3rem", fontSize: "0.85rem", color: "#555", lineHeight: 1.7 }}>
+            <p style={{ marginTop: "3rem", fontSize: "0.85rem", color: "#888", lineHeight: 1.7 }}>
               {hu
                 ? "Kérdések vagy speciális igények esetén keress emailen: richard.kormendi@gmail.com"
                 : "For questions or special requirements, reach out: richard.kormendi@gmail.com"}
