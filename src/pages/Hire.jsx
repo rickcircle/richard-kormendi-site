@@ -13,9 +13,9 @@ const HIRE_FORM_URL = "https://formspree.io/f/mwvzvzrn";
 const A  = "#00d4ff";                        // accent
 const AB = "rgba(0,212,255,0.10)";           // accent bg
 const AD = "rgba(0,212,255,0.25)";           // accent border
-const BG = "#0a0a0a";
-const S1 = "#111111";                        // surface alt (látható váltás)
-const BR = "#2a2a2a";                        // border (jól látható)
+const BG = "#111111";
+const S1 = "#181818";                        // surface alt (látható váltás)
+const BR = "#2e2e2e";                        // border (jól látható)
 
 const ICON_MAP = { Globe, Search, BarChart2, ClipboardList, Bot, Wrench };
 
@@ -301,9 +301,9 @@ export default function Hire() {
               const Icon = ICON_MAP[svc.icon];
               return (
                 <motion.div key={i} variants={fadeUp}
-                  style={{ background: "#141414", padding: "2rem", cursor: "default", transition: "background 0.2s" }}
-                  onMouseOver={e => e.currentTarget.style.background = "#1a1a1a"}
-                  onMouseOut={e => e.currentTarget.style.background = "#141414"}>
+                  style={{ background: "#1c1c1c", padding: "2rem", cursor: "default", transition: "background 0.2s" }}
+                  onMouseOver={e => e.currentTarget.style.background = "#252525"}
+                  onMouseOut={e => e.currentTarget.style.background = "#1c1c1c"}>
                   <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: AB, border: `1px solid ${AD}`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.25rem" }}>
                     {Icon && <Icon size={18} color={A} />}
                   </div>
@@ -334,7 +334,7 @@ export default function Hire() {
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "2rem" }}>
             {tx.why.items.map((item, i) => (
               <motion.div key={i} variants={fadeUp}
-                style={{ padding: "2.5rem 2rem", background: "#161616", border: `1px solid ${BR}`, borderRadius: "12px", textAlign: "center" }}>
+                style={{ padding: "2.5rem 2rem", background: "#1c1c1c", border: `1px solid ${BR}`, borderRadius: "12px", textAlign: "center" }}>
                 <div style={{ fontSize: item.num.length > 2 ? "2rem" : "3rem", fontWeight: 800, color: A, lineHeight: 1, marginBottom: "0.25rem", letterSpacing: "-0.02em" }}>
                   {item.num}
                   <span style={{ fontSize: "1rem", fontWeight: 400, color: "#888", marginLeft: "0.25rem" }}>{item.unit}</span>
@@ -368,7 +368,7 @@ export default function Hire() {
               <motion.div key={i} variants={fadeUp}
                 style={{
                   padding: "2.5rem 2rem",
-                  background: pkg.highlight ? AB : "#141414",
+                  background: pkg.highlight ? AB : "#1c1c1c",
                   border: `1px solid ${pkg.highlight ? AD : BR}`,
                   borderRadius: "12px",
                   position: "relative",
