@@ -200,7 +200,7 @@ export default function Analytics() {
                 <CartesianGrid strokeDasharray="3 3" stroke="#efefef" vertical={false} />
                 <XAxis dataKey="day" tick={{ fontSize: 11, fill: "#bbb" }} interval={4} axisLine={false} tickLine={false} />
                 <YAxis tick={{ fontSize: 11, fill: "#bbb" }} axisLine={false} tickLine={false} />
-                <Tooltip content={<CustomAreaTooltip />} />
+                <Tooltip content={CustomAreaTooltip} />
                 <Area
                   type="monotone" dataKey="users" stroke="#1a1a1a"
                   fill="url(#gradUsers)" strokeWidth={2}
@@ -234,7 +234,7 @@ export default function Analytics() {
                   >
                     {TRAFFIC_SOURCES.map((_, i) => <Cell key={i} fill={PIE_COLORS[i]} />)}
                   </Pie>
-                  <Tooltip content={<CustomPieTooltip />} />
+                  <Tooltip content={CustomPieTooltip} />
                 </PieChart>
               </ResponsiveContainer>
               {/* Legend */}
