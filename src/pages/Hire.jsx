@@ -11,11 +11,11 @@ import {
 // ── Konstansok ────────────────────────────────────────────────────────────────
 const HIRE_FORM_URL = "https://formspree.io/f/mwvzvzrn";
 const A  = "#00d4ff";                        // accent
-const AB = "rgba(0,212,255,0.08)";           // accent bg
-const AD = "rgba(0,212,255,0.18)";           // accent border
+const AB = "rgba(0,212,255,0.10)";           // accent bg
+const AD = "rgba(0,212,255,0.25)";           // accent border
 const BG = "#0a0a0a";
-const S1 = "#0f0f0f";                        // surface alt
-const BR = "#1e1e1e";                        // border
+const S1 = "#111111";                        // surface alt (látható váltás)
+const BR = "#2a2a2a";                        // border (jól látható)
 
 const ICON_MAP = { Globe, Search, BarChart2, ClipboardList, Bot, Wrench };
 
@@ -301,14 +301,14 @@ export default function Hire() {
               const Icon = ICON_MAP[svc.icon];
               return (
                 <motion.div key={svc.title} variants={fadeUp}
-                  style={{ background: BG, padding: "2rem", cursor: "default", transition: "background 0.2s" }}
-                  onMouseOver={e => e.currentTarget.style.background = S1}
-                  onMouseOut={e => e.currentTarget.style.background = BG}>
+                  style={{ background: "#141414", padding: "2rem", cursor: "default", transition: "background 0.2s" }}
+                  onMouseOver={e => e.currentTarget.style.background = "#1a1a1a"}
+                  onMouseOut={e => e.currentTarget.style.background = "#141414"}>
                   <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: AB, border: `1px solid ${AD}`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.25rem" }}>
                     {Icon && <Icon size={18} color={A} />}
                   </div>
                   <p style={{ fontSize: "1rem", fontWeight: 600, color: "#fff", marginBottom: "0.5rem" }}>{svc.title}</p>
-                  <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: 1.6 }}>{svc.desc}</p>
+                  <p style={{ fontSize: "0.85rem", color: "#999", lineHeight: 1.6 }}>{svc.desc}</p>
                 </motion.div>
               );
             })}
@@ -334,13 +334,13 @@ export default function Hire() {
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "2rem" }}>
             {tx.why.items.map((item) => (
               <motion.div key={item.label} variants={fadeUp}
-                style={{ padding: "2.5rem 2rem", background: S1, border: `1px solid ${BR}`, borderRadius: "12px", textAlign: "center" }}>
+                style={{ padding: "2.5rem 2rem", background: "#161616", border: `1px solid ${BR}`, borderRadius: "12px", textAlign: "center" }}>
                 <div style={{ fontSize: item.num.length > 2 ? "2rem" : "3rem", fontWeight: 800, color: A, lineHeight: 1, marginBottom: "0.25rem", letterSpacing: "-0.02em" }}>
                   {item.num}
-                  <span style={{ fontSize: "1rem", fontWeight: 400, color: "#555", marginLeft: "0.25rem" }}>{item.unit}</span>
+                  <span style={{ fontSize: "1rem", fontWeight: 400, color: "#888", marginLeft: "0.25rem" }}>{item.unit}</span>
                 </div>
                 <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "#fff", margin: "0.75rem 0 0.5rem" }}>{item.label}</p>
-                <p style={{ fontSize: "0.82rem", color: "#666", lineHeight: 1.6 }}>{item.desc}</p>
+                <p style={{ fontSize: "0.82rem", color: "#999", lineHeight: 1.6 }}>{item.desc}</p>
               </motion.div>
             ))}
           </motion.div>
@@ -359,7 +359,7 @@ export default function Hire() {
             <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", marginBottom: "0.75rem" }}>
               {tx.packages.title}
             </h2>
-            <p style={{ fontSize: "0.85rem", color: "#555" }}>{tx.packages.note}</p>
+            <p style={{ fontSize: "0.85rem", color: "#777" }}>{tx.packages.note}</p>
           </motion.div>
 
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
@@ -368,7 +368,7 @@ export default function Hire() {
               <motion.div key={pkg.name} variants={fadeUp}
                 style={{
                   padding: "2.5rem 2rem",
-                  background: pkg.highlight ? AB : BG,
+                  background: pkg.highlight ? AB : "#141414",
                   border: `1px solid ${pkg.highlight ? AD : BR}`,
                   borderRadius: "12px",
                   position: "relative",
@@ -379,14 +379,14 @@ export default function Hire() {
                     ★ {pkg.cta}
                   </div>
                 )}
-                <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: pkg.highlight ? A : "#555", textTransform: "uppercase", fontWeight: 600, marginBottom: "1rem" }}>
+                <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: pkg.highlight ? A : "#aaa", textTransform: "uppercase", fontWeight: 600, marginBottom: "1rem" }}>
                   {pkg.name}
                 </p>
                 <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem", marginBottom: "0.75rem" }}>
                   <span style={{ fontSize: "2rem", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em" }}>{pkg.price}</span>
                   {pkg.period && <span style={{ fontSize: "0.9rem", color: "#555" }}>{pkg.period}</span>}
                 </div>
-                <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: 1.6, marginBottom: "1.75rem" }}>{pkg.desc}</p>
+                <p style={{ fontSize: "0.85rem", color: "#999", lineHeight: 1.6, marginBottom: "1.75rem" }}>{pkg.desc}</p>
                 <ul style={{ listStyle: "none", padding: 0, margin: "0 0 2rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
                   {pkg.features.map(f => (
                     <li key={f} style={{ display: "flex", gap: "0.6rem", alignItems: "flex-start", fontSize: "0.85rem", color: "#aaa" }}>
@@ -443,7 +443,7 @@ export default function Hire() {
                   <span style={{ fontSize: "0.75rem", fontWeight: 700, color: A, letterSpacing: "0.05em" }}>{step.num}</span>
                 </div>
                 <p style={{ fontSize: "0.95rem", fontWeight: 600, color: "#fff", marginBottom: "0.5rem" }}>{step.title}</p>
-                <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: 1.6 }}>{step.desc}</p>
+                <p style={{ fontSize: "0.82rem", color: "#888", lineHeight: 1.6 }}>{step.desc}</p>
               </motion.div>
             ))}
           </motion.div>
