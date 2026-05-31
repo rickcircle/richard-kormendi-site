@@ -297,10 +297,10 @@ export default function Hire() {
 
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1px", background: BR, borderRadius: "12px", overflow: "hidden", border: `1px solid ${BR}` }}>
-            {tx.services.items.map((svc) => {
+            {tx.services.items.map((svc, i) => {
               const Icon = ICON_MAP[svc.icon];
               return (
-                <motion.div key={svc.title} variants={fadeUp}
+                <motion.div key={i} variants={fadeUp}
                   style={{ background: "#141414", padding: "2rem", cursor: "default", transition: "background 0.2s" }}
                   onMouseOver={e => e.currentTarget.style.background = "#1a1a1a"}
                   onMouseOut={e => e.currentTarget.style.background = "#141414"}>
@@ -332,8 +332,8 @@ export default function Hire() {
 
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "2rem" }}>
-            {tx.why.items.map((item) => (
-              <motion.div key={item.label} variants={fadeUp}
+            {tx.why.items.map((item, i) => (
+              <motion.div key={i} variants={fadeUp}
                 style={{ padding: "2.5rem 2rem", background: "#161616", border: `1px solid ${BR}`, borderRadius: "12px", textAlign: "center" }}>
                 <div style={{ fontSize: item.num.length > 2 ? "2rem" : "3rem", fontWeight: 800, color: A, lineHeight: 1, marginBottom: "0.25rem", letterSpacing: "-0.02em" }}>
                   {item.num}
@@ -364,8 +364,8 @@ export default function Hire() {
 
           <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem", alignItems: "start" }}>
-            {tx.packages.items.map((pkg) => (
-              <motion.div key={pkg.name} variants={fadeUp}
+            {tx.packages.items.map((pkg, i) => (
+              <motion.div key={i} variants={fadeUp}
                 style={{
                   padding: "2.5rem 2rem",
                   background: pkg.highlight ? AB : "#141414",
@@ -432,7 +432,7 @@ export default function Hire() {
             className="workflow-grid"
             style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0" }}>
             {tx.workflow.steps.map((step, i) => (
-              <motion.div key={step.num} variants={fadeUp}
+              <motion.div key={i} variants={fadeUp}
                 style={{ position: "relative", padding: "0 1.5rem 0 0", paddingRight: i < 3 ? "1.5rem" : 0 }}>
                 {/* Összekötő vonal */}
                 {i < 3 && (
