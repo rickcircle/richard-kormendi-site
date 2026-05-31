@@ -1,99 +1,219 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
-import { fadeUp, staggerContainer, staggerItem } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import {
+  Globe, Search, BarChart2, ClipboardList,
+  Bot, Wrench, Check, Phone, Mail, MapPin,
+} from "lucide-react";
 
-// Ez az oldal NEM jelenik meg a navigációban — freelance ügyfeleknek szól
-// Direct URL: /hire
-
+// ── Konstansok ────────────────────────────────────────────────────────────────
 const HIRE_FORM_URL = "https://formspree.io/f/mwvzvzrn";
+const A  = "#00d4ff";                        // accent
+const AB = "rgba(0,212,255,0.08)";           // accent bg
+const AD = "rgba(0,212,255,0.18)";           // accent border
+const BG = "#0a0a0a";
+const S1 = "#0f0f0f";                        // surface alt
+const BR = "#1e1e1e";                        // border
 
-const packages = [
-  {
-    name: "Starter",
-    price: "~€380–500",
-    priceHu: "150 000 – 200 000 Ft",
-    desc: "Single-page website or landing page — fast, clean, and live within 2 weeks.",
-    descHu: "Egyoldalas weboldal vagy landing page — gyors, tiszta, 2 héten belül éles.",
-    items: [
-      "Website or landing page",
-      "Responsive design (mobile-first)",
-      "SEO setup + contact form",
-      "Google Analytics 4",
-      "Delivered in 2 weeks",
-    ],
-    itemsHu: [
-      "Weboldal vagy landing page",
-      "Reszponzív dizájn (mobilra optimalizálva)",
-      "SEO beállítás + kapcsolati űrlap",
-      "Google Analytics 4",
-      "Átadás 2 héten belül",
-    ],
-  },
-  {
-    name: "Business",
-    price: "~€650–900",
-    priceHu: "250 000 – 350 000 Ft",
-    desc: "Multi-page WordPress site with SEO, analytics, and ongoing support.",
-    descHu: "Többoldalas WordPress weboldal keresőoptimalizálással, analitikával és utókövetéssel.",
-    highlight: true,
-    items: [
-      "Up to 5 pages",
-      "WordPress + custom theme",
-      "SEO audit & on-page optimisation",
-      "Google Analytics 4 + Search Console",
-      "Performance optimisation",
-      "1 month support included",
-    ],
-    itemsHu: [
-      "Több aloldal (legfeljebb 5)",
-      "WordPress + egyedi arculat",
-      "SEO audit és on-page optimalizálás",
-      "Google Analytics 4 + Search Console",
-      "Oldalbetöltési sebesség optimalizálás",
-      "1 hónap ingyenes utókövetés",
-    ],
-  },
-  {
-    name: "Retainer",
-    price: "~€60–100 / mo",
-    priceHu: "25 000 – 40 000 Ft / hó",
-    desc: "Ongoing monthly support — updates, SEO, ads, content. No surprises.",
-    descHu: "Havi keret folyamatos karbantartásra — frissítések, SEO, hirdetések, tartalom. Semmi meglepetés.",
-    items: [
-      "Monthly website updates",
-      "SEO monitoring & tweaks",
-      "Google Ads management",
-      "Social media content",
-      "Email marketing",
-      "Flexible — cancel anytime",
-    ],
-    itemsHu: [
-      "Havi weboldal frissítések",
-      "SEO monitorozás és finomhangolás",
-      "Google Ads kezelés",
-      "Közösségimédia-tartalom",
-      "Email marketing",
-      "Rugalmas — bármikor felmondható",
-    ],
-  },
-];
+const ICON_MAP = { Globe, Search, BarChart2, ClipboardList, Bot, Wrench };
 
-const process = [
-  { step: "01", en: "Discovery call", hu: "Ismerkedés", bodyEn: "We talk through your goals, timeline, and budget. No commitment, no sales pitch.", bodyHu: "Átbeszéljük a céljaidat, a határidőt és a keretet. Semmi kötelezettség, semmi erőltetett értékesítés." },
-  { step: "02", en: "Proposal", hu: "Ajánlat", bodyEn: "I send a clear, itemised proposal within 48 hours. You approve — we start.", bodyHu: "48 órán belül küldök egy részletes, tételes árajánlatot. Jóváhagyod — nekiállunk." },
-  { step: "03", en: "Build", hu: "Fejlesztés", bodyEn: "Regular updates, no surprises. You see the work in progress via a staging link.", bodyHu: "Rendszeres visszajelzések, nincsenek meglepetések. A munkát menet közben egy tesztkörnyezeten tudod követni." },
-  { step: "04", en: "Launch", hu: "Átadás", bodyEn: "Go live, handover, and training if needed. Plus a month of free support.", bodyHu: "Élesítés, átadás, betanítás ha szükséges — plusz 1 hónap ingyenes utókövetés." },
-];
+// ── Fordítások ────────────────────────────────────────────────────────────────
+const TX = {
+  en: {
+    meta: {
+      title: "Web Development Esztergom | Richard Körmendi – Freelance Web Developer",
+      desc:  "Professional web development, SEO and Google Ads in Esztergom and remote. React, WordPress, AI tools. Request a free consultation!",
+    },
+    hero: {
+      badge: "Freelance Web Developer",
+      h1a: "A website",
+      h1accent: "Google loves.",
+      sub: "Freelance web developer and digital project manager. React, WordPress, SEO, Google Ads – everything that works online.",
+      cta: "Request a free consultation",
+      sec: "See packages",
+    },
+    services: {
+      label: "Services",
+      title: "What I build for you",
+      items: [
+        { icon: "Globe",        title: "Website Development",    desc: "React or WordPress – fast, mobile-first, SEO-ready from day one." },
+        { icon: "Search",       title: "SEO Optimisation",       desc: "More organic traffic. Keyword research, on-page fixes, technical audit." },
+        { icon: "BarChart2",    title: "Google Ads Management",  desc: "Paid campaigns that bring real leads, not just empty clicks." },
+        { icon: "ClipboardList",title: "Project Management",     desc: "From brief to launch – I coordinate design, dev and content." },
+        { icon: "Bot",          title: "AI Chatbot Integration", desc: "24/7 automated answers for the most common customer questions." },
+        { icon: "Wrench",       title: "Monthly Maintenance",    desc: "Updates, speed monitoring, SEO reports. No surprises." },
+      ],
+    },
+    why: {
+      label: "Why me",
+      title: "Built different.",
+      items: [
+        { num: "14", unit: "yrs", label: "Digital experience", desc: "Front-end development, SEO, WordPress, digital marketing — since 2010." },
+        { num: "AI", unit: "",   label: "Augmented development", desc: "Faster delivery, smarter solutions. I use AI tools so you get more for your budget." },
+        { num: "📍", unit: "",   label: "Local + remote",         desc: "Based in Esztergom. I work with clients locally and across the country." },
+      ],
+    },
+    packages: {
+      label: "Pricing",
+      title: "Transparent packages.",
+      note: "Prices include VAT. Custom quotes available on request.",
+      items: [
+        {
+          name: "Starter", price: "150 000 Ft", period: "", highlight: false,
+          desc: "Perfect for small businesses stepping online for the first time.",
+          features: ["5-page website", "Mobile-first design", "SEO setup", "Google Business Profile", "1 month free support"],
+          cta: "Get started",
+        },
+        {
+          name: "Business", price: "280 000 Ft", period: "", highlight: true,
+          desc: "Everything in Starter, plus the tools to grow faster.",
+          features: ["Everything in Starter", "Google Ads campaign setup", "Copywriting (5 pages)", "Analytics + Search Console", "2 months free support"],
+          cta: "Most popular",
+        },
+        {
+          name: "Monthly", price: "45 000 Ft", period: "/mo", highlight: false,
+          desc: "Ongoing support and growth for your existing site.",
+          features: ["Monthly updates", "SEO monitoring + report", "Content refresh", "Google Ads management", "Cancel anytime"],
+          cta: "Start retainer",
+        },
+      ],
+    },
+    workflow: {
+      label: "How it works",
+      title: "Simple process.",
+      steps: [
+        { num: "01", title: "Consultation", desc: "We discuss goals, timeline and budget. No commitment required." },
+        { num: "02", title: "Planning",     desc: "A clear proposal arrives within 48 hours. You approve — we start." },
+        { num: "03", title: "Development",  desc: "Regular updates on a live staging link. No surprises." },
+        { num: "04", title: "Handover",     desc: "Go live, training if needed, 1 month free support included." },
+      ],
+    },
+    contact: {
+      label: "Contact",
+      title: "Let's talk.",
+      sub: "I reply within 24 hours. Or reach me directly:",
+      namePh: "Your name",
+      emailPh: "Email address",
+      phonePh: "Phone number (optional)",
+      msgPh: "Tell me about your project...",
+      send: "Send message",
+      sending: "Sending…",
+      success: "Got it! I'll reply within 24 hours.",
+      error: "Something went wrong. Please email directly.",
+    },
+  },
 
+  hu: {
+    meta: {
+      title: "Weboldal készítés Esztergom | Körmendi Richard – Freelance Web Fejlesztő",
+      desc:  "Profi weboldal készítés, SEO és Google Ads kezelés Esztergomban és online. React, WordPress, AI eszközök. Kérj ingyenes konzultációt!",
+    },
+    hero: {
+      badge: "Freelance Web Fejlesztő",
+      h1a: "Weboldal,",
+      h1accent: "amit a Google is szeret.",
+      sub: "Freelance web fejlesztő és digitális projektmenedzser. React, WordPress, SEO, Google Ads – mindent vállalok ami online működik.",
+      cta: "Kérj ingyenes konzultációt",
+      sec: "Csomagok",
+    },
+    services: {
+      label: "Szolgáltatások",
+      title: "Mit csinálok neked",
+      items: [
+        { icon: "Globe",        title: "Weboldal készítés",       desc: "React vagy WordPress – gyors, mobilbarát, SEO-kész az első naptól." },
+        { icon: "Search",       title: "SEO optimalizálás",       desc: "Több organikus látogató. Kulcsszókutatás, on-page javítás, technikai audit." },
+        { icon: "BarChart2",    title: "Google Ads kezelés",      desc: "Fizetett kampányok, amelyek valódi leadeket hoznak, nem csak kattintásokat." },
+        { icon: "ClipboardList",title: "Projektmenedzsment",      desc: "Brieftől az átadásig – koordinálom a tervezést, fejlesztést és tartalmat." },
+        { icon: "Bot",          title: "AI chatbot integráció",   desc: "24/7 automatikus válaszok a leggyakoribb ügyféli kérdésekre." },
+        { icon: "Wrench",       title: "Havi karbantartás",       desc: "Frissítések, sebesség-monitorozás, SEO riportok. Meglepetés nélkül." },
+      ],
+    },
+    why: {
+      label: "Miért én",
+      title: "Más megközelítés.",
+      items: [
+        { num: "14", unit: "év", label: "Digitális tapasztalat", desc: "Front-end fejlesztés, SEO, WordPress, digitális marketing — 2010 óta." },
+        { num: "AI", unit: "",   label: "Augmented fejlesztés",  desc: "Gyorsabb átadás, okosabb megoldások. AI eszközöket használok, hogy többet kapj a keretedből." },
+        { num: "📍", unit: "",   label: "Helyi + remote",         desc: "Esztergom-alapú. Dolgozom helyi ügyfelekkel és az ország más pontjain is." },
+      ],
+    },
+    packages: {
+      label: "Árak",
+      title: "Átlátható csomagok.",
+      note: "Az árak ÁFÁ-t tartalmaznak. Egyedi ajánlat is kérhető.",
+      items: [
+        {
+          name: "Alap", price: "150 000 Ft", period: "", highlight: false,
+          desc: "Tökéletes kis vállalkozásoknak, akik most lépnek online.",
+          features: ["5 aloldalas weboldal", "Mobilbarát dizájn", "SEO beállítás", "Google Cégem optimalizálás", "1 hónap ingyenes support"],
+          cta: "Elkezdeni",
+        },
+        {
+          name: "Üzleti", price: "280 000 Ft", period: "", highlight: true,
+          desc: "Minden ami az Alapban van, plusz növekedési eszközök.",
+          features: ["Minden ami az Alapban van", "Google Ads kampány beállítás", "Szövegírás (5 oldal)", "Analytics + Search Console", "2 hónap ingyenes support"],
+          cta: "Legnépszerűbb",
+        },
+        {
+          name: "Havidíjas", price: "45 000 Ft", period: "/hó", highlight: false,
+          desc: "Folyamatos támogatás és növekedés meglévő oldalakhoz.",
+          features: ["Havi frissítések", "SEO monitorozás + riport", "Tartalom frissítés", "Google Ads kezelés", "Bármikor lemondható"],
+          cta: "Retainer indítása",
+        },
+      ],
+    },
+    workflow: {
+      label: "Hogyan dolgozom",
+      title: "Egyszerű folyamat.",
+      steps: [
+        { num: "01", title: "Konzultáció", desc: "Átbeszéljük a céljaidat, határidőt és keretet. Semmi kötelezettség." },
+        { num: "02", title: "Tervezés",    desc: "48 órán belül ajánlat. Jóváhagyod — nekiállunk." },
+        { num: "03", title: "Fejlesztés",  desc: "Rendszeres frissítések staging linken. Nincs meglepetés." },
+        { num: "04", title: "Átadás",      desc: "Élesítés, betanítás ha kell, 1 hónap ingyenes support." },
+      ],
+    },
+    contact: {
+      label: "Kapcsolat",
+      title: "Beszéljünk.",
+      sub: "24 órán belül válaszolok. Vagy érj el közvetlenül:",
+      namePh: "Neved",
+      emailPh: "Email cím",
+      phonePh: "Telefonszám (nem kötelező)",
+      msgPh: "Meséld el a projektedet…",
+      send: "Üzenet küldése",
+      sending: "Küldés…",
+      success: "Megkaptam! 24 órán belül visszajelzek.",
+      error: "Hiba történt. Írj emailt közvetlenül.",
+    },
+  },
+};
+
+// ── Segéd animációk ───────────────────────────────────────────────────────────
+const fadeUp = { hidden: { opacity: 0, y: 24 }, visible: { opacity: 1, y: 0, transition: { duration: 0.55, ease: "easeOut" } } };
+const stagger = { hidden: {}, visible: { transition: { staggerChildren: 0.1 } } };
+
+// ── Fő komponens ──────────────────────────────────────────────────────────────
 export default function Hire() {
   const { lang } = useLang();
-  const hu = lang === "hu";
+  const tx = TX[lang] ?? TX.en;
 
-  const [form, setForm] = useState({ name: "", email: "", company: "", budget: "", message: "" });
+  const [form, setForm]     = useState({ name: "", email: "", phone: "", message: "" });
   const [status, setStatus] = useState("idle");
+
+  // Meta frissítés
+  useEffect(() => {
+    const prev = document.title;
+    document.title = tx.meta.title;
+    const el = document.querySelector('meta[name="description"]');
+    const prevDesc = el?.getAttribute("content") || "";
+    el?.setAttribute("content", tx.meta.desc);
+    return () => {
+      document.title = prev;
+      el?.setAttribute("content", prevDesc);
+    };
+  }, [tx]);
 
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
@@ -107,169 +227,295 @@ export default function Hire() {
         body: JSON.stringify({ ...form, _subject: `Hire inquiry from ${form.name}` }),
       });
       setStatus(res.ok ? "success" : "error");
-    } catch {
-      setStatus("error");
-    }
+    } catch { setStatus("error"); }
   };
 
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a" }}>
+    <div style={{ fontFamily: "'Inter', sans-serif", background: BG, color: "#fff", minHeight: "100vh" }}>
       <Navbar />
 
-      {/* Hero */}
-      <section style={{ background: "#1a1a1a", color: "#fff", padding: "10rem 2rem 6rem", textAlign: "center" }}>
-        <motion.div variants={fadeUp} initial="hidden" animate="visible">
-          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-            {hu ? "Digitális szolgáltatások" : "Digital services"}
-          </p>
-          <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1.5rem", color: "#fff" }}>
-            {hu ? "14 év.\nEpítsünk valamit." : "14 years.\nLet's build something."}
-          </h1>
-          <p style={{ fontSize: "1.1rem", color: "#aaa", lineHeight: 1.8, maxWidth: "540px", margin: "0 auto 3rem" }}>
-            {hu
-              ? "Front-end fejlesztés, WordPress, SEO, Google Ads. Vállalkozásoknak és egyéni vállalkozóknak, akik eredményt akarnak — nem csak egy szép weboldalt."
-              : "Front-end development, WordPress, SEO, Google Ads. For small businesses and freelancers who want results, not just a pretty website."
-            }
-          </p>
-          <div style={{ display: "flex", justifyContent: "center", gap: "0.75rem" }}>
-            <a href="#contact-form"
-              style={{ padding: "0.9rem 2rem", background: "#fff", color: "#1a1a1a", textDecoration: "none", borderRadius: "2px", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.05em" }}>
-              {hu ? "Írd meg, mire van szükséged" : "Tell me what you need"}
-            </a>
-          </div>
-        </motion.div>
+      {/* ══════════════════════════════════════════════════════════
+          1. HERO
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ position: "relative", minHeight: "100vh", display: "flex", alignItems: "center", overflow: "hidden", padding: "8rem 2rem 6rem" }}>
+
+        {/* Háttér gradiens */}
+        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", background: `radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,255,0.07) 0%, transparent 70%)` }} />
+        <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: "1px", background: `linear-gradient(to right, transparent, ${A}40, transparent)` }} />
+
+        <div style={{ maxWidth: "860px", margin: "0 auto", textAlign: "center", position: "relative", zIndex: 1 }}>
+          <motion.div variants={fadeUp} initial="hidden" animate="visible">
+
+            {/* Badge */}
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.35rem 1rem", border: `1px solid ${AD}`, borderRadius: "999px", fontSize: "0.75rem", letterSpacing: "0.12em", color: A, textTransform: "uppercase", marginBottom: "2rem" }}>
+              <span style={{ width: "6px", height: "6px", borderRadius: "50%", background: A, boxShadow: `0 0 8px ${A}` }} />
+              {tx.hero.badge}
+            </div>
+
+            {/* Headline */}
+            <h1 style={{ fontSize: "clamp(2.6rem, 7vw, 5rem)", fontWeight: 800, lineHeight: 1.08, letterSpacing: "-0.03em", marginBottom: "1.5rem", color: "#fff" }}>
+              {tx.hero.h1a}{" "}
+              <span style={{ color: A }}>{tx.hero.h1accent}</span>
+            </h1>
+
+            {/* Subtitle */}
+            <p style={{ fontSize: "clamp(1rem, 2.2vw, 1.2rem)", color: "#888", lineHeight: 1.8, maxWidth: "580px", margin: "0 auto 2.5rem" }}>
+              {tx.hero.sub}
+            </p>
+
+            {/* CTAs */}
+            <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
+              <a href="#contact-form" style={{ padding: "0.9rem 2rem", background: A, color: "#000", borderRadius: "6px", fontSize: "0.92rem", fontWeight: 700, letterSpacing: "0.03em", textDecoration: "none", transition: "opacity 0.2s" }}
+                onMouseOver={e => e.currentTarget.style.opacity = "0.88"}
+                onMouseOut={e => e.currentTarget.style.opacity = "1"}>
+                {tx.hero.cta}
+              </a>
+              <a href="#packages" style={{ padding: "0.9rem 2rem", background: "transparent", color: "#fff", border: `1px solid ${BR}`, borderRadius: "6px", fontSize: "0.92rem", fontWeight: 500, textDecoration: "none", transition: "border-color 0.2s" }}
+                onMouseOver={e => e.currentTarget.style.borderColor = A}
+                onMouseOut={e => e.currentTarget.style.borderColor = BR}>
+                {tx.hero.sec}
+              </a>
+            </div>
+
+          </motion.div>
+        </div>
       </section>
 
-      {/* Packages */}
-      <section style={{ padding: "7rem 2rem", background: "#f7f6f3" }}>
-        <div style={{ maxWidth: "960px", margin: "0 auto" }}>
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "4rem" }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-              {hu ? "Csomagok" : "Packages"}
+      {/* ══════════════════════════════════════════════════════════
+          2. SZOLGÁLTATÁSOK
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "7rem 2rem", background: S1, borderTop: `1px solid ${BR}` }}>
+        <div style={{ maxWidth: "1040px", margin: "0 auto" }}>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} style={{ marginBottom: "3.5rem", textAlign: "center" }}>
+            <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: A, textTransform: "uppercase", marginBottom: "0.75rem", fontWeight: 600 }}>
+              {tx.services.label}
             </p>
-            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600 }}>
-              {hu ? "Átlátható árak." : "Transparent pricing."}
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>
+              {tx.services.title}
             </h2>
           </motion.div>
 
-          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
-            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem" }}>
-            {packages.map(pkg => (
-              <motion.div key={pkg.name} variants={staggerItem}
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1px", background: BR, borderRadius: "12px", overflow: "hidden", border: `1px solid ${BR}` }}>
+            {tx.services.items.map((svc) => {
+              const Icon = ICON_MAP[svc.icon];
+              return (
+                <motion.div key={svc.title} variants={fadeUp}
+                  style={{ background: BG, padding: "2rem", cursor: "default", transition: "background 0.2s" }}
+                  onMouseOver={e => e.currentTarget.style.background = S1}
+                  onMouseOut={e => e.currentTarget.style.background = BG}>
+                  <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: AB, border: `1px solid ${AD}`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.25rem" }}>
+                    {Icon && <Icon size={18} color={A} />}
+                  </div>
+                  <p style={{ fontSize: "1rem", fontWeight: 600, color: "#fff", marginBottom: "0.5rem" }}>{svc.title}</p>
+                  <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: 1.6 }}>{svc.desc}</p>
+                </motion.div>
+              );
+            })}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          3. MIÉRT ÉN
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "7rem 2rem", background: BG, borderTop: `1px solid ${BR}` }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} style={{ marginBottom: "3.5rem", textAlign: "center" }}>
+            <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: A, textTransform: "uppercase", marginBottom: "0.75rem", fontWeight: 600 }}>
+              {tx.why.label}
+            </p>
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>
+              {tx.why.title}
+            </h2>
+          </motion.div>
+
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "2rem" }}>
+            {tx.why.items.map((item) => (
+              <motion.div key={item.label} variants={fadeUp}
+                style={{ padding: "2.5rem 2rem", background: S1, border: `1px solid ${BR}`, borderRadius: "12px", textAlign: "center" }}>
+                <div style={{ fontSize: item.num.length > 2 ? "2rem" : "3rem", fontWeight: 800, color: A, lineHeight: 1, marginBottom: "0.25rem", letterSpacing: "-0.02em" }}>
+                  {item.num}
+                  <span style={{ fontSize: "1rem", fontWeight: 400, color: "#555", marginLeft: "0.25rem" }}>{item.unit}</span>
+                </div>
+                <p style={{ fontSize: "0.9rem", fontWeight: 600, color: "#fff", margin: "0.75rem 0 0.5rem" }}>{item.label}</p>
+                <p style={{ fontSize: "0.82rem", color: "#666", lineHeight: 1.6 }}>{item.desc}</p>
+              </motion.div>
+            ))}
+          </motion.div>
+        </div>
+      </section>
+
+      {/* ══════════════════════════════════════════════════════════
+          4. CSOMAGOK
+      ══════════════════════════════════════════════════════════ */}
+      <section id="packages" style={{ padding: "7rem 2rem", background: S1, borderTop: `1px solid ${BR}` }}>
+        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} style={{ marginBottom: "3.5rem", textAlign: "center" }}>
+            <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: A, textTransform: "uppercase", marginBottom: "0.75rem", fontWeight: 600 }}>
+              {tx.packages.label}
+            </p>
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", marginBottom: "0.75rem" }}>
+              {tx.packages.title}
+            </h2>
+            <p style={{ fontSize: "0.85rem", color: "#555" }}>{tx.packages.note}</p>
+          </motion.div>
+
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
+            style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: "1.5rem", alignItems: "start" }}>
+            {tx.packages.items.map((pkg) => (
+              <motion.div key={pkg.name} variants={fadeUp}
                 style={{
-                  background: pkg.highlight ? "#1a1a1a" : "#fff",
-                  color: pkg.highlight ? "#fff" : "#1a1a1a",
-                  padding: "2.5rem",
-                  borderRadius: "2px",
-                  border: pkg.highlight ? "none" : "1px solid #e8e8e8",
+                  padding: "2.5rem 2rem",
+                  background: pkg.highlight ? AB : BG,
+                  border: `1px solid ${pkg.highlight ? AD : BR}`,
+                  borderRadius: "12px",
+                  position: "relative",
+                  boxShadow: pkg.highlight ? `0 0 40px rgba(0,212,255,0.08)` : "none",
                 }}>
-                <p style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: pkg.highlight ? "#aaa" : "#bbb", textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                {pkg.highlight && (
+                  <div style={{ position: "absolute", top: "-1px", left: "50%", transform: "translateX(-50%)", background: A, color: "#000", fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.1em", textTransform: "uppercase", padding: "0.25rem 0.9rem", borderRadius: "0 0 6px 6px" }}>
+                    ★ {pkg.cta}
+                  </div>
+                )}
+                <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: pkg.highlight ? A : "#555", textTransform: "uppercase", fontWeight: 600, marginBottom: "1rem" }}>
                   {pkg.name}
                 </p>
-                <p style={{ fontSize: "2rem", fontWeight: 700, marginBottom: "1rem" }}>
-                  {hu ? pkg.priceHu : pkg.price}
-                </p>
-                <p style={{ fontSize: "0.9rem", color: pkg.highlight ? "#bbb" : "#666", lineHeight: 1.6, marginBottom: "2rem" }}>
-                  {hu ? pkg.descHu : pkg.desc}
-                </p>
-                <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "0.6rem" }}>
-                  {(hu ? pkg.itemsHu : pkg.items).map(item => (
-                    <li key={item} style={{ fontSize: "0.85rem", color: pkg.highlight ? "#bbb" : "#555", display: "flex", gap: "0.6rem", alignItems: "flex-start" }}>
-                      <span style={{ color: pkg.highlight ? "#888" : "#bbb", flexShrink: 0 }}>—</span>
-                      {item}
+                <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem", marginBottom: "0.75rem" }}>
+                  <span style={{ fontSize: "2rem", fontWeight: 800, color: "#fff", letterSpacing: "-0.03em" }}>{pkg.price}</span>
+                  {pkg.period && <span style={{ fontSize: "0.9rem", color: "#555" }}>{pkg.period}</span>}
+                </div>
+                <p style={{ fontSize: "0.85rem", color: "#666", lineHeight: 1.6, marginBottom: "1.75rem" }}>{pkg.desc}</p>
+                <ul style={{ listStyle: "none", padding: 0, margin: "0 0 2rem", display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+                  {pkg.features.map(f => (
+                    <li key={f} style={{ display: "flex", gap: "0.6rem", alignItems: "flex-start", fontSize: "0.85rem", color: "#aaa" }}>
+                      <Check size={14} color={A} style={{ flexShrink: 0, marginTop: "2px" }} />
+                      {f}
                     </li>
                   ))}
                 </ul>
+                <a href="#contact-form"
+                  style={{
+                    display: "block", textAlign: "center", padding: "0.8rem",
+                    background: pkg.highlight ? A : "transparent",
+                    color: pkg.highlight ? "#000" : A,
+                    border: `1px solid ${pkg.highlight ? A : AD}`,
+                    borderRadius: "6px", fontSize: "0.88rem", fontWeight: 600,
+                    textDecoration: "none", transition: "opacity 0.2s",
+                  }}
+                  onMouseOver={e => e.currentTarget.style.opacity = "0.85"}
+                  onMouseOut={e => e.currentTarget.style.opacity = "1"}>
+                  {pkg.highlight ? pkg.cta : pkg.cta}
+                </a>
               </motion.div>
             ))}
           </motion.div>
         </div>
       </section>
 
-      {/* Process */}
-      <section style={{ padding: "7rem 2rem", background: "#fff" }}>
-        <div style={{ maxWidth: "720px", margin: "0 auto" }}>
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "4rem" }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-              {hu ? "Hogyan dolgozom" : "How it works"}
+      {/* ══════════════════════════════════════════════════════════
+          5. MUNKAFOLYAMAT
+      ══════════════════════════════════════════════════════════ */}
+      <section style={{ padding: "7rem 2rem", background: BG, borderTop: `1px solid ${BR}` }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }} style={{ marginBottom: "3.5rem", textAlign: "center" }}>
+            <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: A, textTransform: "uppercase", marginBottom: "0.75rem", fontWeight: 600 }}>
+              {tx.workflow.label}
             </p>
-            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600 }}>
-              {hu ? "Egyszerű folyamat." : "Simple process."}
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em" }}>
+              {tx.workflow.title}
             </h2>
           </motion.div>
 
-          <div style={{ display: "flex", flexDirection: "column" }}>
-            {process.map((step, i) => (
-              <motion.div key={step.step}
-                variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
-                transition={{ delay: i * 0.1 }}
-                style={{ display: "grid", gridTemplateColumns: "60px 1fr", gap: "2rem", padding: "2.5rem 0", borderBottom: i < process.length - 1 ? "1px solid #f0f0f0" : "none" }}>
-                <span style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: "#ddd", fontWeight: 600, paddingTop: "4px" }}>
-                  {step.step}
-                </span>
-                <div>
-                  <p style={{ fontSize: "1.1rem", fontWeight: 600, marginBottom: "0.5rem" }}>
-                    {hu ? step.hu : step.en}
-                  </p>
-                  <p style={{ fontSize: "0.9rem", color: "#666", lineHeight: 1.7 }}>
-                    {hu ? step.bodyHu : step.bodyEn}
-                  </p>
+          <motion.div variants={stagger} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
+            className="workflow-grid"
+            style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "0" }}>
+            {tx.workflow.steps.map((step, i) => (
+              <motion.div key={step.num} variants={fadeUp}
+                style={{ position: "relative", padding: "0 1.5rem 0 0", paddingRight: i < 3 ? "1.5rem" : 0 }}>
+                {/* Összekötő vonal */}
+                {i < 3 && (
+                  <div style={{ position: "absolute", top: "19px", left: "calc(40px + 1rem)", right: 0, height: "1px", background: `linear-gradient(to right, ${AD}, transparent)` }} />
+                )}
+                {/* Szám badge */}
+                <div style={{ width: "40px", height: "40px", borderRadius: "8px", background: AB, border: `1px solid ${AD}`, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: "1.25rem", flexShrink: 0 }}>
+                  <span style={{ fontSize: "0.75rem", fontWeight: 700, color: A, letterSpacing: "0.05em" }}>{step.num}</span>
                 </div>
+                <p style={{ fontSize: "0.95rem", fontWeight: 600, color: "#fff", marginBottom: "0.5rem" }}>{step.title}</p>
+                <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: 1.6 }}>{step.desc}</p>
               </motion.div>
             ))}
-          </div>
+          </motion.div>
         </div>
       </section>
 
-      {/* Contact form */}
-      <section id="contact-form" style={{ padding: "7rem 2rem", background: "#f0f2f5" }}>
-        <div style={{ maxWidth: "600px", margin: "0 auto" }}>
-          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "1.5rem" }}>
-              {hu ? "Kapcsolat" : "Get in touch"}
+      {/* ══════════════════════════════════════════════════════════
+          6. CONTACT FORM
+      ══════════════════════════════════════════════════════════ */}
+      <section id="contact-form" style={{ padding: "7rem 2rem", background: S1, borderTop: `1px solid ${BR}` }}>
+        <div style={{ maxWidth: "620px", margin: "0 auto" }}>
+          <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
+            <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: A, textTransform: "uppercase", marginBottom: "0.75rem", fontWeight: 600 }}>
+              {tx.contact.label}
             </p>
-            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 600, marginBottom: "1rem" }}>
-              {hu ? "Számíts gyors válaszra." : "Expect a quick reply."}
+            <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", marginBottom: "0.75rem" }}>
+              {tx.contact.title}
             </h2>
-            <p style={{ fontSize: "0.95rem", color: "#666", lineHeight: 1.7, marginBottom: "3rem" }}>
-              {hu
-                ? "48 órán belül válaszolok. Ha azonnali kérdésed van, írj emailt: richard.kormendi@gmail.com"
-                : "I reply within 48 hours. For urgent questions, email directly: richard.kormendi@gmail.com"
-              }
+            <p style={{ fontSize: "0.9rem", color: "#555", marginBottom: "2.5rem" }}>
+              {tx.contact.sub}
             </p>
 
+            {/* Közvetlen elérhetőségek */}
+            <div style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", marginBottom: "2.5rem" }}>
+              {[
+                { Icon: Mail,  text: "richard.kormendi@gmail.com", href: "mailto:richard.kormendi@gmail.com" },
+                { Icon: Phone, text: "+36 30 148 0917",            href: "tel:+36301480917" },
+                { Icon: MapPin,text: "Esztergom",                   href: null },
+              ].map(({ Icon, text, href }) => (
+                <div key={text} style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <Icon size={14} color={A} />
+                  {href
+                    ? <a href={href} style={{ fontSize: "0.85rem", color: "#888", textDecoration: "none" }}
+                        onMouseOver={e => e.currentTarget.style.color = A}
+                        onMouseOut={e => e.currentTarget.style.color = "#888"}>{text}</a>
+                    : <span style={{ fontSize: "0.85rem", color: "#888" }}>{text}</span>
+                  }
+                </div>
+              ))}
+            </div>
+
+            {/* Form */}
             {status === "success" ? (
-              <p style={{ padding: "1.5rem", background: "#f0faf0", border: "1px solid #c3e6cb", borderRadius: "2px", color: "#2d6a4f", fontSize: "0.95rem" }}>
-                {hu ? "Megkaptam! 48 órán belül visszajelzek." : "Got it! I'll reply within 48 hours."}
-              </p>
+              <div style={{ padding: "1.5rem", background: AB, border: `1px solid ${AD}`, borderRadius: "8px", color: A, fontSize: "0.95rem" }}>
+                {tx.contact.success}
+              </div>
             ) : (
               <form onSubmit={handleSubmit} style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                <div className="hire-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
+                <div className="hire-grid-2" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                   <input name="name" required value={form.name} onChange={handleChange}
-                    placeholder={hu ? "Neved" : "Your name"} style={inputStyle} />
+                    placeholder={tx.contact.namePh} style={inputStyle} />
                   <input name="email" type="email" required value={form.email} onChange={handleChange}
-                    placeholder={hu ? "Email cím" : "Email address"} style={inputStyle} />
+                    placeholder={tx.contact.emailPh} style={inputStyle} />
                 </div>
-                <div className="hire-form-grid" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
-                  <input name="company" value={form.company} onChange={handleChange}
-                    placeholder={hu ? "Cégnév / Projekt neve" : "Company / Project"} style={inputStyle} />
-                  <select name="budget" value={form.budget} onChange={handleChange} style={inputStyle}>
-                    <option value="">{hu ? "Tervezett keret (nem kötelező)" : "Budget (optional)"}</option>
-                    <option value="<€500">{hu ? "150 000 Ft alatt" : "Under €500"}</option>
-                    <option value="€500–1500">{hu ? "150 000 – 600 000 Ft" : "€500 – €1 500"}</option>
-                    <option value=">€1500">{hu ? "600 000 Ft felett" : "Over €1 500"}</option>
-                  </select>
-                </div>
+                <input name="phone" value={form.phone} onChange={handleChange}
+                  placeholder={tx.contact.phonePh} style={inputStyle} />
                 <textarea name="message" rows={5} required value={form.message} onChange={handleChange}
-                  placeholder={hu ? "Meséld el, miről szólna a projekt..." : "Tell me about the project..."} style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
+                  placeholder={tx.contact.msgPh}
+                  style={{ ...inputStyle, resize: "vertical", fontFamily: "inherit" }} />
                 {status === "error" && (
-                  <p style={{ fontSize: "0.85rem", color: "#c0392b" }}>
-                    {hu ? "Hiba. Írj emailt közvetlenül." : "Something went wrong. Please email directly."}
-                  </p>
+                  <p style={{ fontSize: "0.85rem", color: "#ff4e42" }}>{tx.contact.error}</p>
                 )}
                 <button type="submit" disabled={status === "loading"}
-                  style={{ alignSelf: "flex-start", padding: "0.9rem 2rem", background: "#1a1a1a", color: "#fff", border: "none", borderRadius: "2px", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.05em", cursor: status === "loading" ? "not-allowed" : "pointer", opacity: status === "loading" ? 0.7 : 1, fontFamily: "inherit" }}>
-                  {status === "loading" ? "..." : (hu ? "Küldés" : "Send")}
+                  style={{
+                    alignSelf: "flex-start", padding: "0.9rem 2.25rem",
+                    background: status === "loading" ? "#222" : A,
+                    color: status === "loading" ? "#555" : "#000",
+                    border: "none", borderRadius: "6px", fontSize: "0.92rem", fontWeight: 700,
+                    cursor: status === "loading" ? "not-allowed" : "pointer",
+                    fontFamily: "inherit", transition: "opacity 0.2s",
+                  }}>
+                  {status === "loading" ? tx.contact.sending : tx.contact.send}
                 </button>
               </form>
             )}
@@ -278,24 +524,36 @@ export default function Hire() {
       </section>
 
       <Footer />
+
       <style>{`
-        @media (max-width: 520px) {
-          .hire-form-grid { grid-template-columns: 1fr !important; }
+        @media (max-width: 540px) {
+          .hire-grid-2 { grid-template-columns: 1fr !important; }
+          .workflow-grid { grid-template-columns: 1fr 1fr !important; }
+        }
+        @media (max-width: 360px) {
+          .workflow-grid { grid-template-columns: 1fr !important; }
+        }
+        input::placeholder, textarea::placeholder { color: #3a3a3a; }
+        input:focus, textarea:focus, select:focus {
+          outline: none;
+          border-color: ${AD} !important;
+          box-shadow: 0 0 0 3px rgba(0,212,255,0.07);
         }
       `}</style>
     </div>
   );
 }
 
+// ── Input stílus ──────────────────────────────────────────────────────────────
 const inputStyle = {
   padding: "0.85rem 1rem",
-  border: "1px solid #ddd",
-  borderRadius: "2px",
+  background: "#0f0f0f",
+  border: `1px solid #2a2a2a`,
+  borderRadius: "6px",
   fontSize: "0.9rem",
-  background: "#fff",
-  color: "#1a1a1a",
-  outline: "none",
+  color: "#fff",
   width: "100%",
   boxSizing: "border-box",
   fontFamily: "inherit",
+  transition: "border-color 0.2s",
 };
