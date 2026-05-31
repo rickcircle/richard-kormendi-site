@@ -23,7 +23,7 @@ export default function About() {
         </motion.div>
 
         {/* Bento Grid */}
-        <div style={{
+        <div className="bento-grid" style={{
           display: "grid",
           gridTemplateColumns: "repeat(4, 1fr)",
           gridTemplateRows: "auto",
@@ -97,23 +97,27 @@ export default function About() {
 
       {/* Reszponzív stílusok */}
       <style>{`
-        @media (max-width: 768px) {
-          #about > div > div:last-child {
+        @media (max-width: 900px) {
+          .bento-grid {
             grid-template-columns: 1fr 1fr !important;
           }
-          #about > div > div:last-child > div:first-child {
+          .bento-grid > div:first-child {
             grid-column: span 2 !important;
             grid-row: span 1 !important;
           }
-          #about > div > div:last-child > div:nth-child(2) {
+          .bento-grid > div:nth-child(2) {
+            grid-column: span 2 !important;
+          }
+          .bento-grid > div:nth-child(5),
+          .bento-grid > div:nth-child(6) {
             grid-column: span 2 !important;
           }
         }
-        @media (max-width: 480px) {
-          #about > div > div:last-child {
+        @media (max-width: 520px) {
+          .bento-grid {
             grid-template-columns: 1fr !important;
           }
-          #about > div > div:last-child > * {
+          .bento-grid > div {
             grid-column: span 1 !important;
             grid-row: span 1 !important;
           }

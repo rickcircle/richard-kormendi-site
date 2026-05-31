@@ -61,19 +61,19 @@ const TX = {
       note: "Prices include VAT. Custom quotes available on request.",
       items: [
         {
-          name: "Starter", price: "150 000 Ft", period: "", highlight: false,
+          name: "Starter", price: "180 000 Ft", period: "", highlight: false,
           desc: "Perfect for small businesses stepping online for the first time.",
           features: ["5-page website", "Mobile-first design", "SEO setup", "Google Business Profile", "1 month free support"],
           cta: "Get started",
         },
         {
-          name: "Business", price: "280 000 Ft", period: "", highlight: true,
+          name: "Business", price: "320 000 Ft", period: "", highlight: true,
           desc: "Everything in Starter, plus the tools to grow faster.",
           features: ["Everything in Starter", "Google Ads campaign setup", "Copywriting (5 pages)", "Analytics + Search Console", "2 months free support"],
           cta: "Most popular",
         },
         {
-          name: "Monthly", price: "45 000 Ft", period: "/mo", highlight: false,
+          name: "Monthly", price: "60 000 Ft", period: "/mo", highlight: false,
           desc: "Ongoing support and growth for your existing site.",
           features: ["Monthly updates", "SEO monitoring + report", "Content refresh", "Google Ads management", "Cancel anytime"],
           cta: "Start retainer",
@@ -145,19 +145,19 @@ const TX = {
       note: "Az árak ÁFÁ-t tartalmaznak. Egyedi ajánlat is kérhető.",
       items: [
         {
-          name: "Alap", price: "150 000 Ft", period: "", highlight: false,
+          name: "Alap", price: "180 000 Ft", period: "", highlight: false,
           desc: "Tökéletes kis vállalkozásoknak, akik most lépnek online.",
           features: ["5 aloldalas weboldal", "Mobilbarát dizájn", "SEO beállítás", "Google Cégem optimalizálás", "1 hónap ingyenes support"],
           cta: "Elkezdeni",
         },
         {
-          name: "Üzleti", price: "280 000 Ft", period: "", highlight: true,
+          name: "Üzleti", price: "320 000 Ft", period: "", highlight: true,
           desc: "Minden ami az Alapban van, plusz növekedési eszközök.",
           features: ["Minden ami az Alapban van", "Google Ads kampány beállítás", "Szövegírás (5 oldal)", "Analytics + Search Console", "2 hónap ingyenes support"],
           cta: "Legnépszerűbb",
         },
         {
-          name: "Havidíjas", price: "45 000 Ft", period: "/hó", highlight: false,
+          name: "Havidíjas", price: "60 000 Ft", period: "/hó", highlight: false,
           desc: "Folyamatos támogatás és növekedés meglévő oldalakhoz.",
           features: ["Havi frissítések", "SEO monitorozás + riport", "Tartalom frissítés", "Google Ads kezelés", "Bármikor lemondható"],
           cta: "Retainer indítása",
