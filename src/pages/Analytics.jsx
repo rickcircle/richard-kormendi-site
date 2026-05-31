@@ -2,6 +2,159 @@ import { useEffect, useState, useRef } from "react";
 import { motion } from "framer-motion";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { useLang } from "../context/LanguageContext";
+
+// ── Fordítások ────────────────────────────────────────────────────────────────
+const TX = {
+  en: {
+    badge: "Portfolio Project · Data Analysis",
+    h1a: "Analytics Case Study:",
+    h1b: "richardkormendi.com",
+    sub: "A full breakdown of the first 30 days after launch — traffic patterns, audience behaviour, and actionable recommendations.",
+    tags: ["May 1–30, 2026", "Google Analytics 4", "Demo / Mock Data"],
+    kpiLabel: "Key Performance Indicators",
+    kpis: [
+      { label: "Unique Visitors",        value: "1,247",  sub: "in 30 days" },
+      { label: "Sessions",               value: "1,579",  sub: "1.27 sessions / visitor" },
+      { label: "Bounce Rate",            value: "42.3%",  sub: "↓ 13pt below avg." },
+      { label: "Avg. Session Duration",  value: "2m 34s", sub: "industry avg. 2m 17s" },
+    ],
+    trendLabel: "Daily Traffic",
+    trendTitle: "Visitor trend — first 30 days",
+    trendSub: "Spikes on May 9, 13, 20 correspond to social media activity. Hover for daily detail.",
+    sourcesLabel: "Traffic Sources",
+    channelsTitle: "Acquisition channels",
+    sources: [
+      { name: "Organic Search", pct: 38, sessions: 600 },
+      { name: "Direct",         pct: 28, sessions: 442 },
+      { name: "Social",         pct: 24, sessions: 379 },
+      { name: "Referral",       pct: 10, sessions: 158 },
+    ],
+    stats: [
+      { label: "Mobile traffic",  value: "71%", note: "iPhone & Android",         bar: 71 },
+      { label: "Desktop traffic", value: "25%", note: "Laptop & desktop",          bar: 25 },
+      { label: "Tablet",          value: "4%",  note: "iPad & other",              bar: 4  },
+      { label: "New visitors",    value: "79%", note: "vs 21% returning",          bar: 79 },
+      { label: "Pages / session", value: "3.2", note: "industry avg. 2.8",         bar: null },
+      { label: "Top country",     value: "HU",  note: "Hungary — 68% of traffic",  bar: null },
+    ],
+    pagesLabel: "Top Pages",
+    pagesTitle: "Most visited pages",
+    pageCols: ["#", "Page", "Pageviews", "Avg. Time", "Share"],
+    pages: [
+      { rank: 1, page: "/",          label: "Home",       views: 1247, avgTime: "2:34" },
+      { rank: 2, page: "/epk",       label: "EPK",        views: 312,  avgTime: "3:12" },
+      { rank: 3, page: "/hire",      label: "Hire",       views: 289,  avgTime: "4:01" },
+      { rank: 4, page: "/audit",     label: "Audit Tool", views: 187,  avgTime: "5:23" },
+      { rank: 5, page: "/analytics", label: "Analytics",  views: 94,   avgTime: "6:45" },
+    ],
+    insightsLabel: "Analysis",
+    insightsTitle: "What the data says",
+    recLabel: "→ Recommendation",
+    insights: [
+      {
+        icon: "📌",
+        title: "Direct traffic (28%) signals strong offline presence",
+        body: "Nearly a third of visitors arrived by typing the URL directly — a clear sign that real-world introductions, business cards, and word-of-mouth are converting. This is rare for a brand-new domain.",
+        rec: "Lean into personal outreach. Each in-person pitch is worth more than most paid clicks.",
+      },
+      {
+        icon: "🎵",
+        title: "EPK is the second most visited page",
+        body: "312 sessions on the EPK with an average dwell time of 3:12 — music industry contacts are reading thoroughly. High engagement suggests the content is relevant to their decision process.",
+        rec: "Add a direct contact CTA above the fold on the EPK page to reduce friction for bookers.",
+      },
+      {
+        icon: "📱",
+        title: "Bounce rate (42.3%) is well below industry average",
+        body: "The sector benchmark for personal portfolio sites is 55–65%. A 42.3% bounce rate means visitors are scrolling through multiple sections — the single-page layout is working.",
+        rec: "Monitor this as traffic grows. A spike often signals a slow page or broken section on a specific device.",
+      },
+      {
+        icon: "🔍",
+        title: "Organic search growing steadily by week 3",
+        body: "Daily organic sessions climbed from ~8/day in week 1 to ~25/day by week 3, reflecting Google's indexing and early SEO gains. The /audit tool draws long-tail queries.",
+        rec: "Publish one piece of content per month targeting local business + web audit keywords to compound this growth.",
+      },
+    ],
+    footerText: "Analysis powered by",
+    footerMid: "Demo data based on realistic GA4 benchmarks for a new personal domain",
+  },
+  hu: {
+    badge: "Portfólió Projekt · Adatelemzés",
+    h1a: "Analytics esettanulmány:",
+    h1b: "richardkormendi.com",
+    sub: "Az első 30 nap forgalmának teljes elemzése — forgalmi minták, felhasználói viselkedés és konkrét fejlesztési javaslatok.",
+    tags: ["2026. május 1–30.", "Google Analytics 4", "Demo / tesztadatok"],
+    kpiLabel: "Kulcsmutatók (KPI)",
+    kpis: [
+      { label: "Egyedi látogatók",        value: "1 247",  sub: "30 nap alatt" },
+      { label: "Munkamenetek",             value: "1 579",  sub: "1,27 munkamenet / látogató" },
+      { label: "Visszafordulási arány",    value: "42,3%",  sub: "↓ 13pt az átlag alatt" },
+      { label: "Átl. munkamenet hossz",   value: "2p 34mp", sub: "iparági átlag: 2p 17mp" },
+    ],
+    trendLabel: "Napi forgalom",
+    trendTitle: "Látogatói trend — első 30 nap",
+    trendSub: "A kiugrások (máj. 9, 13, 20) közösségi média aktivitáshoz köthetők. Hover a napi adatokhoz.",
+    sourcesLabel: "Forgalomforrások",
+    channelsTitle: "Akvizíciós csatornák",
+    sources: [
+      { name: "Organikus keresés", pct: 38, sessions: 600 },
+      { name: "Közvetlen",         pct: 28, sessions: 442 },
+      { name: "Közösségi média",   pct: 24, sessions: 379 },
+      { name: "Hivatkozás",        pct: 10, sessions: 158 },
+    ],
+    stats: [
+      { label: "Mobil forgalom",     value: "71%", note: "iPhone és Android",           bar: 71 },
+      { label: "Asztali forgalom",   value: "25%", note: "Laptop és asztali gép",        bar: 25 },
+      { label: "Táblagép",           value: "4%",  note: "iPad és egyéb",                bar: 4  },
+      { label: "Új látogatók",       value: "79%", note: "vs 21% visszatérő",            bar: 79 },
+      { label: "Oldalak / munkam.",  value: "3,2", note: "iparági átlag: 2,8",           bar: null },
+      { label: "Vezető ország",      value: "HU",  note: "Magyarország — forgalom 68%",  bar: null },
+    ],
+    pagesLabel: "Legtöbbet látogatott oldalak",
+    pagesTitle: "Oldalszintű elemzés",
+    pageCols: ["#", "Oldal", "Oldalletöltés", "Átl. idő", "Arány"],
+    pages: [
+      { rank: 1, page: "/",          label: "Főoldal",       views: 1247, avgTime: "2:34" },
+      { rank: 2, page: "/epk",       label: "EPK",           views: 312,  avgTime: "3:12" },
+      { rank: 3, page: "/hire",      label: "Hire",          views: 289,  avgTime: "4:01" },
+      { rank: 4, page: "/audit",     label: "Audit eszköz",  views: 187,  avgTime: "5:23" },
+      { rank: 5, page: "/analytics", label: "Analytics",     views: 94,   avgTime: "6:45" },
+    ],
+    insightsLabel: "Elemzés",
+    insightsTitle: "Mit mutatnak az adatok",
+    recLabel: "→ Javaslat",
+    insights: [
+      {
+        icon: "📌",
+        title: "A közvetlen forgalom (28%) erős offline jelenlétre utal",
+        body: "A látogatók közel harmada közvetlenül írta be az URL-t — ez egyértelműen jelzi, hogy a személyes találkozók, névjegyek és szóbeszéd konvertálnak. Egy új domain esetén ez ritka és értékes.",
+        rec: "Érdemes erősen támaszkodni a személyes megkeresésekre. Egy közvetlen találkozó többet ér, mint a legtöbb fizetett kattintás.",
+      },
+      {
+        icon: "🎵",
+        title: "Az EPK oldal a második leglátogatottabb",
+        body: "312 munkamenet az EPK-n, átlagos olvasási idő 3:12 — a zeneipar szereplői alaposan olvassák az anyagot. A magas elköteleződés azt jelzi, hogy a tartalom releváns a döntéshozatalban.",
+        rec: "Érdemes közvetlen kapcsolatfelvételi CTA-t elhelyezni az EPK oldal felső részébe, hogy csökkentse a bookerek számára a súrlódást.",
+      },
+      {
+        icon: "📱",
+        title: "A visszafordulási arány (42,3%) jóval az iparági átlag alatt van",
+        body: "Személyes portfólió oldalaknál az iparági benchmark 55–65%. A 42,3%-os mutató azt jelzi, hogy a látogatók több szekciót is végignéznek — az egyoldalas elrendezés jól működik.",
+        rec: "Érdemes figyelni, ahogy nő a forgalom. Egy hirtelen növekedés általában lassú oldalt vagy hibás szekciót jelez egy adott eszközön.",
+      },
+      {
+        icon: "🔍",
+        title: "Az organikus forgalom a 3. héttől folyamatosan nő",
+        body: "A napi organikus munkamenetek ~8/napról ~25/napra nőttek az 1. héttől a 3. hétig — ez a Google indexelési folyamatát és a korai SEO eredményeket tükrözi. Az /audit eszköz hosszú farokú keresési kifejezéseket vonz.",
+        rec: "Havonta egy tartalom publikálása helyi vállalkozás + weboldal audit kulcsszavakra megfontolásra érdemes a növekedés fenntartásához.",
+      },
+    ],
+    footerText: "Az elemzés alapja:",
+    footerMid: "Demo adatok — reális GA4 benchmarkokra alapozva, egy újonnan indított személyes domain esetére",
+  },
+};
 
 // ── Mock adatok ───────────────────────────────────────────────────────────────
 const DAILY = [
@@ -17,47 +170,8 @@ const DAILY = [
   { day: "May 28", u: 43 }, { day: "May 29", u: 37 }, { day: "May 30", u: 32 },
 ];
 
-const SOURCES = [
-  { name: "Organic Search", pct: 38, sessions: 600,  color: "#1a1a1a" },
-  { name: "Direct",         pct: 28, sessions: 442,  color: "#4a4a4a" },
-  { name: "Social",         pct: 24, sessions: 379,  color: "#888" },
-  { name: "Referral",       pct: 10, sessions: 158,  color: "#bbb" },
-];
-
-const TOP_PAGES = [
-  { rank: 1, page: "/",         label: "Home",        views: 1247, avgTime: "2:34" },
-  { rank: 2, page: "/epk",      label: "EPK",         views: 312,  avgTime: "3:12" },
-  { rank: 3, page: "/hire",     label: "Hire",        views: 289,  avgTime: "4:01" },
-  { rank: 4, page: "/audit",    label: "Audit Tool",  views: 187,  avgTime: "5:23" },
-  { rank: 5, page: "/analytics",label: "Analytics",   views: 94,   avgTime: "6:45" },
-];
-
-const INSIGHTS = [
-  {
-    icon: "📌",
-    title: "Direct traffic (28%) signals strong offline presence",
-    body: "Nearly a third of visitors arrived by typing the URL directly — a clear sign that real-world introductions, business cards, and word-of-mouth are converting. This is rare for a brand-new domain.",
-    rec: "Lean into personal outreach. Each in-person pitch is worth more than most paid clicks.",
-  },
-  {
-    icon: "🎵",
-    title: "EPK is the second most visited page",
-    body: "312 sessions on the EPK with an average dwell time of 3:12 — music industry contacts are reading thoroughly. High engagement suggests the content is relevant to their decision process.",
-    rec: "Add a direct contact CTA above the fold on the EPK page to reduce friction for bookers.",
-  },
-  {
-    icon: "📱",
-    title: "Bounce rate (42.3%) is well below industry average",
-    body: "The sector benchmark for personal portfolio sites is 55–65%. A 42.3% bounce rate means visitors are scrolling through multiple sections — the single-page layout is working.",
-    rec: "Monitor this as traffic grows. A spike often signals a slow page or broken section on a specific device.",
-  },
-  {
-    icon: "🔍",
-    title: "Organic search growing steadily by week 3",
-    body: "Daily organic sessions climbed from ~8/day in week 1 to ~25/day by week 3, reflecting Google's indexing and early SEO gains. The /audit tool draws long-tail queries.",
-    rec: "Publish one piece of content per month targeting local business + web audit keywords to compound this growth.",
-  },
-];
+// Színek és számok (nyelvfüggetlenek)
+const SOURCE_COLORS = ["#1a1a1a", "#4a4a4a", "#888", "#bbb"];
 
 const fadeUp = {
   hidden:  { opacity: 0, y: 20 },
@@ -267,10 +381,16 @@ function KpiCard({ label, value, sub, delay = 0 }) {
 
 // ── Fő oldal ──────────────────────────────────────────────────────────────────
 export default function Analytics() {
+  const { lang } = useLang();
+  const tx = TX[lang];
+
   useEffect(() => {
     document.title = "Analytics Case Study | Richard Körmendi";
     return () => { document.title = "Richard Körmendi"; };
   }, []);
+
+  // sources + colors összefűzés
+  const sources = tx.sources.map((s, i) => ({ ...s, color: SOURCE_COLORS[i] }));
 
   return (
     <>
@@ -283,18 +403,17 @@ export default function Analytics() {
           <span style={{ display: "inline-block", fontSize: "0.72rem", letterSpacing: "0.18em",
             color: "#555", textTransform: "uppercase", marginBottom: "1.5rem",
             border: "1px solid #333", borderRadius: "100px", padding: "4px 14px" }}>
-            Portfolio Project · Data Analysis
+            {tx.badge}
           </span>
           <h1 style={{ fontSize: "clamp(1.9rem, 5vw, 3rem)", fontWeight: 700, lineHeight: 1.15,
             color: "#fff", margin: "0 0 1.25rem", letterSpacing: "-0.03em" }}>
-            Analytics Case Study:<br />richardkormendi.com
+            {tx.h1a}<br />{tx.h1b}
           </h1>
           <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "#888", margin: "0 0 2rem" }}>
-            A full breakdown of the first 30 days after launch — traffic patterns,
-            audience behaviour, and actionable recommendations.
+            {tx.sub}
           </p>
           <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", justifyContent: "center" }}>
-            {["May 1–30, 2026", "Google Analytics 4", "Demo / Mock Data"].map(tag => (
+            {tx.tags.map(tag => (
               <span key={tag} style={{ fontSize: "0.78rem", color: "#666",
                 background: "#242424", borderRadius: "100px", padding: "4px 12px" }}>{tag}</span>
             ))}
@@ -308,13 +427,12 @@ export default function Analytics() {
           <motion.p variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             style={{ fontSize: "0.72rem", letterSpacing: "0.18em", color: "#999",
               textTransform: "uppercase", marginBottom: "2rem" }}>
-            Key Performance Indicators
+            {tx.kpiLabel}
           </motion.p>
           <div className="a-kpi" style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "1rem" }}>
-            <KpiCard label="Unique Visitors"       value="1,247"  sub="in 30 days"               delay={0}    />
-            <KpiCard label="Sessions"              value="1,579"  sub="1.27 sessions / visitor"   delay={0.07} />
-            <KpiCard label="Bounce Rate"           value="42.3%"  sub="↓ 13pt below avg."         delay={0.14} />
-            <KpiCard label="Avg. Session Duration" value="2m 34s" sub="industry avg. 2m 17s"      delay={0.21} />
+            {tx.kpis.map((k, i) => (
+              <KpiCard key={i} label={k.label} value={k.value} sub={k.sub} delay={i * 0.07} />
+            ))}
           </div>
         </div>
       </section>
@@ -325,13 +443,11 @@ export default function Analytics() {
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible"
             viewport={{ once: true, amount: 0.1 }} style={{ marginBottom: "2rem" }}>
             <p style={{ fontSize: "0.72rem", letterSpacing: "0.18em", color: "#999",
-              textTransform: "uppercase", marginBottom: "0.6rem" }}>Daily Traffic</p>
+              textTransform: "uppercase", marginBottom: "0.6rem" }}>{tx.trendLabel}</p>
             <h2 style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 600, color: "#1a1a1a", margin: "0 0 0.4rem" }}>
-              Visitor trend — first 30 days
+              {tx.trendTitle}
             </h2>
-            <p style={{ fontSize: "0.88rem", color: "#aaa", margin: 0 }}>
-              Spikes on May 9, 13, 20 correspond to social media activity. Hover for daily detail.
-            </p>
+            <p style={{ fontSize: "0.88rem", color: "#aaa", margin: 0 }}>{tx.trendSub}</p>
           </motion.div>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible"
             viewport={{ once: true, amount: 0.1 }}
@@ -348,36 +464,27 @@ export default function Analytics() {
           <motion.p variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
             style={{ fontSize: "0.72rem", letterSpacing: "0.18em", color: "#999",
               textTransform: "uppercase", marginBottom: "2rem" }}>
-            Traffic Sources
+            {tx.sourcesLabel}
           </motion.p>
           <div className="a-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.5rem", alignItems: "start" }}>
 
-            {/* Donut */}
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible"
               viewport={{ once: true, amount: 0.1 }}
-              style={{ background: "#fff", borderRadius: "10px", padding: "2rem",
-                border: "1px solid #e8e8e8" }}>
+              style={{ background: "#fff", borderRadius: "10px", padding: "2rem", border: "1px solid #e8e8e8" }}>
               <h3 style={{ margin: "0 0 1.5rem", fontSize: "0.95rem", fontWeight: 600, color: "#1a1a1a" }}>
-                Acquisition channels
+                {tx.channelsTitle}
               </h3>
-              <DonutChart data={SOURCES} />
+              <DonutChart data={sources} />
             </motion.div>
 
-            {/* Stat kártyák */}
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible"
               viewport={{ once: true, amount: 0.1 }} transition={{ delay: 0.1 }}
               style={{ display: "flex", flexDirection: "column", gap: "0.85rem" }}>
-              {[
-                { label: "Mobile traffic",   value: "71%", note: "iPhone & Android",      bar: 71 },
-                { label: "Desktop traffic",  value: "25%", note: "Laptop & desktop",       bar: 25 },
-                { label: "Tablet",           value: "4%",  note: "iPad & other",           bar: 4 },
-                { label: "New visitors",     value: "79%", note: "vs 21% returning",       bar: 79 },
-                { label: "Pages / session",  value: "3.2", note: "industry avg. 2.8",      bar: null },
-                { label: "Top country",      value: "HU",  note: "Hungary — 68% of traffic", bar: null },
-              ].map((s, i) => (
+              {tx.stats.map((s, i) => (
                 <div key={i} style={{ background: "#fff", borderRadius: "8px", padding: "0.9rem 1.1rem",
                   border: "1px solid #e8e8e8" }}>
-                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: s.bar ? "8px" : 0 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start",
+                    marginBottom: s.bar ? "8px" : 0 }}>
                     <div>
                       <p style={{ margin: 0, fontSize: "0.78rem", color: "#999" }}>{s.label}</p>
                       <p style={{ margin: "2px 0 0", fontSize: "0.75rem", color: "#ccc" }}>{s.note}</p>
@@ -393,7 +500,6 @@ export default function Analytics() {
                 </div>
               ))}
             </motion.div>
-
           </div>
         </div>
       </section>
@@ -404,9 +510,9 @@ export default function Analytics() {
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible"
             viewport={{ once: true, amount: 0.1 }} style={{ marginBottom: "2rem" }}>
             <p style={{ fontSize: "0.72rem", letterSpacing: "0.18em", color: "#999",
-              textTransform: "uppercase", marginBottom: "0.6rem" }}>Top Pages</p>
+              textTransform: "uppercase", marginBottom: "0.6rem" }}>{tx.pagesLabel}</p>
             <h2 style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 600, color: "#1a1a1a", margin: 0 }}>
-              Most visited pages
+              {tx.pagesTitle}
             </h2>
           </motion.div>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible"
@@ -416,22 +522,20 @@ export default function Analytics() {
               gridTemplateColumns: "36px 1fr 100px 120px 110px",
               gap: "1rem", padding: "0.85rem 1.5rem",
               background: "#f7f6f3", borderBottom: "1px solid #e8e8e8" }}>
-              {["#", "Page", "Pageviews", "Avg. Time", "Share"].map(h => (
+              {tx.pageCols.map(h => (
                 <p key={h} style={{ margin: 0, fontSize: "0.7rem", letterSpacing: "0.12em",
                   color: "#aaa", textTransform: "uppercase" }}>{h}</p>
               ))}
             </div>
-            {TOP_PAGES.map((row, i) => (
+            {tx.pages.map((row, i) => (
               <motion.div key={row.page}
                 variants={fadeUp} initial="hidden" whileInView="visible"
                 viewport={{ once: true }} transition={{ delay: i * 0.05 }}
                 className="a-tbl-row"
-                style={{ display: "grid",
-                  gridTemplateColumns: "36px 1fr 100px 120px 110px",
+                style={{ display: "grid", gridTemplateColumns: "36px 1fr 100px 120px 110px",
                   gap: "1rem", padding: "0.95rem 1.5rem",
-                  borderBottom: i < TOP_PAGES.length - 1 ? "1px solid #f5f5f5" : "none",
+                  borderBottom: i < tx.pages.length - 1 ? "1px solid #f5f5f5" : "none",
                   alignItems: "center", transition: "background 0.15s", cursor: "default" }}
-                onHoverStart={e => { }}
                 onMouseOver={e => e.currentTarget.style.background = "#fafafa"}
                 onMouseOut={e => e.currentTarget.style.background = "transparent"}>
                 <p style={{ margin: 0, fontSize: "0.78rem", color: "#ccc", fontWeight: 600 }}>{row.rank}</p>
@@ -464,13 +568,13 @@ export default function Analytics() {
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible"
             viewport={{ once: true, amount: 0.1 }} style={{ marginBottom: "2.5rem" }}>
             <p style={{ fontSize: "0.72rem", letterSpacing: "0.18em", color: "#555",
-              textTransform: "uppercase", marginBottom: "0.6rem" }}>Analysis</p>
+              textTransform: "uppercase", marginBottom: "0.6rem" }}>{tx.insightsLabel}</p>
             <h2 style={{ fontSize: "clamp(1.4rem, 3vw, 1.9rem)", fontWeight: 600, color: "#fff", margin: 0 }}>
-              What the data says
+              {tx.insightsTitle}
             </h2>
           </motion.div>
           <div className="a-insights" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.1rem" }}>
-            {INSIGHTS.map((item, i) => (
+            {tx.insights.map((item, i) => (
               <motion.div key={i} variants={fadeUp} initial="hidden" whileInView="visible"
                 viewport={{ once: true, amount: 0.1 }} transition={{ delay: i * 0.07 }}
                 style={{ background: "#242424", borderRadius: "10px", padding: "1.75rem",
@@ -482,7 +586,7 @@ export default function Analytics() {
                 <p style={{ margin: 0, fontSize: "0.84rem", lineHeight: 1.7, color: "#888" }}>{item.body}</p>
                 <div style={{ borderTop: "1px solid #2e2e2e", paddingTop: "0.7rem", marginTop: "0.2rem" }}>
                   <p style={{ margin: "0 0 0.25rem", fontSize: "0.72rem", color: "#444",
-                    textTransform: "uppercase", letterSpacing: "0.08em" }}>→ Recommendation</p>
+                    textTransform: "uppercase", letterSpacing: "0.08em" }}>{tx.recLabel}</p>
                   <p style={{ margin: 0, fontSize: "0.83rem", color: "#aaa", lineHeight: 1.6 }}>{item.rec}</p>
                 </div>
               </motion.div>
@@ -494,12 +598,12 @@ export default function Analytics() {
       {/* FOOTER NOTE */}
       <section style={{ padding: "1.75rem 2rem", background: "#111", textAlign: "center" }}>
         <p style={{ margin: 0, fontSize: "0.76rem", color: "#444", letterSpacing: "0.05em" }}>
-          Analysis powered by{" "}
+          {tx.footerText}{" "}
           <span style={{ color: "#666" }}>Google Analytics 4</span>
           {" "}+{" "}
           <span style={{ color: "#666" }}>Claude AI</span>
           {" · "}
-          <span style={{ color: "#333" }}>Demo data based on realistic GA4 benchmarks for a new personal domain</span>
+          <span style={{ color: "#333" }}>{tx.footerMid}</span>
         </p>
       </section>
 
