@@ -20,7 +20,6 @@ export default function Navbar() {
     { label: tx.music,    href: href("#music") },
     { label: tx.shows,    href: href("#shows") },
     { label: tx.photos,   href: href("#photos") },
-    { label: tx.services, href: href("#digital") },
     { label: tx.contact,  href: href("#contact") },
   ];
 

@@ -4,6 +4,7 @@ import Hire from "./pages/Hire";
 import Epk from "./pages/Epk";
 import Audit from "./pages/Audit";
 import Proposal from "./pages/Proposal";
+import Analytics from "./pages/Analytics";
 import Cursor from "./components/Cursor";
 
 export default function App() {
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/epk" element={<Epk />} />
         <Route path="/audit" element={<Audit />} />
         <Route path="/proposal/:id" element={<Proposal />} />
+        <Route path="/analytics" element={<Analytics />} />
       </Routes>
     </BrowserRouter>
   );

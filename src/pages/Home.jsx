@@ -6,7 +6,6 @@ import Press from "../components/Press";
 import Shows from "../components/Shows";
 import Newsletter from "../components/Newsletter";
 import Photos from "../components/Photos";
-import Services from "../components/Services";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 
@@ -21,7 +20,6 @@ export default function Home() {
       <Shows />
       <Newsletter />
       <Photos />
-      <Services />
       <Contact />
       <Footer />
     </>
