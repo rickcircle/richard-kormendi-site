@@ -108,6 +108,8 @@ export default function About() {
           .bento-grid > div:nth-child(2) {
             grid-column: span 2 !important;
           }
+          .bento-grid > div:nth-child(3),
+          .bento-grid > div:nth-child(4),
           .bento-grid > div:nth-child(5),
           .bento-grid > div:nth-child(6) {
             grid-column: span 2 !important;
