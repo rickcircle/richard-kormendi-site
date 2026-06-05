@@ -3,6 +3,7 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import heroPhoto from "../assets/images/photo_main.png";
+import heroPhotoMobile from "../assets/images/photo_main_mobil.png";
 
 const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -82,23 +83,21 @@ export default function Hero() {
           zIndex: 0,
         }}
       >
-        <img
-          src={heroPhoto}
-          alt="Richard Körmendi"
-          className="hero-photo"
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-            objectPosition: "center 30%",
-            display: "block",
-          }}
-        />
-        <style>{`
-          @media (max-width: 768px) {
-            .hero-photo { object-position: 58% 0% !important; }
-          }
-        `}</style>
+        <picture style={{ width: "100%", height: "100%", display: "block" }}>
+          <source media="(max-width: 768px)" srcSet={heroPhotoMobile} />
+          <img
+            src={heroPhoto}
+            alt="Richard Körmendi"
+            className="hero-photo"
+            style={{
+              width: "100%",
+              height: "100%",
+              objectFit: "cover",
+              objectPosition: "center 30%",
+              display: "block",
+            }}
+          />
+        </picture>
       </motion.div>
 
       {/* Gradient overlay */}
