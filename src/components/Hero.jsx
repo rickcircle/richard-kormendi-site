@@ -75,10 +75,10 @@ export default function Hero() {
         style={{
           y: photoY,
           position: "absolute",
-          top: "-5%",
+          top: 0,
           left: 0,
           right: 0,
-          bottom: "-5%",
+          bottom: "-30%",
           zIndex: 0,
         }}
       >
