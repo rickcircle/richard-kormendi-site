@@ -75,10 +75,10 @@ export default function Hero() {
         style={{
           y: photoY,
           position: "absolute",
-          top: "-15%",
+          top: "-5%",
           left: 0,
           right: 0,
-          bottom: "-15%",
+          bottom: "-5%",
           zIndex: 0,
         }}
       >
@@ -96,7 +96,7 @@ export default function Hero() {
         />
         <style>{`
           @media (max-width: 768px) {
-            .hero-photo { object-position: 60% 20% !important; }
+            .hero-photo { object-position: 45% 0% !important; }
           }
         `}</style>
       </motion.div>
