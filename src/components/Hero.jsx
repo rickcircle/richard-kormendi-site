@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion, useScroll, useTransform } from "framer-motion";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
-import heroPhoto from "../assets/images/photo-neon.jpg";
+import heroPhoto from "../assets/images/photo_main.png";
 
 const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 
@@ -85,14 +85,20 @@ export default function Hero() {
         <img
           src={heroPhoto}
           alt="Richard Körmendi"
+          className="hero-photo"
           style={{
             width: "100%",
             height: "100%",
             objectFit: "cover",
-            objectPosition: "center 20%",
+            objectPosition: "center 30%",
             display: "block",
           }}
         />
+        <style>{`
+          @media (max-width: 768px) {
+            .hero-photo { object-position: 60% 20% !important; }
+          }
+        `}</style>
       </motion.div>
 
       {/* Gradient overlay */}
