@@ -96,7 +96,7 @@ export default function Hero() {
         />
         <style>{`
           @media (max-width: 768px) {
-            .hero-photo { object-position: 45% 0% !important; }
+            .hero-photo { object-position: 58% 0% !important; }
           }
         `}</style>
       </motion.div>
