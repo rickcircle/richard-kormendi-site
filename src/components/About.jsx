@@ -69,8 +69,8 @@ export default function About() {
             <TileBody>{tx.tiles.classical.body}</TileBody>
           </BentoTile>
 
-          {/* Singles — wide */}
-          <BentoTile style={{ gridColumn: "span 2", background: "#fff" }} delay={0.25}>
+          {/* Singles — full width */}
+          <BentoTile style={{ gridColumn: "span 4", background: "#fff" }} delay={0.25}>
             <TileLabel>{tx.tiles.singles.label}</TileLabel>
             <TileTitle style={{ whiteSpace: "pre-line" }}>{tx.tiles.singles.title}</TileTitle>
             <TileBody>{tx.tiles.singles.body}</TileBody>
@@ -83,13 +83,6 @@ export default function About() {
             >
               Listen on Spotify →
             </a>
-          </BentoTile>
-
-          {/* Digital */}
-          <BentoTile style={{ gridColumn: "span 2", background: "#e8e8e8" }} delay={0.3}>
-            <TileLabel>{tx.tiles.digital.label}</TileLabel>
-            <TileTitle>{tx.tiles.digital.title}</TileTitle>
-            <TileBody>{tx.tiles.digital.body}</TileBody>
           </BentoTile>
 
         </div>

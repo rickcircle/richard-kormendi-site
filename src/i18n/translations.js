@@ -18,8 +18,7 @@ export const t = {
       tiles: {
         eberalom: { label: "Roots", title: "Éberálom", body: "Hungarian indie rock band. Raw energy, packed stages, and the first real proof of what a voice can do." },
         classical: { label: "2024", title: "Classical tenor", body: "Graduated in classical vocal performance from Partium Christian University, Oradea. The long road paid off." },
-        singles: { label: "2026 — Debut", title: "Release Me\n& My Remedy", body: "His first English-language singles. What's been brewing for years — now on record." },
-        digital: { label: "Day job", title: "Software engineer", body: "14 years in digital. Front-end, project management, SEO. Not the cream of the crop — but close." },
+        singles: { label: "2026 — Latest", title: "Like An Animal", body: "The newest single — out now on all platforms." },
       },
     },
     music: {
@@ -117,8 +116,7 @@ export const t = {
       tiles: {
         eberalom: { label: "Gyökerek", title: "Éberálom", body: "Magyar indie rock banda. Nyers energia, teli házak — és annak bizonyítéka, hogy ez a hang tud valamit." },
         classical: { label: "2024", title: "Klasszikus tenor", body: "Klasszikus énekdiploma a Nagyváradi Partiumi Keresztény Egyetemen. A hosszú út megtérült." },
-        singles: { label: "2026 — Debüt", title: "Release Me\n& My Remedy", body: "Az első angol nyelvű kislemezek. Amit hosszú ideje érlelt — most itt van." },
-        digital: { label: "Napközben", title: "Szoftvermérnök", body: "14 év a digitális térben. Front-end, projektmenedzsment, SEO. Nem a szakma krémje — de közel." },
+        singles: { label: "2026 — Legújabb", title: "Like An Animal", body: "A legfrissebb kislemez — már elérhető minden platformon." },
       },
     },
     music: {

@@ -5,7 +5,11 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 
 const SPOTIFY_EMBED_URL = "https://open.spotify.com/embed/artist/5UW4cZ0M83TG2nJWYvkVkp?utm_source=generator&theme=0";
-const YOUTUBE_EMBED_URL = "https://www.youtube.com/embed/TRn2qxJAvKE";
+
+const VIDEOS = [
+  { id: "TRn2qxJAvKE", title: "Cold Urban Sighs" },
+  { id: "r144oflIpPI", title: "Like An Animal" },
+];
 
 const streamingLinks = [
   { label: "Spotify",       href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
@@ -20,6 +24,7 @@ export default function Music() {
   const { lang } = useLang();
   const tx = t[lang].music;
   const [tab, setTab] = useState("listen");
+  const [activeVideo, setActiveVideo] = useState(0);
 
   return (
     <section id="music" style={{ background: "#ffffff", padding: "8rem 2rem" }}>
@@ -110,16 +115,41 @@ export default function Music() {
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
                 transition={{ duration: 0.25 }}
-                style={{ marginBottom: "3rem", borderRadius: "4px", overflow: "hidden", position: "relative", aspectRatio: "16/9" }}
+                style={{ marginBottom: "3rem" }}
               >
-                <iframe
-                  src={YOUTUBE_EMBED_URL}
-                  width="100%" height="100%" frameBorder="0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen loading="lazy"
-                  title="Cold Urban Sighs – Richard Körmendi"
-                  style={{ display: "block", position: "absolute", inset: 0 }}
-                />
+                <div style={{ borderRadius: "4px", overflow: "hidden", position: "relative", aspectRatio: "16/9", marginBottom: "1rem" }}>
+                  <iframe
+                    src={`https://www.youtube.com/embed/${VIDEOS[activeVideo].id}`}
+                    width="100%" height="100%" frameBorder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowFullScreen loading="lazy"
+                    title={`${VIDEOS[activeVideo].title} – Richard Körmendi`}
+                    style={{ display: "block", position: "absolute", inset: 0 }}
+                  />
+                </div>
+                <div style={{ display: "flex", gap: "0.5rem" }}>
+                  {VIDEOS.map((v, i) => (
+                    <button
+                      key={v.id}
+                      onClick={() => setActiveVideo(i)}
+                      style={{
+                        flex: 1,
+                        padding: "0.6rem 1rem",
+                        border: `1px solid ${activeVideo === i ? "#1a1a1a" : "#ddd"}`,
+                        borderRadius: "4px",
+                        background: activeVideo === i ? "#1a1a1a" : "transparent",
+                        color: activeVideo === i ? "#fff" : "#888",
+                        fontSize: "0.8rem",
+                        letterSpacing: "0.05em",
+                        cursor: "pointer",
+                        fontFamily: "inherit",
+                        transition: "all 0.2s",
+                      }}
+                    >
+                      {v.title}
+                    </button>
+                  ))}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
