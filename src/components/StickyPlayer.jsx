@@ -67,9 +67,9 @@ export default function StickyPlayer() {
           }} />
 
           {/* Szöveg */}
-          <span style={{ fontSize: isMobile ? "0.78rem" : "0.82rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.02em", overflow: "hidden", textOverflow: "ellipsis" }}>
+          <span style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
             <span style={{ color: "#fff", fontWeight: 600 }}>Like An Ember</span>
-            {!isMobile && " · Richard Körmendi"}
+            <span className="sticky-artist-name"> · Richard Körmendi</span>
           </span>
 
           {/* Spotify gomb */}
@@ -122,6 +122,7 @@ export default function StickyPlayer() {
           0%,100%{ box-shadow: 0 0 0 0 rgba(232,150,58,0.5); }
           50%{ box-shadow: 0 0 0 6px rgba(232,150,58,0); }
         }
+        @media (max-width: 520px) { .sticky-artist-name { display: none; } }
       `}</style>
     </AnimatePresence>
   );

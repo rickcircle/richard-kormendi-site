@@ -135,9 +135,9 @@ export default function Music() {
                       style={{
                         flex: 1,
                         padding: "0.6rem 1rem",
-                        border: `1px solid ${activeVideo === i ? "#1a1a1a" : "#ddd"}`,
+                        border: `1px solid ${activeVideo === i ? "#e8963a" : "#ddd"}`,
                         borderRadius: "4px",
-                        background: activeVideo === i ? "#1a1a1a" : "transparent",
+                        background: activeVideo === i ? "#e8963a" : "transparent",
                         color: activeVideo === i ? "#fff" : "#888",
                         fontSize: "0.8rem",
                         letterSpacing: "0.05em",

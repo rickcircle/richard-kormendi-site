@@ -253,7 +253,7 @@ export default function Hero() {
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-            style={{ width: "1px", height: "32px", background: "rgba(255,255,255,0.25)" }}
+            style={{ width: "1px", height: "32px", background: `rgba(232,150,58,0.45)` }}
           />
         </motion.div>
       </motion.div>

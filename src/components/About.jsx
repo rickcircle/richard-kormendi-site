@@ -78,8 +78,8 @@ export default function About() {
               href="https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp"
               target="_blank" rel="noreferrer"
               style={{ display: "inline-block", marginTop: "1.25rem", fontSize: "0.8rem", letterSpacing: "0.08em", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: "2px", transition: "border-color 0.2s" }}
-              onMouseOver={e => e.currentTarget.style.borderColor = "#1a1a1a"}
-              onMouseOut={e => e.currentTarget.style.borderColor = "#ccc"}
+              onMouseOver={e => { e.currentTarget.style.borderColor = "#e8963a"; e.currentTarget.style.color = "#e8963a"; }}
+              onMouseOut={e => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.color = "#1a1a1a"; }}
             >
               Listen on Spotify →
             </a>
