@@ -16,7 +16,6 @@ const streamingLinks = [
   { label: "Apple Music",   href: "https://music.apple.com/hu/artist/richard-k%C3%B6rmendi/1877841316" },
   { label: "YouTube",       href: "https://www.youtube.com/@richardkormendi6379" },
   { label: "Tidal",         href: "https://tidal.com/artist/74624158" },
-  { label: "Amazon Music",  href: "#" }, // TODO: replace with Amazon Music artist URL
   { label: "Instagram",     href: "https://www.instagram.com/rickormendi/" },
 ];
 
@@ -28,7 +27,7 @@ export default function Music() {
 
   return (
     <section id="music" style={{ background: "#faf7f2", padding: "8rem 2rem" }}>
-      <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "860px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
           <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "2rem" }}>
             {tx.label}
@@ -158,16 +157,20 @@ export default function Music() {
             <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: "#bbb", textTransform: "uppercase", marginBottom: "1rem" }}>
               {lang === "hu" ? "Hallgass mindenhol" : "Listen everywhere"}
             </p>
-            <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+            <div className="streaming-grid">
               {streamingLinks.filter(l => l.href !== "#").map(link => (
                 <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
-                  style={{ padding: "0.6rem 1.25rem", border: "1px solid #ccc", borderRadius: "2px", textDecoration: "none", color: "#1a1a1a", fontSize: "0.85rem", letterSpacing: "0.05em", transition: "all 0.2s" }}
+                  style={{ padding: "0.6rem 1.25rem", border: "1px solid #d4cdc6", borderRadius: "2px", textDecoration: "none", color: "#1a1a1a", fontSize: "0.85rem", letterSpacing: "0.05em", transition: "all 0.2s", textAlign: "center" }}
                   onMouseOver={e => { e.currentTarget.style.background = "#e8963a"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "#e8963a"; }}
-                  onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#1a1a1a"; e.currentTarget.style.borderColor = "#ccc"; }}>
+                  onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#1a1a1a"; e.currentTarget.style.borderColor = "#d4cdc6"; }}>
                   {link.label}
                 </a>
               ))}
             </div>
+            <style>{`
+              .streaming-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.6rem; }
+              @media (max-width: 520px) { .streaming-grid { grid-template-columns: repeat(3, 1fr); } }
+            `}</style>
           </div>
         </motion.div>
       </div>

@@ -10,7 +10,7 @@ export default function About() {
 
   return (
     <section id="about" style={{ padding: "8rem 2rem", background: "#faf7f2" }}>
-      <div style={{ maxWidth: "960px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
@@ -32,7 +32,7 @@ export default function About() {
 
           {/* Bio — nagy, 2 oszlop, 2 sor */}
           <BentoTile
-            style={{ gridColumn: "span 2", gridRow: "span 2", background: "#1a1a1a", color: "#fff" }}
+            style={{ gridColumn: "span 2", gridRow: "span 2", background: "#1c1814", color: "#fff" }}
             delay={0}
           >
             <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
@@ -133,7 +133,7 @@ function BentoTile({ children, style = {}, delay = 0 }) {
       style={{
         borderRadius: "8px",
         padding: "1.75rem",
-        border: "1px solid #e0e0e0",
+        border: "1px solid #e4ddd5",
         ...style,
       }}
     >

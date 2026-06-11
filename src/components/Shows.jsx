@@ -48,7 +48,7 @@ export default function Shows() {
 
           {shows.length === 0 ? (
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
-              style={{ padding: "3rem 2rem", border: "1px solid #e0e0e0", borderRadius: "2px", textAlign: "center", marginBottom: "5rem" }}>
+              style={{ padding: "3rem 2rem", border: "1px solid #e4ddd5", borderRadius: "2px", textAlign: "center", marginBottom: "5rem" }}>
               <p style={{ fontSize: "1rem", color: "#888", marginBottom: "0.75rem" }}>{tx.noShows}</p>
               <p style={{ fontSize: "0.85rem", color: "#bbb" }}>{tx.noShowsSub}</p>
             </motion.div>
@@ -63,7 +63,7 @@ export default function Shows() {
                     display: "grid", gridTemplateColumns: "120px 1fr auto",
                     alignItems: "center", gap: "1.5rem",
                     padding: "1.5rem 0",
-                    borderBottom: "1px solid #e8e8e8",
+                    borderBottom: "1px solid #e8e2da",
                   }}>
                   <span style={{ fontSize: "0.85rem", color: "#999", fontVariantNumeric: "tabular-nums" }}>
                     {new Date(show.date).toLocaleDateString(lang === "hu" ? "hu-HU" : "en-GB", { day: "numeric", month: "short", year: "numeric" })}

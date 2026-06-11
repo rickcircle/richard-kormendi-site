@@ -224,6 +224,35 @@ export default function Hero() {
           Out Now — Like An Ember
         </motion.a>
 
+        {/* Listen Now CTA */}
+        <motion.a
+          href="https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp"
+          target="_blank" rel="noreferrer"
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 2.8 }}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.55rem",
+            marginTop: "1rem",
+            padding: "0.75rem 1.75rem",
+            background: ACCENT,
+            borderRadius: "4px",
+            color: "#fff",
+            fontSize: "0.8rem",
+            fontWeight: 600,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            textDecoration: "none",
+          }}
+        >
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M8 5v14l11-7z"/>
+          </svg>
+          Listen Now
+        </motion.a>
+
         <style>{`
           @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
           @keyframes pulse-dot {
