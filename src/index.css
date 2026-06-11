@@ -58,6 +58,14 @@ html {
   scroll-behavior: smooth;
 }
 
+/* Mobilon a szekciók padding-ját felezzük */
+@media (max-width: 640px) {
+  section {
+    padding-top: 4rem !important;
+    padding-bottom: 4rem !important;
+  }
+}
+
 #root {
   width: 100%;
   min-height: 100svh;
