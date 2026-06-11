@@ -8,7 +8,7 @@ const SPOTIFY_EMBED_URL = "https://open.spotify.com/embed/artist/5UW4cZ0M83TG2nJ
 
 const VIDEOS = [
   { id: "TRn2qxJAvKE", title: "Cold Urban Sighs" },
-  { id: "r144oflIpPI", title: "Like An Animal" },
+  { id: "r144oflIpPI", title: "Like An Ember" },
 ];
 
 const streamingLinks = [
