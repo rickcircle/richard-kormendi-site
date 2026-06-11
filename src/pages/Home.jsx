@@ -8,6 +8,7 @@ import Newsletter from "../components/Newsletter";
 import Photos from "../components/Photos";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
+import StickyPlayer from "../components/StickyPlayer";
 
 export default function Home() {
   return (
@@ -22,6 +23,7 @@ export default function Home() {
       <Photos />
       <Contact />
       <Footer />
+      <StickyPlayer />
     </>
   );
 }
