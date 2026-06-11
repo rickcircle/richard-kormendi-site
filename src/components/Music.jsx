@@ -27,10 +27,10 @@ export default function Music() {
   const [activeVideo, setActiveVideo] = useState(0);
 
   return (
-    <section id="music" style={{ background: "#ffffff", padding: "8rem 2rem" }}>
+    <section id="music" style={{ background: "#faf7f2", padding: "8rem 2rem" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "2rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "2rem" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "2rem" }}>
@@ -162,7 +162,7 @@ export default function Music() {
               {streamingLinks.filter(l => l.href !== "#").map(link => (
                 <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
                   style={{ padding: "0.6rem 1.25rem", border: "1px solid #ccc", borderRadius: "2px", textDecoration: "none", color: "#1a1a1a", fontSize: "0.85rem", letterSpacing: "0.05em", transition: "all 0.2s" }}
-                  onMouseOver={e => { e.currentTarget.style.background = "#1a1a1a"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "#1a1a1a"; }}
+                  onMouseOver={e => { e.currentTarget.style.background = "#e8963a"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "#e8963a"; }}
                   onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#1a1a1a"; e.currentTarget.style.borderColor = "#ccc"; }}>
                   {link.label}
                 </a>

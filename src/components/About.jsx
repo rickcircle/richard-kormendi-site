@@ -9,12 +9,12 @@ export default function About() {
   const tx = t[lang].about;
 
   return (
-    <section id="about" style={{ padding: "8rem 2rem", background: "#f5f5f2" }}>
+    <section id="about" style={{ padding: "8rem 2rem", background: "#faf7f2" }}>
       <div style={{ maxWidth: "960px", margin: "0 auto" }}>
 
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "1.25rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "1.25rem" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, whiteSpace: "pre-line", margin: 0 }}>
@@ -56,21 +56,21 @@ export default function About() {
           </BentoTile>
 
           {/* Éberálom */}
-          <BentoTile style={{ background: "#fff" }} delay={0.15}>
+          <BentoTile style={{ background: "#faf7f2" }} delay={0.15}>
             <TileLabel>{tx.tiles.eberalom.label}</TileLabel>
             <TileTitle>{tx.tiles.eberalom.title}</TileTitle>
             <TileBody>{tx.tiles.eberalom.body}</TileBody>
           </BentoTile>
 
           {/* Classical */}
-          <BentoTile style={{ background: "#fff" }} delay={0.2}>
+          <BentoTile style={{ background: "#faf7f2" }} delay={0.2}>
             <TileLabel>{tx.tiles.classical.label}</TileLabel>
             <TileTitle>{tx.tiles.classical.title}</TileTitle>
             <TileBody>{tx.tiles.classical.body}</TileBody>
           </BentoTile>
 
           {/* Singles — full width */}
-          <BentoTile style={{ gridColumn: "span 4", background: "#fff" }} delay={0.25}>
+          <BentoTile style={{ gridColumn: "span 4", background: "#faf7f2" }} delay={0.25}>
             <TileLabel>{tx.tiles.singles.label}</TileLabel>
             <TileTitle style={{ whiteSpace: "pre-line" }}>{tx.tiles.singles.title}</TileTitle>
             <TileBody>{tx.tiles.singles.body}</TileBody>

@@ -9,10 +9,10 @@ export default function Services() {
   const tx = t[lang].services;
 
   return (
-    <section id="digital" style={{ padding: "8rem 2rem", background: "#f7f6f3" }}>
+    <section id="digital" style={{ padding: "8rem 2rem", background: "#faf7f2" }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "2rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "2rem" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "1rem" }}>

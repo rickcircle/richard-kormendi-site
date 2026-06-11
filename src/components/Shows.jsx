@@ -36,10 +36,10 @@ export default function Shows() {
   };
 
   return (
-    <section id="shows" style={{ padding: "8rem 2rem", background: "#f0f2f5" }}>
+    <section id="shows" style={{ padding: "8rem 2rem", background: "#f0ede8" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "2rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "2rem" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "3rem" }}>
@@ -75,8 +75,8 @@ export default function Shows() {
                   {show.ticketUrl && (
                     <a href={show.ticketUrl} target="_blank" rel="noreferrer"
                       style={{ fontSize: "0.8rem", letterSpacing: "0.08em", color: "#1a1a1a", textDecoration: "none", border: "1px solid #ccc", borderRadius: "2px", padding: "0.4rem 0.9rem", transition: "all 0.2s", whiteSpace: "nowrap" }}
-                      onMouseOver={e => { e.currentTarget.style.background = "#1a1a1a"; e.currentTarget.style.color = "#fff"; }}
-                      onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#1a1a1a"; }}>
+                      onMouseOver={e => { e.currentTarget.style.background = "#e8963a"; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = "#e8963a"; }}
+                      onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#1a1a1a"; e.currentTarget.style.borderColor = "#ccc"; }}>
                       Tickets
                     </a>
                   )}
@@ -89,7 +89,7 @@ export default function Shows() {
         {/* Booking inquiry form */}
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ borderTop: "1px solid #ddd", paddingTop: "4rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {tx.bookingLabel}
           </p>
           <h3 style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: 600, marginBottom: "1rem" }}>
@@ -167,7 +167,7 @@ const inputStyle = {
   border: "1px solid #ddd",
   borderRadius: "2px",
   fontSize: "0.9rem",
-  background: "#fff",
+  background: "#faf7f2",
   color: "#1a1a1a",
   outline: "none",
   width: "100%",

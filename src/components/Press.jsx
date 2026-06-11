@@ -29,11 +29,11 @@ export default function Press() {
   const tx = t[lang].press;
 
   return (
-    <section id="press" style={{ padding: "8rem 2rem", background: "#fff" }}>
+    <section id="press" style={{ padding: "8rem 2rem", background: "#faf7f2" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "1.5rem" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2 }}>
