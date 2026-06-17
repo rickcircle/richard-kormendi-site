@@ -55,9 +55,19 @@ export default function Releases() {
         }
         @media (max-width: 700px) {
           .releases-grid { grid-template-columns: repeat(3, 1fr); }
+          .releases-grid > *:last-child:nth-child(3n+1) {
+            grid-column: 1 / -1;
+            width: calc(33.333% - 0.84rem);
+            margin: 0 auto;
+          }
         }
         @media (max-width: 480px) {
           .releases-grid { grid-template-columns: repeat(2, 1fr); }
+          .releases-grid > *:last-child:nth-child(odd) {
+            grid-column: 1 / -1;
+            width: calc(50% - 0.625rem);
+            margin: 0 auto;
+          }
         }
       `}</style>
     </section>

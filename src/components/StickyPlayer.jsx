@@ -68,7 +68,7 @@ export default function StickyPlayer() {
 
           {/* Szöveg */}
           <span style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            <span style={{ color: "#fff", fontWeight: 600 }}>Like An Ember</span>
+            <span style={{ color: "#fff", fontWeight: 600 }}>You Become My Only</span>
             <span className="sticky-artist-name"> · Richard Körmendi</span>
           </span>
 
