@@ -221,7 +221,7 @@ export default function Hero() {
             flexShrink: 0,
             animation: "pulse-dot 1.8s ease-in-out infinite",
           }} />
-          Out Now — Like An Ember
+          Out Now — You Become My Only
         </motion.a>
 
         {/* Listen Now CTA */}
