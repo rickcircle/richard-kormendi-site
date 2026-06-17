@@ -5,19 +5,22 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import photosData from "../data/photos.json";
 
-// Statikus fallback fotók — amíg a CMS-be nem töltesz fel képeket
-import photo1 from "../assets/images/photo-neon.jpg";
-import photo2 from "../assets/images/photo-studio.jpg";
-import photo3 from "../assets/images/photo-3.jpg";
-import photo4 from "../assets/images/photo-4.jpg";
-import photoOriginal from "../assets/images/6751152D-9E3E-4556-883D-A15F0A63B04F_1_105_c.jpeg";
+import photo1    from "../assets/images/photo-neon.jpg";
+import photo2    from "../assets/images/photo-neon-city.jpg";
+import photo3    from "../assets/images/photo-bar-suit.jpg";
+import photo4    from "../assets/images/photo-img1023.jpg";
+import photo5    from "../assets/images/photo-img3896.jpg";
+import photo6    from "../assets/images/photo-img3953.jpg";
+import photoLast from "../assets/images/6751152D-9E3E-4556-883D-A15F0A63B04F_1_105_c.jpeg";
 
 const staticPhotos = [
-  { src: photo1, alt: "Richard Körmendi – neon city" },
-  { src: photo2, alt: "Richard Körmendi – studio portrait" },
-  { src: photo3, alt: "Richard Körmendi" },
-  { src: photo4, alt: "Richard Körmendi" },
-  { src: photoOriginal, alt: "Richard Körmendi" },
+  { src: photo1,    alt: "Richard Körmendi" },
+  { src: photo2,    alt: "Richard Körmendi – neon city" },
+  { src: photo3,    alt: "Richard Körmendi" },
+  { src: photo4,    alt: "Richard Körmendi" },
+  { src: photo5,    alt: "Richard Körmendi" },
+  { src: photo6,    alt: "Richard Körmendi" },
+  { src: photoLast, alt: "Richard Körmendi" },
 ];
 
 export default function Photos() {
