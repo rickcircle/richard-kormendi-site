@@ -18,6 +18,7 @@ export default function Navbar() {
   const navLinks = [
     { label: tx.about,    href: href("#about") },
     { label: tx.music,    href: href("#music") },
+    { label: tx.releases, href: href("#releases") },
     { label: tx.shows,    href: href("#shows") },
     { label: tx.photos,   href: href("#photos") },
     { label: tx.contact,  href: href("#contact") },

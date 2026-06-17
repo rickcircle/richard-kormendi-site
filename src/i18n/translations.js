@@ -3,6 +3,7 @@ export const t = {
     nav: {
       about: "About",
       music: "Music",
+      releases: "Releases",
       shows: "Shows",
       photos: "Photos",
       services: "Services",
@@ -101,6 +102,7 @@ export const t = {
     nav: {
       about: "Rólam",
       music: "Zene",
+      releases: "Kiadások",
       shows: "Koncertek",
       photos: "Fotók",
       services: "Szolgáltatások",
