@@ -101,7 +101,7 @@ export default function Hero() {
           top: 0,
           left: 0,
           right: 0,
-          bottom: "-15%",
+          bottom: 0,
           zIndex: 0,
         }}
       >
@@ -125,7 +125,7 @@ export default function Hero() {
       {/* Gradient overlay */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 1,
-        background: "linear-gradient(to bottom, rgba(0,0,0,0.2) 0%, rgba(0,0,0,0.45) 40%, rgba(0,0,0,0.82) 80%, rgba(0,0,0,0.95) 100%)",
+        background: "linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,0.85) 100%)",
       }} />
 
       {/* Tartalom */}
