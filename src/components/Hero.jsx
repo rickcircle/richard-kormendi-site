@@ -101,7 +101,7 @@ export default function Hero() {
           top: 0,
           left: 0,
           right: 0,
-          bottom: "-30%",
+          bottom: "-15%",
           zIndex: 0,
         }}
       >
@@ -115,7 +115,7 @@ export default function Hero() {
               width: "100%",
               height: "100%",
               objectFit: "cover",
-              objectPosition: "center 30%",
+              objectPosition: "center 20%",
               display: "block",
             }}
           />
