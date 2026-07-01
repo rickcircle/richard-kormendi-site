@@ -6,9 +6,15 @@ import { t } from "../i18n/translations";
 
 const SPOTIFY_EMBED_URL = "https://open.spotify.com/embed/artist/5UW4cZ0M83TG2nJWYvkVkp?utm_source=generator&theme=0";
 
-const VIDEOS = [
+const VOCAL_VIDEOS = [
+  { id: "3SgUws3Gkuw", title: "You Become My Only" },
   { id: "TRn2qxJAvKE", title: "Cold Urban Sighs" },
   { id: "r144oflIpPI", title: "Like An Ember" },
+];
+
+const INSTRUMENTAL_VIDEOS = [
+  { id: "jGYNDMMb734", title: "Light In The Dark" },
+  { id: "WODjlfmb5ag", title: "The Absent" },
 ];
 
 const streamingLinks = [
@@ -23,7 +29,15 @@ export default function Music() {
   const { lang } = useLang();
   const tx = t[lang].music;
   const [tab, setTab] = useState("listen");
+  const [category, setCategory] = useState("vocal");
   const [activeVideo, setActiveVideo] = useState(0);
+
+  const VIDEOS = category === "vocal" ? VOCAL_VIDEOS : INSTRUMENTAL_VIDEOS;
+
+  const selectCategory = key => {
+    setCategory(key);
+    setActiveVideo(0);
+  };
 
   return (
     <section id="music" style={{ background: "#faf7f2", padding: "8rem 2rem" }}>
@@ -116,6 +130,33 @@ export default function Music() {
                 transition={{ duration: 0.25 }}
                 style={{ marginBottom: "3rem" }}
               >
+                {/* Vocal / Instrumental al-váltó */}
+                <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.25rem" }}>
+                  {[
+                    { key: "vocal",        label: lang === "hu" ? "Énekes dalok" : "Vocal Tracks" },
+                    { key: "instrumental", label: lang === "hu" ? "Instrumentális" : "Instrumental" },
+                  ].map(({ key, label }) => (
+                    <button
+                      key={key}
+                      onClick={() => selectCategory(key)}
+                      style={{
+                        padding: "0.4rem 1rem",
+                        border: `1px solid ${category === key ? "#1a1a1a" : "#ddd"}`,
+                        borderRadius: "999px",
+                        background: category === key ? "#1a1a1a" : "transparent",
+                        color: category === key ? "#fff" : "#888",
+                        fontSize: "0.75rem",
+                        letterSpacing: "0.05em",
+                        cursor: "pointer",
+                        fontFamily: "inherit",
+                        transition: "all 0.2s",
+                      }}
+                    >
+                      {label}
+                    </button>
+                  ))}
+                </div>
+
                 <div style={{ borderRadius: "4px", overflow: "hidden", position: "relative", aspectRatio: "16/9", marginBottom: "1rem" }}>
                   <iframe
                     src={`https://www.youtube.com/embed/${VIDEOS[activeVideo].id}`}
