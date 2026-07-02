@@ -11,6 +11,8 @@ import photo3    from "../assets/images/photo-bar-suit.jpg";
 import photo4    from "../assets/images/photo-img1023.jpg";
 import photo5    from "../assets/images/photo-img3896.jpg";
 import photo6    from "../assets/images/photo-img3953.jpg";
+import photo7    from "../assets/images/photo-guitarist.jpg";
+import photo8    from "../assets/images/photo-studio-portrait.jpg";
 import photoLast from "../assets/images/6751152D-9E3E-4556-883D-A15F0A63B04F_1_105_c.jpeg";
 
 const staticPhotos = [
@@ -20,6 +22,8 @@ const staticPhotos = [
   { src: photo4,    alt: "Richard Körmendi" },
   { src: photo5,    alt: "Richard Körmendi" },
   { src: photo6,    alt: "Richard Körmendi" },
+  { src: photo7,    alt: "Richard Körmendi – guitar" },
+  { src: photo8,    alt: "Richard Körmendi – studio" },
   { src: photoLast, alt: "Richard Körmendi" },
 ];
 
