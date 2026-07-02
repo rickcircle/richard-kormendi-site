@@ -91,7 +91,7 @@ export default function Hero() {
   return (
     <section
       ref={sectionRef}
-      style={{ position: "relative", minHeight: "100vh", overflow: "hidden", background: "#111" }}
+      style={{ position: "relative", minHeight: "100vh", overflow: "hidden", background: "#0b0a08" }}
     >
       {/* Parallax fotó */}
       <motion.div
@@ -245,6 +245,7 @@ export default function Hero() {
             letterSpacing: "0.08em",
             textTransform: "uppercase",
             textDecoration: "none",
+            boxShadow: "0 0 30px rgba(232,150,58,0.35)",
           }}
         >
           <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">

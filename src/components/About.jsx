@@ -4,20 +4,22 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import profilePhoto from "../assets/images/photo-neon.jpg";
 
+const CARD_BG = "#1c1814";
+
 export default function About() {
   const { lang } = useLang();
   const tx = t[lang].about;
 
   return (
-    <section id="about" style={{ padding: "8rem 2rem", background: "#faf7f2" }}>
+    <section id="about" style={{ padding: "8rem 2rem", background: "#141210" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "1.25rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "1.25rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
             {tx.label}
           </p>
-          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, whiteSpace: "pre-line", margin: 0 }}>
+          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, whiteSpace: "pre-line", margin: 0, color: "#f5f1ea" }}>
             {tx.heading}
           </h2>
         </motion.div>
@@ -32,13 +34,13 @@ export default function About() {
 
           {/* Bio — nagy, 2 oszlop, 2 sor */}
           <BentoTile
-            style={{ gridColumn: "span 2", gridRow: "span 2", background: "#1c1814", color: "#fff" }}
+            style={{ gridColumn: "span 2", gridRow: "span 2", background: CARD_BG }}
             delay={0}
           >
-            <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: "#555", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+            <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", marginBottom: "1.5rem" }}>
               Bio
             </p>
-            <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "#ccc", margin: 0 }}>
+            <p style={{ fontSize: "1.05rem", lineHeight: 1.8, color: "rgba(245,241,234,0.8)", margin: 0 }}>
               {tx.bio}
             </p>
           </BentoTile>
@@ -56,30 +58,30 @@ export default function About() {
           </BentoTile>
 
           {/* Éberálom */}
-          <BentoTile style={{ background: "#faf7f2" }} delay={0.15}>
+          <BentoTile style={{ background: CARD_BG }} delay={0.15}>
             <TileLabel>{tx.tiles.eberalom.label}</TileLabel>
             <TileTitle>{tx.tiles.eberalom.title}</TileTitle>
             <TileBody>{tx.tiles.eberalom.body}</TileBody>
           </BentoTile>
 
           {/* Classical */}
-          <BentoTile style={{ background: "#faf7f2" }} delay={0.2}>
+          <BentoTile style={{ background: CARD_BG }} delay={0.2}>
             <TileLabel>{tx.tiles.classical.label}</TileLabel>
             <TileTitle>{tx.tiles.classical.title}</TileTitle>
             <TileBody>{tx.tiles.classical.body}</TileBody>
           </BentoTile>
 
           {/* Singles — full width */}
-          <BentoTile style={{ gridColumn: "span 4", background: "#faf7f2" }} delay={0.25}>
+          <BentoTile style={{ gridColumn: "span 4", background: CARD_BG }} delay={0.25}>
             <TileLabel>{tx.tiles.singles.label}</TileLabel>
             <TileTitle style={{ whiteSpace: "pre-line" }}>{tx.tiles.singles.title}</TileTitle>
             <TileBody>{tx.tiles.singles.body}</TileBody>
             <a
               href="https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp"
               target="_blank" rel="noreferrer"
-              style={{ display: "inline-block", marginTop: "1.25rem", fontSize: "0.8rem", letterSpacing: "0.08em", color: "#1a1a1a", textDecoration: "none", borderBottom: "1px solid #ccc", paddingBottom: "2px", transition: "border-color 0.2s" }}
+              style={{ display: "inline-block", marginTop: "1.25rem", fontSize: "0.8rem", letterSpacing: "0.08em", color: "#f5f1ea", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.25)", paddingBottom: "2px", transition: "border-color 0.2s, color 0.2s" }}
               onMouseOver={e => { e.currentTarget.style.borderColor = "#e8963a"; e.currentTarget.style.color = "#e8963a"; }}
-              onMouseOut={e => { e.currentTarget.style.borderColor = "#ccc"; e.currentTarget.style.color = "#1a1a1a"; }}
+              onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "#f5f1ea"; }}
             >
               Listen on Spotify →
             </a>
@@ -133,7 +135,7 @@ function BentoTile({ children, style = {}, delay = 0 }) {
       style={{
         borderRadius: "8px",
         padding: "1.75rem",
-        border: "1px solid #e4ddd5",
+        border: "1px solid rgba(255,255,255,0.08)",
         ...style,
       }}
     >
@@ -144,7 +146,7 @@ function BentoTile({ children, style = {}, delay = 0 }) {
 
 function TileLabel({ children }) {
   return (
-    <p style={{ fontSize: "0.7rem", letterSpacing: "0.14em", color: "#aaa", textTransform: "uppercase", margin: "0 0 0.75rem" }}>
+    <p style={{ fontSize: "0.7rem", letterSpacing: "0.14em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", margin: "0 0 0.75rem" }}>
       {children}
     </p>
   );
@@ -152,7 +154,7 @@ function TileLabel({ children }) {
 
 function TileTitle({ children, style = {} }) {
   return (
-    <p style={{ fontSize: "1.1rem", fontWeight: 600, margin: "0 0 0.75rem", lineHeight: 1.3, color: "#1a1a1a", ...style }}>
+    <p style={{ fontSize: "1.1rem", fontWeight: 600, margin: "0 0 0.75rem", lineHeight: 1.3, color: "#f5f1ea", ...style }}>
       {children}
     </p>
   );
@@ -160,7 +162,7 @@ function TileTitle({ children, style = {} }) {
 
 function TileBody({ children }) {
   return (
-    <p style={{ fontSize: "0.875rem", lineHeight: 1.7, color: "#666", margin: 0 }}>
+    <p style={{ fontSize: "0.875rem", lineHeight: 1.7, color: "rgba(245,241,234,0.6)", margin: 0 }}>
       {children}
     </p>
   );

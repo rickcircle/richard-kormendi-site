@@ -3,6 +3,8 @@ import { fadeUp, staggerContainer, staggerItem } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 
+const ACCENT = "#e8963a";
+
 const pressItems = [
   {
     type:    { en: "Feature",  hu: "Cikk" },
@@ -29,14 +31,14 @@ export default function Press() {
   const tx = t[lang].press;
 
   return (
-    <section id="press" style={{ padding: "8rem 2rem", background: "#faf7f2" }}>
+    <section id="press" style={{ padding: "8rem 2rem", background: "#0b0a08" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
             {tx.label}
           </p>
-          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2 }}>
+          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, color: "#f5f1ea" }}>
             {tx.heading}
           </h2>
         </motion.div>
@@ -52,35 +54,35 @@ export default function Press() {
                 alignItems: "center",
                 gap: "1.5rem",
                 padding: "1.5rem 0",
-                borderBottom: i < pressItems.length - 1 ? "1px solid #f0f0f0" : "none",
+                borderBottom: i < pressItems.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
               }}>
               <span style={{
-                fontSize: "0.7rem", letterSpacing: "0.12em", color: "#ccc",
+                fontSize: "0.7rem", letterSpacing: "0.12em", color: "rgba(245,241,234,0.3)",
                 textTransform: "uppercase", fontWeight: 500,
               }}>
                 {item.type[lang]}
               </span>
               <div>
-                <p style={{ margin: 0, fontWeight: 500, fontSize: "0.95rem", color: "#1a1a1a" }}>
+                <p style={{ margin: 0, fontWeight: 500, fontSize: "0.95rem", color: "#f5f1ea" }}>
                   {item.outlet}
                 </p>
-                <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "#aaa" }}>
+                <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "rgba(245,241,234,0.45)" }}>
                   {item.desc[lang]}
                 </p>
               </div>
               {item.href ? (
                 <a href={item.href} target="_blank" rel="noreferrer"
                   style={{
-                    fontSize: "0.78rem", letterSpacing: "0.08em", color: "#bbb",
+                    fontSize: "0.78rem", letterSpacing: "0.08em", color: "rgba(245,241,234,0.45)",
                     textDecoration: "none", whiteSpace: "nowrap",
                     transition: "color 0.2s",
                   }}
-                  onMouseOver={e => e.currentTarget.style.color = "#1a1a1a"}
-                  onMouseOut={e => e.currentTarget.style.color = "#bbb"}>
+                  onMouseOver={e => e.currentTarget.style.color = ACCENT}
+                  onMouseOut={e => e.currentTarget.style.color = "rgba(245,241,234,0.45)"}>
                   {lang === "hu" ? "Megtekintés →" : "Read →"}
                 </a>
               ) : (
-                <span style={{ fontSize: "0.78rem", color: "#ddd", whiteSpace: "nowrap" }}>
+                <span style={{ fontSize: "0.78rem", color: "rgba(245,241,234,0.25)", whiteSpace: "nowrap" }}>
                   {lang === "hu" ? "Archívum" : "Archive"}
                 </span>
               )}

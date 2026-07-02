@@ -34,13 +34,13 @@ export default function Photos() {
   const scroll = dir => scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
 
   return (
-    <section id="photos" style={{ padding: "8rem 0", background: "#1a1a1a", overflow: "hidden" }}>
+    <section id="photos" style={{ padding: "8rem 0", background: "#141210", overflow: "hidden" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto", padding: "0 2rem", marginBottom: "3rem" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#666", textTransform: "uppercase", marginBottom: "2rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", marginBottom: "2rem" }}>
             {tx.label}
           </p>
-          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, color: "#fff" }}>
+          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, color: "#f5f1ea" }}>
             {tx.heading}
           </h2>
         </motion.div>
@@ -52,7 +52,7 @@ export default function Photos() {
             <motion.div key={i}
               initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.6, delay: i * 0.1 }}
-              style={{ flex: "0 0 300px", height: "400px", scrollSnapAlign: "start", borderRadius: "2px", overflow: "hidden", background: "#e8e8e8", position: "relative" }}>
+              style={{ flex: "0 0 300px", height: "400px", scrollSnapAlign: "start", borderRadius: "2px", overflow: "hidden", background: "rgba(255,255,255,0.05)", position: "relative" }}>
               <img src={photo.src} alt={photo.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               {photo.caption && (
                 <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0.75rem 1rem", background: "linear-gradient(transparent, rgba(0,0,0,0.65))", color: "#fff", fontSize: "0.8rem", letterSpacing: "0.03em" }}>
@@ -75,5 +75,5 @@ export default function Photos() {
 }
 
 function arrowStyle(side) {
-  return { position: "absolute", top: "50%", [side]: "1rem", transform: "translateY(-50%)", background: "rgba(255,255,255,0.9)", border: "1px solid #ddd", borderRadius: "50%", width: "40px", height: "40px", fontSize: "1.4rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2, color: "#1a1a1a" };
+  return { position: "absolute", top: "50%", [side]: "1rem", transform: "translateY(-50%)", background: "rgba(11,10,8,0.7)", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "50%", width: "40px", height: "40px", fontSize: "1.4rem", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 2, color: "#f5f1ea" };
 }

@@ -1,3 +1,5 @@
+const ACCENT = "#e8963a";
+
 const socials = [
   { label: "Spotify",   href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
   { label: "YouTube",   href: "https://www.youtube.com/@richardkormendi6379" },
@@ -10,8 +12,9 @@ export default function Footer() {
   const year = new Date().getFullYear();
   return (
     <footer style={{
-      background: "#111",
-      color: "#555",
+      background: "#08070a",
+      borderTop: "1px solid rgba(255,255,255,0.06)",
+      color: "rgba(245,241,234,0.3)",
       padding: "2.5rem 2rem",
       display: "flex",
       justifyContent: "space-between",
@@ -21,7 +24,7 @@ export default function Footer() {
       fontSize: "0.8rem",
       letterSpacing: "0.05em",
     }}>
-      <span style={{ color: "#aaa" }}>© {year} Richard Körmendi</span>
+      <span style={{ color: "rgba(245,241,234,0.4)" }}>© {year} Richard Körmendi</span>
 
       <nav style={{ display: "flex", gap: "1.5rem", flexWrap: "wrap", justifyContent: "center" }}>
         {socials.map(s => (
@@ -30,9 +33,9 @@ export default function Footer() {
             href={s.href}
             target="_blank"
             rel="noreferrer"
-            style={{ color: "#aaa", textDecoration: "none", transition: "color 0.2s" }}
-            onMouseOver={e => e.currentTarget.style.color = "#fff"}
-            onMouseOut={e => e.currentTarget.style.color = "#aaa"}
+            style={{ color: "rgba(245,241,234,0.45)", textDecoration: "none", transition: "color 0.2s" }}
+            onMouseOver={e => e.currentTarget.style.color = ACCENT}
+            onMouseOut={e => e.currentTarget.style.color = "rgba(245,241,234,0.45)"}
           >
             {s.label}
           </a>
@@ -41,9 +44,9 @@ export default function Footer() {
 
       <a
         href="mailto:richard.kormendi@gmail.com"
-        style={{ color: "#aaa", textDecoration: "none", transition: "color 0.2s" }}
-        onMouseOver={e => e.currentTarget.style.color = "#fff"}
-        onMouseOut={e => e.currentTarget.style.color = "#aaa"}
+        style={{ color: "rgba(245,241,234,0.45)", textDecoration: "none", transition: "color 0.2s" }}
+        onMouseOver={e => e.currentTarget.style.color = ACCENT}
+        onMouseOut={e => e.currentTarget.style.color = "rgba(245,241,234,0.45)"}
       >
         richard.kormendi@gmail.com
       </a>

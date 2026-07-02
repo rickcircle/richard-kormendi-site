@@ -29,10 +29,10 @@ export default function Releases() {
   const heading = lang === "hu" ? "Összes kiadás." : "All releases.";
 
   return (
-    <section id="releases" style={{ background: "#0d0d0d", padding: "8rem 2rem" }}>
+    <section id="releases" style={{ background: "#141210", padding: "8rem 2rem" }}>
       <div style={{ maxWidth: "980px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
             {label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "3rem", color: "#fff" }}>
