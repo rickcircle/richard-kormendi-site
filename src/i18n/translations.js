@@ -24,7 +24,7 @@ export const t = {
     },
     music: {
       label: "Music",
-      heading: "Vocal Works",
+      heading: "The Music.",
       body: "Alternative rock with classical roots. A voice that moved from indie stages through musical theatre to a classical conservatory — and came back with something to say.",
     },
     shows: {
@@ -124,7 +124,7 @@ export const t = {
     },
     music: {
       label: "Zene",
-      heading: "Énekes dalok",
+      heading: "A zene.",
       body: "Alternatív rock, klasszikus gyökerekkel. Egy hang, amely indie színpadoktól musicaleken át klasszikus konzervatóriumig jutott, majd visszatért — mert van még mondanivalója.",
     },
     shows: {
