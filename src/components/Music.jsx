@@ -18,13 +18,39 @@ const INSTRUMENTAL_VIDEOS = [
   { id: "WODjlfmb5ag", title: "The Absent" },
 ];
 
+const ICONS = {
+  spotify: (
+    <path d="M12 0C5.4 0 0 5.4 0 12s5.4 12 12 12 12-5.4 12-12S18.66 0 12 0zm5.521 17.34c-.24.359-.66.48-1.021.24-2.82-1.74-6.36-2.101-10.561-1.141-.418.122-.779-.179-.899-.539-.12-.421.18-.78.54-.9 4.56-1.021 8.52-.6 11.64 1.32.42.18.479.659.301 1.02zm1.44-3.3c-.301.42-.841.6-1.262.3-3.239-1.98-8.159-2.58-11.939-1.38-.479.12-1.02-.12-1.14-.6-.12-.48.12-1.021.6-1.141C9.6 9.9 15 10.561 18.72 12.84c.361.181.54.78.241 1.2zm.12-3.36C15.24 8.4 8.82 8.16 5.16 9.301c-.6.179-1.2-.181-1.38-.721-.18-.601.18-1.2.72-1.381 4.26-1.26 11.28-1.02 15.721 1.621.539.3.719 1.02.419 1.56-.299.421-1.02.599-1.559.3z" />
+  ),
+  appleMusic: (
+    <path d="M12 3v10.55c-.59-.34-1.27-.55-2-.55-2.21 0-4 1.79-4 4s1.79 4 4 4 4-1.79 4-4V7h4V3h-6z" />
+  ),
+  youtube: (
+    <path d="M23.498 6.186a2.966 2.966 0 0 0-2.088-2.099C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.41.542A2.966 2.966 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a2.966 2.966 0 0 0 2.088 2.099c1.905.542 9.41.542 9.41.542s7.505 0 9.41-.542a2.966 2.966 0 0 0 2.088-2.099C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.75 15.5v-7l6.5 3.5-6.5 3.5z" />
+  ),
+  tidal: (
+    <path d="M8 6l4 4-4 4-4-4 4-4zm8 0l4 4-4 4-4-4 4-4zm-4 8l4 4-4 4-4-4 4-4z" />
+  ),
+  instagram: (
+    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.012-3.584.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.058 1.645-.07 4.849-.07zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
+  ),
+};
+
 const streamingLinks = [
-  { label: "Spotify",       href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
-  { label: "Apple Music",   href: "https://music.apple.com/hu/artist/richard-k%C3%B6rmendi/1877841316" },
-  { label: "YouTube",       href: "https://www.youtube.com/@richardkormendi6379" },
-  { label: "Tidal",         href: "https://tidal.com/artist/74624158" },
-  { label: "Instagram",     href: "https://www.instagram.com/rickormendi/" },
+  { label: "Spotify",     icon: "spotify",     href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
+  { label: "Apple Music", icon: "appleMusic",  href: "https://music.apple.com/hu/artist/richard-k%C3%B6rmendi/1877841316" },
+  { label: "Tidal",       icon: "tidal",       href: "https://tidal.com/artist/74624158" },
+  { label: "YouTube",     icon: "youtube",     href: "https://www.youtube.com/@richardkormendi6379" },
+  { label: "Instagram",   icon: "instagram",   href: "https://www.instagram.com/rickormendi/" },
 ];
+
+function PlatformIcon({ name, size = 18 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" style={{ flexShrink: 0 }}>
+      {ICONS[name]}
+    </svg>
+  );
+}
 
 export default function Music() {
   const { lang } = useLang();
@@ -54,52 +80,38 @@ export default function Music() {
             {tx.body}
           </p>
 
-          {/* Tab váltó — pill stílus */}
-          <div style={{
-            display: "inline-flex",
-            background: "rgba(255,255,255,0.06)",
-            borderRadius: "999px",
-            padding: "4px",
-            gap: "4px",
-            marginBottom: "2.5rem",
-          }}>
+          {/* Fő váltó — Listen / Watch, nagy kártyák */}
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0.75rem", marginBottom: "2rem" }}>
             {[
-              { key: "listen", label: lang === "hu" ? "🎵 Hallgass" : "🎵 Listen" },
-              { key: "watch",  label: lang === "hu" ? "▶ Nézz"     : "▶ Watch" },
-            ].map(({ key, label }) => (
+              { key: "listen", label: lang === "hu" ? "Hallgatás" : "Listen", sub: "Spotify" },
+              { key: "watch",  label: lang === "hu" ? "Videók"    : "Watch",  sub: "YouTube" },
+            ].map(({ key, label, sub }) => (
               <button
                 key={key}
                 onClick={() => setTab(key)}
                 style={{
                   position: "relative",
-                  background: "none",
-                  border: "none",
-                  borderRadius: "999px",
-                  padding: "0.55rem 1.4rem",
-                  fontSize: "0.9rem",
-                  letterSpacing: "0.04em",
+                  padding: "1rem 1.25rem",
+                  borderRadius: "10px",
+                  border: `1px solid ${tab === key ? ACCENT : "rgba(255,255,255,0.1)"}`,
+                  background: tab === key ? "rgba(232,150,58,0.1)" : "rgba(255,255,255,0.03)",
                   cursor: "pointer",
-                  color: tab === key ? "#fff" : "rgba(245,241,234,0.5)",
-                  fontWeight: 500,
                   fontFamily: "inherit",
-                  transition: "color 0.2s",
-                  zIndex: 1,
+                  textAlign: "left",
+                  transition: "all 0.25s",
+                  boxShadow: tab === key ? "0 0 24px rgba(232,150,58,0.18)" : "none",
                 }}
               >
-                {tab === key && (
-                  <motion.div
-                    layoutId="pill"
-                    style={{
-                      position: "absolute", inset: 0,
-                      background: ACCENT,
-                      borderRadius: "999px",
-                      boxShadow: "0 0 20px rgba(232,150,58,0.4)",
-                      zIndex: -1,
-                    }}
-                    transition={{ type: "spring", stiffness: 500, damping: 40 }}
-                  />
-                )}
-                {label}
+                <span style={{
+                  display: "block", fontSize: "1rem", fontWeight: 600,
+                  color: tab === key ? ACCENT : "#f5f1ea", marginBottom: "0.15rem",
+                  letterSpacing: "0.01em",
+                }}>
+                  {key === "listen" ? "🎧 " : "▶ "}{label}
+                </span>
+                <span style={{ fontSize: "0.75rem", color: "rgba(245,241,234,0.4)", letterSpacing: "0.03em" }}>
+                  {sub}
+                </span>
               </button>
             ))}
           </div>
@@ -132,32 +144,39 @@ export default function Music() {
                 transition={{ duration: 0.25 }}
                 style={{ marginBottom: "3rem" }}
               >
-                {/* Vocal / Instrumental al-váltó */}
-                <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1.25rem" }}>
-                  {[
-                    { key: "vocal",        label: lang === "hu" ? "Énekes dalok" : "Vocal Tracks" },
-                    { key: "instrumental", label: lang === "hu" ? "Instrumentális" : "Instrumental" },
-                  ].map(({ key, label }) => (
-                    <button
-                      key={key}
-                      onClick={() => selectCategory(key)}
-                      style={{
-                        padding: "0.4rem 1rem",
-                        border: `1px solid ${category === key ? ACCENT : "rgba(255,255,255,0.15)"}`,
-                        borderRadius: "999px",
-                        background: category === key ? ACCENT : "transparent",
-                        color: category === key ? "#fff" : "rgba(245,241,234,0.5)",
-                        fontSize: "0.75rem",
-                        letterSpacing: "0.05em",
-                        cursor: "pointer",
-                        fontFamily: "inherit",
-                        transition: "all 0.2s",
-                        boxShadow: category === key ? "0 0 16px rgba(232,150,58,0.35)" : "none",
-                      }}
-                    >
-                      {label}
-                    </button>
-                  ))}
+                {/* Vocal / Instrumental szűrő — vizuálisan alárendelt a fő váltónak */}
+                <div style={{
+                  display: "flex", alignItems: "center", gap: "0.6rem",
+                  marginBottom: "1.25rem", paddingTop: "0.25rem",
+                }}>
+                  <span style={{ fontSize: "0.68rem", letterSpacing: "0.1em", color: "rgba(245,241,234,0.35)", textTransform: "uppercase" }}>
+                    {lang === "hu" ? "Szűrő" : "Filter"}
+                  </span>
+                  <div style={{ display: "flex", gap: "0.4rem" }}>
+                    {[
+                      { key: "vocal",        label: lang === "hu" ? "Énekes" : "Vocal" },
+                      { key: "instrumental", label: lang === "hu" ? "Instrumentális" : "Instrumental" },
+                    ].map(({ key, label }) => (
+                      <button
+                        key={key}
+                        onClick={() => selectCategory(key)}
+                        style={{
+                          padding: "0.3rem 0.75rem",
+                          border: `1px solid ${category === key ? "rgba(232,150,58,0.5)" : "rgba(255,255,255,0.12)"}`,
+                          borderRadius: "5px",
+                          background: "transparent",
+                          color: category === key ? ACCENT : "rgba(245,241,234,0.4)",
+                          fontSize: "0.72rem",
+                          letterSpacing: "0.03em",
+                          cursor: "pointer",
+                          fontFamily: "inherit",
+                          transition: "all 0.2s",
+                        }}
+                      >
+                        {label}
+                      </button>
+                    ))}
+                  </div>
                 </div>
 
                 <div style={{ borderRadius: "4px", overflow: "hidden", position: "relative", aspectRatio: "16/9", marginBottom: "1rem" }}>
@@ -197,23 +216,32 @@ export default function Music() {
             )}
           </AnimatePresence>
 
+          {/* Listen everywhere — platform ikonokkal */}
           <div>
             <p style={{ fontSize: "0.75rem", letterSpacing: "0.12em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", marginBottom: "1rem" }}>
               {lang === "hu" ? "Hallgass mindenhol" : "Listen everywhere"}
             </p>
             <div className="streaming-grid">
-              {streamingLinks.filter(l => l.href !== "#").map(link => (
-                <a key={link.label} href={link.href} target="_blank" rel="noreferrer"
-                  style={{ padding: "0.6rem 1.25rem", border: "1px solid rgba(255,255,255,0.15)", borderRadius: "2px", textDecoration: "none", color: "#f5f1ea", fontSize: "0.85rem", letterSpacing: "0.05em", transition: "all 0.2s", textAlign: "center" }}
+              {streamingLinks.map(link => (
+                <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="streaming-link"
+                  style={{
+                    display: "flex", alignItems: "center", gap: "0.6rem",
+                    padding: "0.7rem 1.1rem", border: "1px solid rgba(255,255,255,0.12)",
+                    borderRadius: "8px", textDecoration: "none", color: "#f5f1ea",
+                    fontSize: "0.85rem", fontWeight: 500, letterSpacing: "0.02em",
+                    background: "rgba(255,255,255,0.03)", transition: "all 0.2s",
+                  }}
                   onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = ACCENT; }}
-                  onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#f5f1ea"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.15)"; }}>
+                  onMouseOut={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.color = "#f5f1ea"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; }}>
+                  <PlatformIcon name={link.icon} />
                   {link.label}
                 </a>
               ))}
             </div>
             <style>{`
-              .streaming-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 0.6rem; }
-              @media (max-width: 520px) { .streaming-grid { grid-template-columns: repeat(3, 1fr); } }
+              .streaming-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
+              .streaming-link { flex: 1 1 150px; justify-content: center; }
+              @media (max-width: 520px) { .streaming-link { flex: 1 1 calc(50% - 0.3rem); } }
             `}</style>
           </div>
         </motion.div>
