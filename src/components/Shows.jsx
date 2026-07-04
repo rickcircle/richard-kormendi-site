@@ -79,7 +79,7 @@ export default function Shows() {
                       style={{ fontSize: "0.8rem", letterSpacing: "0.08em", color: "#f5f1ea", textDecoration: "none", border: "1px solid rgba(255,255,255,0.25)", borderRadius: "2px", padding: "0.4rem 0.9rem", transition: "all 0.2s", whiteSpace: "nowrap" }}
                       onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = ACCENT; }}
                       onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#f5f1ea"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; }}>
-                      Tickets
+                      {tx.tickets}
                     </a>
                   )}
                 </motion.div>

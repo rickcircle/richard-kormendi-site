@@ -45,6 +45,7 @@ export const t = {
       bookingSubmit: "Send inquiry",
       bookingSuccess: "Inquiry sent! I'll reply within 48 hours.",
       bookingError: "Something went wrong. Please email directly.",
+      tickets: "Tickets",
     },
     photos: {
       label: "Photos",
@@ -113,10 +114,10 @@ export const t = {
     },
     about: {
       label: "Rólam",
-      heading: "Egy hang,\nújra és újra.",
-      bio: "Körmendi Richárd énekes-dalszerző, klasszikus képzettségű tenor. Az Éberálom indie rock banda frontembereként kezdte, musicalekben szerepelt, majd 2024-ben klasszikus énekdiplomát szerzett a Nagyváradi Partiumi Keresztény Egyetemen. Első angol nyelvű dalai 2026-ban jelentek meg — amit évek óta érlelt, most végre lemezen van.",
+      heading: "Egy hang,\namit az újrakezdés formált.",
+      bio: "Körmendi Richárd énekes-dalszerző, klasszikus képzettségű tenor. Az Éberálom indie rock banda frontembereként kezdte, musicalekben szerepelt, majd 2024-ben klasszikus énekdiplomát szerzett a Nagyváradi Partiumi Keresztény Egyetemen. 2026-ban jelentek meg első angol nyelvű dalai — évek munkája, ami végre lemezen is hallható.",
       tiles: {
-        eberalom: { label: "Gyökerek", title: "Éberálom", body: "Magyar indie rock banda. Nyers energia, teli házak — és annak bizonyítéka, hogy ez a hang tud valamit." },
+        eberalom: { label: "Gyökerek", title: "Éberálom", body: "Magyar indie rock banda. Nyers energia, teli házak — az első valódi bizonyíték arra, mire képes ez a hang." },
         classical: { label: "2024", title: "Klasszikus tenor", body: "Klasszikus énekdiploma a Nagyváradi Partiumi Keresztény Egyetemen. A hosszú út megtérült." },
         singles: { label: "2026 — Legújabb", title: "You Become My Only", body: "A legfrissebb kislemez — már elérhető minden platformon." },
       },
@@ -124,15 +125,15 @@ export const t = {
     music: {
       label: "Zene",
       heading: "Cold Urban Sighs",
-      body: "Alternatív rock, klasszikus gyökerekkel. Egy hang, amely indie színpadoktól musicaleken át klasszikus konzervatóriumig jutott — és visszatért, mert van mit mondania.",
+      body: "Alternatív rock, klasszikus gyökerekkel. Egy hang, amely indie színpadoktól musicaleken át klasszikus konzervatóriumig jutott, majd visszatért — mert van még mondanivalója.",
     },
     shows: {
       label: "Koncertek",
       heading: "Élőben.",
-      noShows: "Nincs közelgő koncert — figyelj ránk.",
-      noShowsSub: "Kövess Instagramon, vagy iratkozz fel lentebb.",
+      noShows: "Nincs közelgő koncert — de hamarosan jövök.",
+      noShowsSub: "Kövess Instagramon vagy iratkozz fel lentebb.",
       bookingLabel: "Foglalás",
-      bookingHeading: "Hívj meg egy eseményre.",
+      bookingHeading: "Foglalj le egy fellépésre.",
       bookingBody: "Koncert, privát rendezvény, céges est vagy fesztivál — küldj egy üzenetet, 48 órán belül visszajelzek.",
       bookingName: "Neved",
       bookingEmail: "Email cím",
@@ -144,6 +145,7 @@ export const t = {
       bookingSubmit: "Üzenet küldése",
       bookingSuccess: "Megkaptam! 48 órán belül visszajelzek.",
       bookingError: "Hiba történt. Írj közvetlenül emailt.",
+      tickets: "Jegyek",
     },
     photos: {
       label: "Fotók",
@@ -153,7 +155,7 @@ export const t = {
     services: {
       label: "Digitális szolgáltatások",
       heading: "14 év az online térben.",
-      body: "Front-end fejlesztés, WordPress, SEO, Google Ads. Szabadúszóként elérhető — kisebb vállalkozásoknak, egyéni vállalkozóknak, akik eredményt akarnak.",
+      body: "Front-end fejlesztés, WordPress, SEO, Google Ads. Szabadúszóként dolgozom kisebb vállalkozásoknak és egyéni vállalkozóknak, akik eredményt akarnak.",
       cta: "Kérek ajánlatot",
       packages: [
         {
@@ -179,7 +181,7 @@ export const t = {
     },
     press: {
       label: "Sajtó",
-      heading: "Ahol hallottál rólam.",
+      heading: "Sajtóvisszhang.",
     },
     newsletter: {
       label: "Értesítő",
@@ -193,7 +195,7 @@ export const t = {
     contact: {
       label: "Kapcsolat",
       heading: "Írj nekem.",
-      body: "Zenei együttműködés, weboldal-projekt, vagy csak egy kérdés.",
+      body: "Zenei együttműködés, weboldalas projekt vagy csak egy kérdés.",
     },
   },
 };
