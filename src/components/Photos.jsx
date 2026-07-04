@@ -16,15 +16,15 @@ import photo8    from "../assets/images/photo-studio-portrait.jpg";
 import photoLast from "../assets/images/6751152D-9E3E-4556-883D-A15F0A63B04F_1_105_c.jpeg";
 
 const staticPhotos = [
-  { src: photo1,    alt: "Richard Körmendi" },
-  { src: photo2,    alt: "Richard Körmendi – neon city" },
-  { src: photo3,    alt: "Richard Körmendi" },
-  { src: photo4,    alt: "Richard Körmendi" },
-  { src: photo5,    alt: "Richard Körmendi" },
-  { src: photo6,    alt: "Richard Körmendi" },
-  { src: photo7,    alt: "Richard Körmendi – guitar" },
-  { src: photo8,    alt: "Richard Körmendi – studio" },
-  { src: photoLast, alt: "Richard Körmendi" },
+  { src: photo1,    alt: "Richard Körmendi, Hungarian singer-songwriter, portrait" },
+  { src: photo2,    alt: "Richard Körmendi in a neon-lit city street" },
+  { src: photo3,    alt: "Richard Körmendi at a bar in a black suit" },
+  { src: photo4,    alt: "Richard Körmendi outdoors near Esztergom" },
+  { src: photo5,    alt: "Richard Körmendi with an electric guitar" },
+  { src: photo6,    alt: "Richard Körmendi candid outdoor photo" },
+  { src: photo7,    alt: "Richard Körmendi playing electric guitar in a studio" },
+  { src: photo8,    alt: "Richard Körmendi in a recording studio" },
+  { src: photoLast, alt: "Richard Körmendi behind the scenes" },
 ];
 
 export default function Photos() {
