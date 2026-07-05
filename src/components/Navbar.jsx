@@ -5,7 +5,7 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 
 const ACCENT = "#e8963a";
-const SECTION_IDS = ["about", "music", "releases", "shows", "photos", "contact"];
+const SECTION_IDS = ["about", "music", "releases", "press", "shows", "photos", "contact"];
 
 export default function Navbar() {
   const { lang, setLang } = useLang();
@@ -23,6 +23,7 @@ export default function Navbar() {
     { id: "about",    label: tx.about,    href: href("#about") },
     { id: "music",    label: tx.music,    href: href("#music") },
     { id: "releases", label: tx.releases, href: href("#releases") },
+    { id: "press",    label: tx.press,    href: href("#press") },
     { id: "shows",    label: tx.shows,    href: href("#shows") },
     { id: "photos",   label: tx.photos,   href: href("#photos") },
     { id: "contact",  label: tx.contact,  href: href("#contact") },
