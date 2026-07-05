@@ -190,7 +190,7 @@ export const t = {
     newsletter: {
       label: "Hírlevél",
       heading: "Ne maradj le!",
-      body: "Új zene, koncertdátumok, kulisszatitkák — egyenesen az inboxodba.",
+      body: "Új zene, koncertdátumok, kulisszatitkok — egyenesen az inboxodba.",
       placeholder: "Email cím",
       cta: "Feliratkozom",
       success: "Feliratkoztál! Nézd meg a postafiókodat a megerősítéshez.",
