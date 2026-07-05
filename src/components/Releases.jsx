@@ -3,6 +3,8 @@ import { motion } from "framer-motion";
 import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 
+import coverStillIGo        from "../assets/images/cover-still-i-go.jpg";
+import coverTheAbsent       from "../assets/images/cover-the-absent.jpg";
 import coverYouBecomeMyOnly from "../assets/images/cover-you-become-my-only.jpg";
 import coverLikeAnEmber     from "../assets/images/cover-like-an-ember.jpg";
 import coverEnthralling     from "../assets/images/cover-enthralling.jpg";
@@ -14,7 +16,9 @@ import coverMyRemedy        from "../assets/images/cover-my-remedy.jpg";
 const ACCENT = "#e8963a";
 
 const RELEASES = [
-  { title: "You Become My Only", year: "2026", cover: coverYouBecomeMyOnly, spotifyId: "3bCpO4FDUqgNGp4D4aIYTJ", isNew: true },
+  { title: "Still I Go",         year: "2026", cover: coverStillIGo,        spotifyId: "7gT1yqH7HjtBA3wWcTwtD7",  isNew: true },
+  { title: "The Absent",         year: "2026", cover: coverTheAbsent,       spotifyId: "29BOxHtSuQC7qTGJBeKP3D" },
+  { title: "You Become My Only", year: "2026", cover: coverYouBecomeMyOnly, spotifyId: "3bCpO4FDUqgNGp4D4aIYTJ" },
   { title: "Like An Ember",      year: "2026", cover: coverLikeAnEmber,     spotifyId: "07fRNFTqUkQynMTCABulTu" },
   { title: "Enthralling",        year: "2026", cover: coverEnthralling,     spotifyId: "0OLEeHMSvzzWmmruZK1kky" },
   { title: "I Own The Night",    year: "2026", cover: coverIOwnTheNight,    spotifyId: "0tRNo8hJHoJKAX4BJZdNed" },
