@@ -37,7 +37,7 @@ export default function Press() {
 
   return (
     <section id="press" style={{ padding: "8rem 2rem", background: "#0b0a08" }}>
-      <div style={{ maxWidth: "720px", margin: "0 auto" }}>
+      <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
           <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
@@ -80,66 +80,61 @@ export default function Press() {
           </motion.div>
         )}
 
-        {/* Egyszerű sajtómegjelenések — kompakt lista */}
+        {/* Sajtómegjelenések — kártyás rács */}
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
-          style={{ display: "flex", flexDirection: "column" }}>
-          {mentions.map((item, i) => (
-            <motion.div key={i} variants={staggerItem}
-              className="press-item"
-              style={{
-                display: "grid",
-                gridTemplateColumns: "90px 1fr auto",
-                alignItems: "center",
-                gap: "1.5rem",
-                padding: "1.5rem 0",
-                borderBottom: i < mentions.length - 1 ? "1px solid rgba(255,255,255,0.08)" : "none",
-              }}>
-              <span style={{
-                display: "inline-block", width: "fit-content",
-                fontSize: "0.65rem", letterSpacing: "0.08em", color: "rgba(245,241,234,0.5)",
-                textTransform: "uppercase", fontWeight: 600,
-                border: "1px solid rgba(255,255,255,0.15)", borderRadius: "999px",
-                padding: "3px 10px",
-              }}>
-                {item.type[lang]}
-              </span>
-              <div>
-                <p style={{ margin: 0, fontWeight: 500, fontSize: "0.95rem", color: "#f5f1ea" }}>
-                  {item.outlet}
-                </p>
-                <p style={{ margin: "0.2rem 0 0", fontSize: "0.82rem", color: "rgba(245,241,234,0.45)" }}>
-                  {item.desc[lang]}
-                </p>
-              </div>
-              {item.href ? (
-                <a href={item.href} target="_blank" rel="noreferrer"
-                  style={{
-                    fontSize: "0.78rem", letterSpacing: "0.08em", color: "rgba(245,241,234,0.45)",
-                    textDecoration: "none", whiteSpace: "nowrap",
-                    transition: "color 0.2s",
-                  }}
-                  onMouseOver={e => e.currentTarget.style.color = ACCENT}
-                  onMouseOut={e => e.currentTarget.style.color = "rgba(245,241,234,0.45)"}>
-                  {lang === "hu" ? "Megtekintés →" : "Read →"}
-                </a>
-              ) : (
-                <span style={{ fontSize: "0.78rem", color: "rgba(245,241,234,0.25)", whiteSpace: "nowrap" }}>
-                  {lang === "hu" ? "Archívum" : "Archive"}
+          className="press-grid">
+          {mentions.map((item, i) => {
+            const Tag = item.href ? motion.a : motion.div;
+            return (
+              <Tag key={i} variants={staggerItem}
+                {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer" } : {})}
+                className="press-card"
+                style={{
+                  display: "flex", flexDirection: "column", gap: "0.85rem",
+                  padding: "1.75rem",
+                  border: "1px solid rgba(255,255,255,0.08)",
+                  borderRadius: "10px",
+                  background: "rgba(255,255,255,0.03)",
+                  textDecoration: "none",
+                  transition: "border-color 0.2s, background 0.2s",
+                }}
+                onMouseOver={e => { e.currentTarget.style.borderColor = "rgba(232,150,58,0.4)"; e.currentTarget.style.background = "rgba(232,150,58,0.05)"; }}
+                onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+              >
+                <span style={{
+                  display: "inline-block", width: "fit-content",
+                  fontSize: "0.65rem", letterSpacing: "0.08em", color: ACCENT,
+                  textTransform: "uppercase", fontWeight: 700,
+                  border: `1px solid rgba(232,150,58,0.35)`, borderRadius: "999px",
+                  padding: "3px 10px",
+                }}>
+                  {item.type[lang]}
                 </span>
-              )}
-            </motion.div>
-          ))}
+                <div>
+                  <p style={{ margin: 0, fontWeight: 600, fontSize: "1.1rem", color: "#f5f1ea" }}>
+                    {item.outlet}
+                  </p>
+                  <p style={{ margin: "0.35rem 0 0", fontSize: "0.85rem", color: "rgba(245,241,234,0.5)", lineHeight: 1.5 }}>
+                    {item.desc[lang]}
+                  </p>
+                </div>
+                <span style={{
+                  marginTop: "auto", paddingTop: "0.5rem",
+                  fontSize: "0.78rem", letterSpacing: "0.06em",
+                  color: item.href ? "rgba(245,241,234,0.6)" : "rgba(245,241,234,0.25)",
+                }}>
+                  {item.href ? (lang === "hu" ? "Megtekintés →" : "Read →") : (lang === "hu" ? "Archívum" : "Archive")}
+                </span>
+              </Tag>
+            );
+          })}
         </motion.div>
       </div>
       <style>{`
-        @media (max-width: 520px) {
-          .press-item {
-            grid-template-columns: 1fr !important;
-            gap: 0.4rem !important;
-          }
-          .press-item > span:first-child {
-            margin-bottom: 0.3rem;
-          }
+        .press-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+          gap: 1.25rem;
         }
       `}</style>
     </section>
