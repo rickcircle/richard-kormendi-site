@@ -52,7 +52,19 @@ export default function Shows() {
             <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
               style={{ padding: "3rem 2rem", border: "1px solid rgba(255,255,255,0.08)", borderRadius: "2px", textAlign: "center", marginBottom: "5rem" }}>
               <p style={{ fontSize: "1rem", color: "rgba(245,241,234,0.55)", marginBottom: "0.75rem" }}>{tx.noShows}</p>
-              <p style={{ fontSize: "0.85rem", color: "rgba(245,241,234,0.3)" }}>{tx.noShowsSub}</p>
+              <p style={{ fontSize: "0.85rem", color: "rgba(245,241,234,0.3)", marginBottom: "1.75rem" }}>{tx.noShowsSub}</p>
+              <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
+                <a href="https://www.instagram.com/rickormendi/" target="_blank" rel="noreferrer"
+                  style={{ fontSize: "0.8rem", letterSpacing: "0.06em", color: "#f5f1ea", textDecoration: "none", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "2px", padding: "0.6rem 1.25rem", transition: "all 0.2s" }}
+                  onMouseOver={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = ACCENT; }}
+                  onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "#f5f1ea"; }}>
+                  {tx.noShowsInstagram}
+                </a>
+                <a href="#newsletter"
+                  style={{ fontSize: "0.8rem", letterSpacing: "0.06em", color: "#fff", textDecoration: "none", background: ACCENT, borderRadius: "2px", padding: "0.6rem 1.25rem", boxShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+                  {tx.noShowsNotify}
+                </a>
+              </div>
             </motion.div>
           ) : (
             <div style={{ display: "flex", flexDirection: "column", gap: "0", marginBottom: "5rem" }}>

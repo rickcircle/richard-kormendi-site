@@ -5,12 +5,14 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 
 const ACCENT = "#e8963a";
+const SECTION_IDS = ["about", "music", "releases", "shows", "photos", "contact"];
 
 export default function Navbar() {
   const { lang, setLang } = useLang();
   const tx = t[lang].nav;
   const [scrolled, setScrolled] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [active, setActive] = useState(null);
   const { pathname } = useLocation();
   const isHome = pathname === "/";
 
@@ -18,12 +20,12 @@ export default function Navbar() {
   const href = anchor => isHome ? anchor : `/${anchor}`;
 
   const navLinks = [
-    { label: tx.about,    href: href("#about") },
-    { label: tx.music,    href: href("#music") },
-    { label: tx.releases, href: href("#releases") },
-    { label: tx.shows,    href: href("#shows") },
-    { label: tx.photos,   href: href("#photos") },
-    { label: tx.contact,  href: href("#contact") },
+    { id: "about",    label: tx.about,    href: href("#about") },
+    { id: "music",    label: tx.music,    href: href("#music") },
+    { id: "releases", label: tx.releases, href: href("#releases") },
+    { id: "shows",    label: tx.shows,    href: href("#shows") },
+    { id: "photos",   label: tx.photos,   href: href("#photos") },
+    { id: "contact",  label: tx.contact,  href: href("#contact") },
   ];
 
   useEffect(() => {
@@ -31,6 +33,24 @@ export default function Navbar() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  // Aktív szekció figyelése görgetéskor — csak a főoldalon van értelme
+  useEffect(() => {
+    if (!isHome) return;
+    const sections = SECTION_IDS.map(id => document.getElementById(id)).filter(Boolean);
+    if (sections.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) setActive(entry.target.id);
+        });
+      },
+      { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
+    );
+    sections.forEach(s => observer.observe(s));
+    return () => observer.disconnect();
+  }, [isHome]);
 
   return (
     <header style={{
@@ -52,14 +72,21 @@ export default function Navbar() {
       </a>
 
       <nav style={{ display: "flex", alignItems: "center", gap: "2rem" }} className="desktop-nav">
-        {navLinks.map(link => (
-          <a key={link.label} href={link.href}
-            style={navLinkStyle}
-            onMouseOver={e => e.currentTarget.style.color = ACCENT}
-            onMouseOut={e => e.currentTarget.style.color = "rgba(245,241,234,0.65)"}>
-            {link.label}
-          </a>
-        ))}
+        {navLinks.map(link => {
+          const isActive = active === link.id;
+          return (
+            <a key={link.label} href={link.href}
+              style={{
+                ...navLinkStyle,
+                color: isActive ? ACCENT : "rgba(245,241,234,0.65)",
+                textShadow: isActive ? "0 0 12px rgba(232,150,58,0.4)" : "none",
+              }}
+              onMouseOver={e => e.currentTarget.style.color = ACCENT}
+              onMouseOut={e => e.currentTarget.style.color = isActive ? ACCENT : "rgba(245,241,234,0.65)"}>
+              {link.label}
+            </a>
+          );
+        })}
         <LangToggle lang={lang} setLang={setLang} />
       </nav>
 
@@ -83,7 +110,7 @@ export default function Navbar() {
             }}>
             {navLinks.map(link => (
               <a key={link.label} href={link.href} onClick={() => setMenuOpen(false)}
-                style={{ textDecoration: "none", color: "#f5f1ea", fontSize: "1rem", letterSpacing: "0.05em" }}>
+                style={{ textDecoration: "none", color: active === link.id ? ACCENT : "#f5f1ea", fontSize: "1rem", letterSpacing: "0.05em" }}>
                 {link.label}
               </a>
             ))}
@@ -120,6 +147,6 @@ function LangToggle({ lang, setLang }) {
 }
 
 const navLinkStyle = {
-  textDecoration: "none", color: "rgba(245,241,234,0.65)",
+  textDecoration: "none",
   fontSize: "0.85rem", letterSpacing: "0.05em", transition: "color 0.2s",
 };

@@ -32,7 +32,7 @@ export default function Newsletter() {
   };
 
   return (
-    <section style={{ background: "#0b0a08", padding: "6rem 2rem" }}>
+    <section id="newsletter" style={{ background: "#0b0a08", padding: "6rem 2rem" }}>
       <div style={{ maxWidth: "560px", margin: "0 auto", textAlign: "center" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.1 }}>
           <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", marginBottom: "1.5rem" }}>

@@ -49,20 +49,119 @@
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
-      "@type": "Person",
-      "name": "Richard Körmendi",
-      "url": "https://richardkormendi.com",
-      "image": "https://richardkormendi.com/og-image.png",
-      "jobTitle": ["Musician", "Singer-Songwriter", "Web Developer"],
-      "description": "Singer-songwriter and classically trained tenor. Front-end developer and SEO specialist with 14 years of digital experience.",
-      "sameAs": [
-        "https://www.instagram.com/rickormendi/",
-        "https://www.youtube.com/@richardkormendi6379",
-        "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp",
-        "https://music.apple.com/hu/artist/richard-k%C3%B6rmendi/1877841316",
-        "https://tidal.com/artist/74624158"
-      ],
-      "knowsAbout": ["Music", "Web Development", "SEO", "WordPress", "React", "Google Ads"]
+      "@graph": [
+        {
+          "@type": "Person",
+          "@id": "https://richardkormendi.com/#person",
+          "name": "Richard Körmendi",
+          "url": "https://richardkormendi.com",
+          "image": "https://richardkormendi.com/og-image.png",
+          "jobTitle": ["Musician", "Singer-Songwriter", "Web Developer"],
+          "description": "Singer-songwriter and classically trained tenor. Front-end developer and SEO specialist with 14 years of digital experience.",
+          "sameAs": [
+            "https://www.instagram.com/rickormendi/",
+            "https://www.youtube.com/@richardkormendi6379",
+            "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp",
+            "https://music.apple.com/hu/artist/richard-k%C3%B6rmendi/1877841316",
+            "https://tidal.com/artist/74624158"
+          ],
+          "knowsAbout": ["Music", "Web Development", "SEO", "WordPress", "React", "Google Ads"]
+        },
+        {
+          "@type": "MusicRecording",
+          "name": "You Become My Only",
+          "byArtist": { "@id": "https://richardkormendi.com/#person" },
+          "url": "https://open.spotify.com/album/3bCpO4FDUqgNGp4D4aIYTJ",
+          "datePublished": "2026"
+        },
+        {
+          "@type": "MusicRecording",
+          "name": "Like An Ember",
+          "byArtist": { "@id": "https://richardkormendi.com/#person" },
+          "url": "https://open.spotify.com/album/07fRNFTqUkQynMTCABulTu",
+          "datePublished": "2026"
+        },
+        {
+          "@type": "MusicRecording",
+          "name": "Enthralling",
+          "byArtist": { "@id": "https://richardkormendi.com/#person" },
+          "url": "https://open.spotify.com/album/0OLEeHMSvzzWmmruZK1kky",
+          "datePublished": "2026"
+        },
+        {
+          "@type": "MusicRecording",
+          "name": "I Own The Night",
+          "byArtist": { "@id": "https://richardkormendi.com/#person" },
+          "url": "https://open.spotify.com/album/0tRNo8hJHoJKAX4BJZdNed",
+          "datePublished": "2026"
+        },
+        {
+          "@type": "MusicRecording",
+          "name": "Cold Urban Sighs",
+          "byArtist": { "@id": "https://richardkormendi.com/#person" },
+          "url": "https://open.spotify.com/album/0v7PuGpgnJGanvBaCaqIK0",
+          "datePublished": "2026"
+        },
+        {
+          "@type": "MusicRecording",
+          "name": "Light In The Dark",
+          "byArtist": { "@id": "https://richardkormendi.com/#person" },
+          "url": "https://open.spotify.com/album/6z5motWF2BpV9joKbiwaKD",
+          "datePublished": "2026"
+        },
+        {
+          "@type": "MusicRecording",
+          "name": "My Remedy",
+          "byArtist": { "@id": "https://richardkormendi.com/#person" },
+          "url": "https://open.spotify.com/album/3ezfX2qHayGF374BPqJ99j",
+          "datePublished": "2026"
+        },
+        {
+          "@type": "VideoObject",
+          "name": "You Become My Only (Official Music Video)",
+          "description": "Official music video for \"You Become My Only\" by Richard Körmendi.",
+          "thumbnailUrl": "https://img.youtube.com/vi/3SgUws3Gkuw/hqdefault.jpg",
+          "embedUrl": "https://www.youtube.com/embed/3SgUws3Gkuw",
+          "contentUrl": "https://www.youtube.com/watch?v=3SgUws3Gkuw",
+          "publisher": { "@id": "https://richardkormendi.com/#person" }
+        },
+        {
+          "@type": "VideoObject",
+          "name": "Cold Urban Sighs (Lyrics Video)",
+          "description": "Official lyrics video for \"Cold Urban Sighs\" by Richard Körmendi.",
+          "thumbnailUrl": "https://img.youtube.com/vi/TRn2qxJAvKE/hqdefault.jpg",
+          "embedUrl": "https://www.youtube.com/embed/TRn2qxJAvKE",
+          "contentUrl": "https://www.youtube.com/watch?v=TRn2qxJAvKE",
+          "publisher": { "@id": "https://richardkormendi.com/#person" }
+        },
+        {
+          "@type": "VideoObject",
+          "name": "Like An Ember (Official Lyrics Video)",
+          "description": "Official lyrics video for \"Like An Ember\" by Richard Körmendi.",
+          "thumbnailUrl": "https://img.youtube.com/vi/r144oflIpPI/hqdefault.jpg",
+          "embedUrl": "https://www.youtube.com/embed/r144oflIpPI",
+          "contentUrl": "https://www.youtube.com/watch?v=r144oflIpPI",
+          "publisher": { "@id": "https://richardkormendi.com/#person" }
+        },
+        {
+          "@type": "VideoObject",
+          "name": "Light In The Dark (Official Instrumental Video)",
+          "description": "Official instrumental video for \"Light In The Dark\" by Richard Körmendi — dark piano & cello.",
+          "thumbnailUrl": "https://img.youtube.com/vi/jGYNDMMb734/hqdefault.jpg",
+          "embedUrl": "https://www.youtube.com/embed/jGYNDMMb734",
+          "contentUrl": "https://www.youtube.com/watch?v=jGYNDMMb734",
+          "publisher": { "@id": "https://richardkormendi.com/#person" }
+        },
+        {
+          "@type": "VideoObject",
+          "name": "The Absent (Official Instrumental Video)",
+          "description": "Official instrumental video for \"The Absent\" by Richard Körmendi.",
+          "thumbnailUrl": "https://img.youtube.com/vi/WODjlfmb5ag/hqdefault.jpg",
+          "embedUrl": "https://www.youtube.com/embed/WODjlfmb5ag",
+          "contentUrl": "https://www.youtube.com/watch?v=WODjlfmb5ag",
+          "publisher": { "@id": "https://richardkormendi.com/#person" }
+        }
+      ]
     }
     </script>
   </head>
