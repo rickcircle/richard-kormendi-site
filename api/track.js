@@ -1,8 +1,8 @@
 // Vercel serverless — egy látogatói esemény (pageview / section_view) mentése Redisbe
-// Env vars: a Vercel "Storage" fülön létrehozott Redis adatbázis automatikusan beállítja őket
-// (UPSTASH_REDIS_REST_URL / UPSTASH_REDIS_REST_TOKEN, vagy KV_REST_API_URL / KV_REST_API_TOKEN)
+// Env var: REDIS_URL — a Vercel "Storage" fülön létrehozott Redis Cloud adatbázis
+// automatikusan beállítja, nem kell kézzel megadni.
 
-import { Redis } from "@upstash/redis";
+import { createClient } from "redis";
 
 const KNOWN_SOURCES = [
   { match: /google\./,        label: "Google keresés" },
@@ -35,10 +35,14 @@ function todayKey() {
   return `rk:events:${d}`;
 }
 
-let redis;
+let clientPromise;
 function getRedis() {
-  if (!redis) redis = Redis.fromEnv();
-  return redis;
+  if (!clientPromise) {
+    const client = createClient({ url: process.env.REDIS_URL });
+    client.on("error", err => console.error("Redis kliens hiba:", err.message));
+    clientPromise = client.connect().then(() => client);
+  }
+  return clientPromise;
 }
 
 export default async function handler(req, res) {
@@ -65,9 +69,9 @@ export default async function handler(req, res) {
   };
 
   try {
-    const client = getRedis();
+    const client = await getRedis();
     const key = todayKey();
-    await client.rpush(key, JSON.stringify(event));
+    await client.rPush(key, JSON.stringify(event));
     await client.expire(key, 60 * 60 * 24 * 4); // 4 nap után automatikusan törlődik
     return res.status(204).end();
   } catch (err) {

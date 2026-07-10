@@ -2,25 +2,28 @@
 // eseményekből összefoglaló emailt küld Resenden keresztül. Nem függ Google Cloudtól.
 //
 // Szükséges env vars (Vercel Dashboard → Settings → Environment Variables):
-//   (Redis-hez semmit nem kell kézzel beírni — a Vercel Storage fülön létrehozott
-//    adatbázis automatikusan hozzáköti az UPSTASH_REDIS_REST_URL / _TOKEN változókat)
+//   (REDIS_URL-t a Vercel Storage fülön létrehozott Redis Cloud adatbázis automatikusan beállítja)
 //   RESEND_API_KEY     — resend.com API kulcs
 //   DIGEST_FROM_EMAIL  — pl. "onboarding@resend.dev" teszthez, később saját domain
 //   DIGEST_TO_EMAIL    — hova menjen az összefoglaló, pl. "richard.kormendi@gmail.com"
 //   CRON_SECRET        — Vercel automatikusan Bearer tokenként küldi a cron-hívásokban;
 //                        kézi teszthez ?secret= paraméterként is elfogadjuk
 
-import { Redis } from "@upstash/redis";
+import { createClient } from "redis";
 
 const SECTION_LABELS_HU = {
   about: "Rólam", music: "Zene", releases: "Kiadások", press: "Sajtó",
   shows: "Koncertek", photos: "Fotók", contact: "Kapcsolat",
 };
 
-let redis;
+let clientPromise;
 function getRedis() {
-  if (!redis) redis = Redis.fromEnv();
-  return redis;
+  if (!clientPromise) {
+    const client = createClient({ url: process.env.REDIS_URL });
+    client.on("error", err => console.error("Redis kliens hiba:", err.message));
+    clientPromise = client.connect().then(() => client);
+  }
+  return clientPromise;
 }
 
 function todayKey() {
@@ -123,8 +126,8 @@ export default async function handler(req, res) {
   }
 
   try {
-    const client = getRedis();
-    const raw = await client.lrange(todayKey(), 0, -1);
+    const client = await getRedis();
+    const raw = await client.lRange(todayKey(), 0, -1);
     const events = raw.map(e => (typeof e === "string" ? JSON.parse(e) : e));
 
     const sessions = new Map(); // sessionId -> { minTs, maxTs }
