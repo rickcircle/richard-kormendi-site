@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
+import { track } from "../utils/track";
 
 const ACCENT = "#e8963a";
 const SPOTIFY_EMBED_URL = "https://open.spotify.com/embed/artist/5UW4cZ0M83TG2nJWYvkVkp?utm_source=generator&theme=0";
@@ -82,7 +83,7 @@ export default function Music() {
             ].map(({ key, label, sub }) => (
               <button
                 key={key}
-                onClick={() => setTab(key)}
+                onClick={() => { setTab(key); track("click", { label: `music_tab:${key}` }); }}
                 style={{
                   position: "relative",
                   padding: "1rem 1.25rem",
@@ -154,7 +155,7 @@ export default function Music() {
                   {VIDEOS.map((v, i) => (
                     <button
                       key={v.id}
-                      onClick={() => setActiveVideo(i)}
+                      onClick={() => { setActiveVideo(i); track("click", { label: `video: ${v.title}` }); }}
                       className="video-thumb"
                       style={{
                         position: "relative",
@@ -218,6 +219,7 @@ export default function Music() {
             <div className="streaming-grid">
               {streamingLinks.map(link => (
                 <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="streaming-link"
+                  onClick={() => track("click", { label: `stream: ${link.label}` })}
                   style={{
                     display: "flex", alignItems: "center", gap: "0.6rem",
                     padding: "0.7rem 1.1rem", border: "1px solid rgba(255,255,255,0.12)",

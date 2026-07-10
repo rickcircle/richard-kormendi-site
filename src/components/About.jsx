@@ -3,6 +3,7 @@ import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import profilePhoto from "../assets/images/photo-img3953.jpg";
+import { track } from "../utils/track";
 
 const CARD_BG = "#1c1814";
 
@@ -79,6 +80,7 @@ export default function About() {
             <a
               href="https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp"
               target="_blank" rel="noreferrer"
+              onClick={() => track("click", { label: "about_spotify_link" })}
               style={{ display: "inline-block", marginTop: "1.25rem", fontSize: "0.8rem", letterSpacing: "0.08em", color: "#f5f1ea", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.25)", paddingBottom: "2px", transition: "border-color 0.2s, color 0.2s" }}
               onMouseOver={e => { e.currentTarget.style.borderColor = "#e8963a"; e.currentTarget.style.color = "#e8963a"; }}
               onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "#f5f1ea"; }}

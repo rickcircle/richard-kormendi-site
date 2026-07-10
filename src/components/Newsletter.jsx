@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
+import { track } from "../utils/track";
 
 const ACCENT = "#e8963a";
 
@@ -26,6 +27,7 @@ export default function Newsletter() {
         body: JSON.stringify({ email, _subject: "Newsletter signup" }),
       });
       setStatus(res.ok ? "success" : "error");
+      if (res.ok) track("click", { label: "newsletter_signup" });
     } catch {
       setStatus("error");
     }

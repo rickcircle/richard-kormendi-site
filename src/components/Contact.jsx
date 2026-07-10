@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
+import { track } from "../utils/track";
 
 const ACCENT = "#e8963a";
 
@@ -29,6 +30,7 @@ export default function Contact() {
         </p>
 
         <a href="mailto:richard.kormendi@gmail.com"
+          onClick={() => track("click", { label: "contact_email" })}
           style={{ display: "inline-block", fontSize: "clamp(1rem, 2.5vw, 1.3rem)", color: "#f5f1ea", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.2)", paddingBottom: "4px", marginBottom: "3.5rem", transition: "border-color 0.2s, color 0.2s" }}
           onMouseOver={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = ACCENT; }}
           onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "#f5f1ea"; }}>
@@ -38,6 +40,7 @@ export default function Contact() {
         <div style={{ display: "flex", justifyContent: "center", gap: "2rem", flexWrap: "wrap" }}>
           {socials.map(s => (
             <a key={s.label} href={s.href} target="_blank" rel="noreferrer"
+              onClick={() => track("click", { label: `contact_social: ${s.label}` })}
               style={{ fontSize: "0.85rem", letterSpacing: "0.08em", color: "rgba(245,241,234,0.5)", textDecoration: "none", transition: "color 0.2s" }}
               onMouseOver={e => e.currentTarget.style.color = ACCENT}
               onMouseOut={e => e.currentTarget.style.color = "rgba(245,241,234,0.5)"}>

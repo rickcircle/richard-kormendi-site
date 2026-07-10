@@ -4,6 +4,7 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import heroPhoto from "../assets/images/photo_main.png";
 import heroPhotoMobile from "../assets/images/photo_main_mobil.png";
+import { track } from "../utils/track";
 
 const ACCENT = "#e8963a";
 const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
@@ -194,6 +195,7 @@ export default function Hero() {
         <motion.a
           href="https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp"
           target="_blank" rel="noreferrer"
+          onClick={() => track("click", { label: "hero_out_now_badge" })}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, delay: 2.4 }}
@@ -228,6 +230,7 @@ export default function Hero() {
         <motion.a
           href="https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp"
           target="_blank" rel="noreferrer"
+          onClick={() => track("click", { label: "hero_listen_now" })}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5, delay: 2.8 }}

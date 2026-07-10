@@ -56,13 +56,14 @@ export default async function handler(req, res) {
     return res.status(400).end();
   }
 
-  const { type, path, referrer, sessionId, ts, section } = body || {};
+  const { type, path, referrer, sessionId, ts, section, label } = body || {};
   if (!type || !sessionId) return res.status(400).end();
 
   const event = {
     type,
     path: path || "/",
     section: section || null,
+    label: label || null,
     source: classifyReferrer(referrer),
     sessionId,
     ts: ts || Date.now(),

@@ -2,6 +2,7 @@ import { useState } from "react";
 import { motion } from "framer-motion";
 import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
+import { track } from "../utils/track";
 
 import coverStillIGo        from "../assets/images/cover-still-i-go.jpg";
 import coverTheAbsent       from "../assets/images/cover-the-absent.jpg";
@@ -92,6 +93,7 @@ function ReleaseCard({ release, delay }) {
       transition={{ duration: 0.45, delay, ease: "easeOut" }}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
+      onClick={() => track("click", { label: `release: ${release.title}` })}
       style={{ textDecoration: "none", display: "block", position: "relative" }}
     >
       {/* Cover */}

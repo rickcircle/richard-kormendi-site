@@ -143,7 +143,7 @@ export default function Navbar() {
 function LangToggle({ lang, setLang }) {
   return (
     <button
-      onClick={() => setLang(l => l === "en" ? "hu" : "en")}
+      onClick={() => { const next = lang === "en" ? "hu" : "en"; setLang(() => next); track("click", { label: `lang_switch: ${next}` }); }}
       style={{
         background: "none", border: "1px solid rgba(255,255,255,0.25)", borderRadius: "2px",
         padding: "3px 8px", fontSize: "0.75rem", letterSpacing: "0.08em",

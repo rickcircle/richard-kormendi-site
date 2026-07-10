@@ -4,6 +4,7 @@ import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import showsData from "../data/shows.json";
+import { track } from "../utils/track";
 
 const ACCENT = "#e8963a";
 
@@ -32,6 +33,7 @@ export default function Shows() {
         body: JSON.stringify({ ...form, _subject: `Booking inquiry from ${form.name}` }),
       });
       setStatus(res.ok ? "success" : "error");
+      if (res.ok) track("click", { label: "booking_form_success" });
     } catch {
       setStatus("error");
     }
@@ -55,12 +57,14 @@ export default function Shows() {
               <p style={{ fontSize: "0.85rem", color: "rgba(245,241,234,0.3)", marginBottom: "1.75rem" }}>{tx.noShowsSub}</p>
               <div style={{ display: "flex", gap: "0.75rem", justifyContent: "center", flexWrap: "wrap" }}>
                 <a href="https://www.instagram.com/rickormendi/" target="_blank" rel="noreferrer"
+                  onClick={() => track("click", { label: "shows_instagram_follow" })}
                   style={{ fontSize: "0.8rem", letterSpacing: "0.06em", color: "#f5f1ea", textDecoration: "none", border: "1px solid rgba(255,255,255,0.2)", borderRadius: "2px", padding: "0.6rem 1.25rem", transition: "all 0.2s" }}
                   onMouseOver={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = ACCENT; }}
                   onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "#f5f1ea"; }}>
                   {tx.noShowsInstagram}
                 </a>
                 <a href="#newsletter"
+                  onClick={() => track("click", { label: "shows_notify_click" })}
                   style={{ fontSize: "0.8rem", letterSpacing: "0.06em", color: "#fff", textDecoration: "none", background: ACCENT, borderRadius: "2px", padding: "0.6rem 1.25rem", boxShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
                   {tx.noShowsNotify}
                 </a>
@@ -88,6 +92,7 @@ export default function Shows() {
                   </div>
                   {show.ticketUrl && (
                     <a href={show.ticketUrl} target="_blank" rel="noreferrer"
+                      onClick={() => track("click", { label: `tickets: ${show.venue}` })}
                       style={{ fontSize: "0.8rem", letterSpacing: "0.08em", color: "#f5f1ea", textDecoration: "none", border: "1px solid rgba(255,255,255,0.25)", borderRadius: "2px", padding: "0.4rem 0.9rem", transition: "all 0.2s", whiteSpace: "nowrap" }}
                       onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = ACCENT; }}
                       onMouseOut={e => { e.currentTarget.style.background = "transparent"; e.currentTarget.style.color = "#f5f1ea"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; }}>

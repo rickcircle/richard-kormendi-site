@@ -53,7 +53,7 @@ function renderTable(entries, labelFn = x => x) {
   ).join("");
 }
 
-function buildEmailHtml({ sessionCount, pageviewCount, avgDurationMs, sourceRows, sectionRows, pageRows, periodLabel }) {
+function buildEmailHtml({ sessionCount, pageviewCount, avgDurationMs, sourceRows, sectionRows, pageRows, clickRows, periodLabel }) {
   return `
   <div style="background:#0b0a08;padding:2rem;font-family:-apple-system,Helvetica,Arial,sans-serif;">
     <div style="max-width:600px;margin:0 auto;">
@@ -87,6 +87,9 @@ function buildEmailHtml({ sessionCount, pageviewCount, avgDurationMs, sourceRows
 
       <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Melyik oldalakon jártak</h2>
       <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(pageRows)}</table>
+
+      <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Amit csináltak (kattintások)</h2>
+      <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(clickRows)}</table>
 
       <p style="color:#666;font-size:0.75rem;margin-top:2rem;">Automatikus összefoglaló a saját látogatottság-követésből, mai napra.</p>
     </div>
@@ -134,6 +137,7 @@ export default async function handler(req, res) {
     const sourceCounts = new Map();
     const sectionCounts = new Map();
     const pageCounts = new Map();
+    const clickCounts = new Map();
     let pageviewCount = 0;
 
     for (const ev of events) {
@@ -148,6 +152,9 @@ export default async function handler(req, res) {
       }
       if (ev.type === "section_view" && ev.section) {
         sectionCounts.set(ev.section, (sectionCounts.get(ev.section) || 0) + 1);
+      }
+      if (ev.type === "click" && ev.label) {
+        clickCounts.set(ev.label, (clickCounts.get(ev.label) || 0) + 1);
       }
     }
 
@@ -170,6 +177,7 @@ export default async function handler(req, res) {
       sourceRows: topRows(sourceCounts),
       sectionRows: topRows(sectionCounts),
       pageRows: topRows(pageCounts),
+      clickRows: topRows(clickCounts, 12),
       periodLabel,
     });
 
