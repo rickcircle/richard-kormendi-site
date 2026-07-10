@@ -36,15 +36,24 @@ export default function Navbar() {
   }, []);
 
   // Aktív szekció figyelése görgetéskor — csak a főoldalon van értelme
+  // Emellett GA4 "section_view" eseményt is küld, egyszer szekciónként/oldalbetöltésenként
+  // — ebből épül a napi analytics-digest email szekció-bontása
   useEffect(() => {
     if (!isHome) return;
     const sections = SECTION_IDS.map(id => document.getElementById(id)).filter(Boolean);
     if (sections.length === 0) return;
 
+    const seen = new Set();
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
-          if (entry.isIntersecting) setActive(entry.target.id);
+          if (entry.isIntersecting) {
+            setActive(entry.target.id);
+            if (!seen.has(entry.target.id)) {
+              seen.add(entry.target.id);
+              window.gtag?.("event", "section_view", { section_id: entry.target.id });
+            }
+          }
         });
       },
       { rootMargin: "-45% 0px -45% 0px", threshold: 0 }
