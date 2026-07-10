@@ -3,6 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useLocation } from "react-router-dom";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
+import { track } from "../utils/track";
 
 const ACCENT = "#e8963a";
 const SECTION_IDS = ["about", "music", "releases", "press", "shows", "photos", "contact"];
@@ -52,6 +53,7 @@ export default function Navbar() {
             if (!seen.has(entry.target.id)) {
               seen.add(entry.target.id);
               window.gtag?.("event", "section_view", { section_id: entry.target.id });
+              track("section_view", { section: entry.target.id });
             }
           }
         });

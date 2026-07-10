@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import Home from "./pages/Home";
 import Hire from "./pages/Hire";
 import Epk from "./pages/Epk";
@@ -6,11 +7,21 @@ import Audit from "./pages/Audit";
 import Proposal from "./pages/Proposal";
 import Analytics from "./pages/Analytics";
 import Cursor from "./components/Cursor";
+import { track } from "./utils/track";
+
+function PageViewTracker() {
+  const location = useLocation();
+  useEffect(() => {
+    track("pageview");
+  }, [location.pathname]);
+  return null;
+}
 
 export default function App() {
   return (
     <BrowserRouter>
       <Cursor />
+      <PageViewTracker />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/hire" element={<Hire />} />
