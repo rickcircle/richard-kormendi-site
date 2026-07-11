@@ -1,6 +1,8 @@
 // Könnyű, saját látogatottság-követő — a napi analytics-digest emailhez.
-// Nem cookie-alapú, nem session-átívelő: csak egy véletlen ID a jelenlegi fülre (sessionStorage),
-// hogy a digest nagyjából meg tudja becsülni, meddig maradt valaki egy látogatáson belül.
+// Két azonosítót használ:
+//  - sessionId (sessionStorage): csak az adott fülre/látogatásra, az "átlag idő az oldalon" méréséhez
+//  - visitorId (localStorage): hosszabb életű, ebből tudja a digest, hogy új vagy visszatérő látogatóról van szó
+// Egyik sem köthető személyhez — csak véletlen ID-k, nincs bennük semmilyen személyes adat.
 
 function getSessionId() {
   try {
@@ -15,6 +17,35 @@ function getSessionId() {
   }
 }
 
+function getVisitorId() {
+  try {
+    let id = localStorage.getItem("rk_vid");
+    if (!id) {
+      id = crypto.randomUUID ? crypto.randomUUID() : Math.random().toString(36).slice(2);
+      localStorage.setItem("rk_vid", id);
+    }
+    return id;
+  } catch {
+    return "unknown";
+  }
+}
+
+function getDevice() {
+  return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? "mobile" : "desktop";
+}
+
+function getLang() {
+  const param = new URLSearchParams(window.location.search).get("lang");
+  return param === "hu" || param === "en" ? param : "en";
+}
+
+function getUtm() {
+  const params = new URLSearchParams(window.location.search);
+  const source = params.get("utm_source");
+  if (!source) return null;
+  return { source, medium: params.get("utm_medium") || null, campaign: params.get("utm_campaign") || null };
+}
+
 export function track(type, extra = {}) {
   try {
     const payload = {
@@ -22,6 +53,10 @@ export function track(type, extra = {}) {
       path: window.location.pathname,
       referrer: document.referrer || "",
       sessionId: getSessionId(),
+      visitorId: getVisitorId(),
+      device: getDevice(),
+      lang: getLang(),
+      utm: getUtm(),
       ts: Date.now(),
       ...extra,
     };

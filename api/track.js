@@ -1,6 +1,9 @@
-// Vercel serverless — egy látogatói esemény (pageview / section_view) mentése Redisbe
+// Vercel serverless — egy látogatói esemény (pageview / section_view / click) mentése Redisbe
 // Env var: REDIS_URL — a Vercel "Storage" fülön létrehozott Redis Cloud adatbázis
 // automatikusan beállítja, nem kell kézzel megadni.
+//
+// Ország/város: a Vercel edge hálózata automatikusan hozzáadja ezeket a fejléceket
+// (x-vercel-ip-country / -city), nem kell hozzá külön szolgáltatás vagy nyers IP-t tárolni.
 
 import { createClient } from "redis";
 
@@ -30,9 +33,12 @@ function classifyReferrer(referrer) {
   }
 }
 
+function todayStr() {
+  return new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Budapest" }); // YYYY-MM-DD
+}
+
 function todayKey() {
-  const d = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Budapest" }); // YYYY-MM-DD
-  return `rk:events:${d}`;
+  return `rk:events:${todayStr()}`;
 }
 
 let clientPromise;
@@ -43,6 +49,17 @@ function getRedis() {
     clientPromise = client.connect().then(() => client);
   }
   return clientPromise;
+}
+
+// Visszatérő látogató: az első alkalommal rögzítjük a visitorId-t egy tartós Redis hash-ben.
+// Ha már szerepel benne (akár ma korábban, akár egy előző napon), visszatérőnek számít.
+async function checkReturning(client, visitorId) {
+  if (!visitorId) return false;
+  const key = "rk:visitors:first_seen";
+  const existing = await client.hGet(key, visitorId);
+  if (existing) return true;
+  await client.hSet(key, visitorId, todayStr());
+  return false;
 }
 
 export default async function handler(req, res) {
@@ -56,21 +73,35 @@ export default async function handler(req, res) {
     return res.status(400).end();
   }
 
-  const { type, path, referrer, sessionId, ts, section, label } = body || {};
+  const { type, path, referrer, sessionId, visitorId, device, lang, utm, ts, section, label } = body || {};
   if (!type || !sessionId) return res.status(400).end();
 
-  const event = {
-    type,
-    path: path || "/",
-    section: section || null,
-    label: label || null,
-    source: classifyReferrer(referrer),
-    sessionId,
-    ts: ts || Date.now(),
-  };
+  const country = req.headers["x-vercel-ip-country"] || null;
+  const cityRaw = req.headers["x-vercel-ip-city"];
+  const city = cityRaw ? decodeURIComponent(cityRaw) : null;
 
   try {
     const client = await getRedis();
+
+    const isReturning = type === "pageview" ? await checkReturning(client, visitorId) : null;
+
+    const event = {
+      type,
+      path: path || "/",
+      section: section || null,
+      label: label || null,
+      source: classifyReferrer(referrer),
+      country,
+      city,
+      device: device || null,
+      lang: lang || null,
+      utmSource: utm?.source || null,
+      sessionId,
+      visitorId: visitorId || null,
+      isReturning,
+      ts: ts || Date.now(),
+    };
+
     const key = todayKey();
     await client.rPush(key, JSON.stringify(event));
     await client.expire(key, 60 * 60 * 24 * 4); // 4 nap után automatikusan törlődik

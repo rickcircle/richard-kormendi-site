@@ -16,6 +16,32 @@ const SECTION_LABELS_HU = {
   shows: "Koncertek", photos: "Fotók", contact: "Kapcsolat",
 };
 
+const COUNTRY_NAMES_HU = {
+  HU: "Magyarország", US: "Egyesült Államok", GB: "Egyesült Királyság", DE: "Németország",
+  AT: "Ausztria", RO: "Románia", SK: "Szlovákia", HR: "Horvátország", PL: "Lengyelország",
+  FR: "Franciaország", IT: "Olaszország", ES: "Spanyolország", CA: "Kanada", AU: "Ausztrália",
+  NL: "Hollandia", CH: "Svájc", SE: "Svédország", NO: "Norvégia", DK: "Dánia", BE: "Belgium",
+  CZ: "Csehország", UA: "Ukrajna", RS: "Szerbia", BR: "Brazília", MX: "Mexikó", JP: "Japán",
+  IE: "Írország", PT: "Portugália", FI: "Finnország", IN: "India", SI: "Szlovénia",
+};
+
+function countryName(code) {
+  if (!code) return null;
+  return COUNTRY_NAMES_HU[code] || code;
+}
+
+function deviceLabel(d) {
+  if (d === "mobile") return "Mobil";
+  if (d === "desktop") return "Asztali gép";
+  return d || "Ismeretlen";
+}
+
+function langLabel(l) {
+  if (l === "hu") return "Magyar";
+  if (l === "en") return "Angol";
+  return l || "Ismeretlen";
+}
+
 let clientPromise;
 function getRedis() {
   if (!clientPromise) {
@@ -53,7 +79,10 @@ function renderTable(entries, labelFn = x => x) {
   ).join("");
 }
 
-function buildEmailHtml({ sessionCount, pageviewCount, avgDurationMs, sourceRows, sectionRows, pageRows, clickRows, periodLabel }) {
+function buildEmailHtml({
+  sessionCount, pageviewCount, avgDurationMs, newCount, returningCount,
+  sourceRows, locationRows, deviceRows, langRows, sectionRows, pageRows, clickRows, periodLabel,
+}) {
   return `
   <div style="background:#0b0a08;padding:2rem;font-family:-apple-system,Helvetica,Arial,sans-serif;">
     <div style="max-width:600px;margin:0 auto;">
@@ -72,15 +101,29 @@ function buildEmailHtml({ sessionCount, pageviewCount, avgDurationMs, sourceRows
             <div style="color:#f5f1ea;font-size:1.3rem;font-weight:700;">${pageviewCount}</div>
           </td>
           <td style="width:8px;"></td>
-          <td style="padding:10px 12px;background:#1c1814;border-radius:0 6px 6px 0;">
+          <td style="padding:10px 12px;background:#1c1814;">
             <div style="color:#999;font-size:0.7rem;text-transform:uppercase;">Átlag idő az oldalon</div>
             <div style="color:#f5f1ea;font-size:1.1rem;font-weight:700;">${fmtDuration(avgDurationMs)}</div>
+          </td>
+          <td style="width:8px;"></td>
+          <td style="padding:10px 12px;background:#1c1814;border-radius:0 6px 6px 0;">
+            <div style="color:#999;font-size:0.7rem;text-transform:uppercase;">Új / Visszatérő</div>
+            <div style="color:#f5f1ea;font-size:1.1rem;font-weight:700;">${newCount} / ${returningCount}</div>
           </td>
         </tr>
       </table>
 
-      <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Honnan jöttek</h2>
+      <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Honnan jöttek (csatorna)</h2>
       <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(sourceRows)}</table>
+
+      <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Honnan jöttek (ország/város)</h2>
+      <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(locationRows)}</table>
+
+      <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Eszköz</h2>
+      <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(deviceRows, deviceLabel)}</table>
+
+      <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Nyelv</h2>
+      <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(langRows, langLabel)}</table>
 
       <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Mi érdekelte őket (szekciók)</h2>
       <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(sectionRows, id => SECTION_LABELS_HU[id] || id)}</table>
@@ -133,7 +176,7 @@ export default async function handler(req, res) {
     const raw = await client.lRange(todayKey(), 0, -1);
     const events = raw.map(e => (typeof e === "string" ? JSON.parse(e) : e));
 
-    const sessions = new Map(); // sessionId -> { minTs, maxTs }
+    const sessions = new Map(); // sessionId -> { minTs, maxTs, source, location, device, lang, isReturning }
     const sourceCounts = new Map();
     const sectionCounts = new Map();
     const pageCounts = new Map();
@@ -141,10 +184,16 @@ export default async function handler(req, res) {
     let pageviewCount = 0;
 
     for (const ev of events) {
-      if (!sessions.has(ev.sessionId)) sessions.set(ev.sessionId, { minTs: ev.ts, maxTs: ev.ts, source: ev.source });
+      if (!sessions.has(ev.sessionId)) sessions.set(ev.sessionId, { minTs: ev.ts, maxTs: ev.ts });
       const s = sessions.get(ev.sessionId);
       s.minTs = Math.min(s.minTs, ev.ts);
       s.maxTs = Math.max(s.maxTs, ev.ts);
+      // Ezeket bármelyik eseményből felvesszük, amelyikben szerepelnek — így nem csak a pageview-tól függ
+      if (ev.source) s.source = ev.source;
+      if (ev.country || ev.city) s.location = [ev.city, countryName(ev.country)].filter(Boolean).join(", ") || null;
+      if (ev.device) s.device = ev.device;
+      if (ev.lang) s.lang = ev.lang;
+      if (ev.isReturning !== null && ev.isReturning !== undefined) s.isReturning = ev.isReturning;
 
       if (ev.type === "pageview") {
         pageviewCount++;
@@ -158,9 +207,21 @@ export default async function handler(req, res) {
       }
     }
 
-    // Forrás session-önként (egy látogató egyszer számít, ne az eseményei szerint)
-    for (const { source } of sessions.values()) {
-      sourceCounts.set(source, (sourceCounts.get(source) || 0) + 1);
+    // Forrás, hely, eszköz, nyelv session-önként (egy látogató egyszer számít, ne az eseményei szerint)
+    const locationCounts = new Map();
+    const deviceCounts = new Map();
+    const langCounts = new Map();
+    let newCount = 0;
+    let returningCount = 0;
+
+    for (const s of sessions.values()) {
+      if (s.source) sourceCounts.set(s.source, (sourceCounts.get(s.source) || 0) + 1);
+      const loc = s.location || "Ismeretlen";
+      locationCounts.set(loc, (locationCounts.get(loc) || 0) + 1);
+      if (s.device) deviceCounts.set(s.device, (deviceCounts.get(s.device) || 0) + 1);
+      if (s.lang) langCounts.set(s.lang, (langCounts.get(s.lang) || 0) + 1);
+      if (s.isReturning === true) returningCount++;
+      else if (s.isReturning === false) newCount++;
     }
 
     const sessionCount = sessions.size;
@@ -174,7 +235,12 @@ export default async function handler(req, res) {
       sessionCount,
       pageviewCount,
       avgDurationMs,
+      newCount,
+      returningCount,
       sourceRows: topRows(sourceCounts),
+      locationRows: topRows(locationCounts),
+      deviceRows: topRows(deviceCounts),
+      langRows: topRows(langCounts),
       sectionRows: topRows(sectionCounts),
       pageRows: topRows(pageCounts),
       clickRows: topRows(clickCounts, 12),
