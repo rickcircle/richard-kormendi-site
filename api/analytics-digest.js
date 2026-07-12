@@ -108,6 +108,7 @@ function renderVisitsTable(visits) {
 function buildEmailHtml({
   sessionCount, pageviewCount, avgDurationMs, newCount, returningCount,
   sourceRows, locationRows, deviceRows, langRows, sectionRows, pageRows, clickRows, visits, periodLabel,
+  totalVisitorsAllTime, totalPageviewsAllTime,
 }) {
   return `
   <div style="background:#0b0a08;padding:2rem;font-family:-apple-system,Helvetica,Arial,sans-serif;">
@@ -164,7 +165,16 @@ function buildEmailHtml({
       <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Amit csináltak (kattintások)</h2>
       <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(clickRows)}</table>
 
-      <p style="color:#666;font-size:0.75rem;margin-top:2rem;">Automatikus összefoglaló a saját látogatottság-követésből, csak az előző email óta történtekről.</p>
+      <table style="width:100%;border-collapse:collapse;margin-top:1.5rem;">
+        <tr>
+          <td style="padding:10px 12px;background:#1c1814;border-radius:6px;text-align:center;">
+            <span style="color:#999;font-size:0.75rem;text-transform:uppercase;">Összesen az indulás óta</span>
+            <span style="color:#f5f1ea;font-weight:700;"> · ${totalVisitorsAllTime} látogató · ${totalPageviewsAllTime} oldalmegtekintés</span>
+          </td>
+        </tr>
+      </table>
+
+      <p style="color:#666;font-size:0.75rem;margin-top:1.5rem;">Automatikus összefoglaló a saját látogatottság-követésből, csak az előző email óta történtekről.</p>
     </div>
   </div>`;
 }
@@ -269,6 +279,11 @@ export default async function handler(req, res) {
     const fmtShort = ts => new Date(ts).toLocaleString("hu-HU", { timeZone: "Europe/Budapest", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
     const periodLabel = `${fmtShort(lastRun)} – ${fmtShort(runStartedAt)}`;
 
+    // Örökké növekvő, soha nem törlődő összesítők — függetlenül attól, hogy a részletes
+    // esemény-lista mikor jár le
+    const totalPageviewsAllTime = (await client.get("rk:totals:pageviews")) || "0";
+    const totalVisitorsAllTime = await client.hLen("rk:visitors:first_seen");
+
     const html = buildEmailHtml({
       sessionCount,
       pageviewCount,
@@ -284,6 +299,8 @@ export default async function handler(req, res) {
       clickRows: topRows(clickCounts, 12),
       visits,
       periodLabel,
+      totalVisitorsAllTime,
+      totalPageviewsAllTime,
     });
 
     await sendEmail(html, periodLabel);

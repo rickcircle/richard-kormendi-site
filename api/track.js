@@ -104,6 +104,10 @@ export default async function handler(req, res) {
 
     await client.rPush(EVENTS_KEY, JSON.stringify(event));
     await client.expire(EVENTS_KEY, 60 * 60 * 24 * 30); // biztonsági háló, minden új eseménnyel újraindul — gyakorlatilag sosem jár le, amíg van forgalom
+
+    // Örökké növekvő, soha nem törlődő összesítő (nincs rajta lejárat)
+    if (type === "pageview") await client.incr("rk:totals:pageviews");
+
     return res.status(204).end();
   } catch (err) {
     console.error("track hiba:", err.message);
