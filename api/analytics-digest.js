@@ -1,6 +1,9 @@
 // Vercel Cron — napi 2x fut (lásd vercel.json), a saját Redis-be gyűjtött látogatói
 // eseményekből összefoglaló emailt küld Resenden keresztül. Nem függ Google Cloudtól.
 //
+// Minden futás csak az ELŐZŐ sikeres futás óta történteket dolgozza fel (rk:digest:last_run
+// alapján) — így a 13:00-as és 19:00-as email nem ismétli meg egymás tartalmát.
+//
 // Szükséges env vars (Vercel Dashboard → Settings → Environment Variables):
 //   (REDIS_URL-t a Vercel Storage fülön létrehozott Redis Cloud adatbázis automatikusan beállítja)
 //   RESEND_API_KEY     — resend.com API kulcs
@@ -10,6 +13,9 @@
 //                        kézi teszthez ?secret= paraméterként is elfogadjuk
 
 import { createClient } from "redis";
+
+const EVENTS_KEY = "rk:events";
+const LAST_RUN_KEY = "rk:digest:last_run";
 
 const SECTION_LABELS_HU = {
   about: "Rólam", music: "Zene", releases: "Kiadások", press: "Sajtó",
@@ -52,16 +58,17 @@ function getRedis() {
   return clientPromise;
 }
 
-function todayKey() {
-  const d = new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Budapest" });
-  return `rk:events:${d}`;
-}
-
 function fmtDuration(ms) {
   const s = Math.round(ms / 1000);
   const m = Math.floor(s / 60);
   const rem = s % 60;
   return m > 0 ? `${m} perc ${rem} mp` : `${rem} mp`;
+}
+
+function fmtTime(ts) {
+  return new Date(ts).toLocaleString("hu-HU", {
+    timeZone: "Europe/Budapest", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit",
+  });
 }
 
 function topRows(map, limit = 8) {
@@ -79,15 +86,34 @@ function renderTable(entries, labelFn = x => x) {
   ).join("");
 }
 
+function renderVisitsTable(visits) {
+  if (visits.length === 0) {
+    return `<tr><td style="padding:6px 12px;color:#999;" colspan="4">Nincs látogatás ebben az időszakban.</td></tr>`;
+  }
+  const header = `<tr>
+    <td style="padding:6px 12px;color:#999;font-size:0.7rem;text-transform:uppercase;">Időpont</td>
+    <td style="padding:6px 12px;color:#999;font-size:0.7rem;text-transform:uppercase;">Honnan</td>
+    <td style="padding:6px 12px;color:#999;font-size:0.7rem;text-transform:uppercase;">Eszköz</td>
+    <td style="padding:6px 12px;color:#999;font-size:0.7rem;text-transform:uppercase;text-align:right;">Idő az oldalon</td>
+  </tr>`;
+  const rows = visits.map(v => `<tr>
+    <td style="padding:6px 12px;color:#f5f1ea;white-space:nowrap;">${fmtTime(v.minTs)}${v.isReturning ? " 🔁" : " ✨"}</td>
+    <td style="padding:6px 12px;color:#f5f1ea;">${v.location || "Ismeretlen"} · ${v.source || "-"}</td>
+    <td style="padding:6px 12px;color:#f5f1ea;">${deviceLabel(v.device)}</td>
+    <td style="padding:6px 12px;color:#e8963a;text-align:right;white-space:nowrap;">${fmtDuration(v.maxTs - v.minTs)}</td>
+  </tr>`).join("");
+  return header + rows;
+}
+
 function buildEmailHtml({
   sessionCount, pageviewCount, avgDurationMs, newCount, returningCount,
-  sourceRows, locationRows, deviceRows, langRows, sectionRows, pageRows, clickRows, periodLabel,
+  sourceRows, locationRows, deviceRows, langRows, sectionRows, pageRows, clickRows, visits, periodLabel,
 }) {
   return `
   <div style="background:#0b0a08;padding:2rem;font-family:-apple-system,Helvetica,Arial,sans-serif;">
     <div style="max-width:600px;margin:0 auto;">
-      <p style="color:#e8963a;letter-spacing:0.1em;text-transform:uppercase;font-size:0.75rem;margin:0 0 0.5rem;">richardkormendi.com — ${periodLabel}</p>
-      <h1 style="color:#f5f1ea;font-size:1.5rem;margin:0 0 1.5rem;">Napi összefoglaló</h1>
+      <p style="color:#e8963a;letter-spacing:0.1em;text-transform:uppercase;font-size:0.75rem;margin:0 0 0.5rem;">richardkormendi.com</p>
+      <h1 style="color:#f5f1ea;font-size:1.4rem;margin:0 0 1.5rem;">Összefoglaló — ${periodLabel}</h1>
 
       <table style="width:100%;border-collapse:collapse;margin-bottom:1.5rem;">
         <tr>
@@ -113,6 +139,10 @@ function buildEmailHtml({
         </tr>
       </table>
 
+      <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Látogatások időpontja</h2>
+      <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderVisitsTable(visits)}</table>
+      <p style="color:#555;font-size:0.7rem;margin:0.4rem 0 0;">✨ = új látogató · 🔁 = már járt korábban is</p>
+
       <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Honnan jöttek (csatorna)</h2>
       <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(sourceRows)}</table>
 
@@ -134,7 +164,7 @@ function buildEmailHtml({
       <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Amit csináltak (kattintások)</h2>
       <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(clickRows)}</table>
 
-      <p style="color:#666;font-size:0.75rem;margin-top:2rem;">Automatikus összefoglaló a saját látogatottság-követésből, mai napra.</p>
+      <p style="color:#666;font-size:0.75rem;margin-top:2rem;">Automatikus összefoglaló a saját látogatottság-követésből, csak az előző email óta történtekről.</p>
     </div>
   </div>`;
 }
@@ -149,7 +179,7 @@ async function sendEmail(html, periodLabel) {
     body: JSON.stringify({
       from: process.env.DIGEST_FROM_EMAIL,
       to: process.env.DIGEST_TO_EMAIL,
-      subject: `📊 richardkormendi.com — ${periodLabel} összefoglaló`,
+      subject: `📊 richardkormendi.com — ${periodLabel}`,
       html,
     }),
   });
@@ -173,8 +203,14 @@ export default async function handler(req, res) {
 
   try {
     const client = await getRedis();
-    const raw = await client.lRange(todayKey(), 0, -1);
-    const events = raw.map(e => (typeof e === "string" ? JSON.parse(e) : e));
+
+    const lastRunRaw = await client.get(LAST_RUN_KEY);
+    const lastRun = lastRunRaw ? Number(lastRunRaw) : Date.now() - 24 * 60 * 60 * 1000; // első futásnál: elmúlt 24 óra
+    const runStartedAt = Date.now();
+
+    const raw = await client.lRange(EVENTS_KEY, 0, -1);
+    const allEvents = raw.map(e => (typeof e === "string" ? JSON.parse(e) : e));
+    const events = allEvents.filter(e => e.ts > lastRun);
 
     const sessions = new Map(); // sessionId -> { minTs, maxTs, source, location, device, lang, isReturning }
     const sourceCounts = new Map();
@@ -228,8 +264,10 @@ export default async function handler(req, res) {
     const totalDuration = [...sessions.values()].reduce((sum, s) => sum + (s.maxTs - s.minTs), 0);
     const avgDurationMs = sessionCount > 0 ? totalDuration / sessionCount : 0;
 
-    const now = new Date();
-    const periodLabel = now.toLocaleString("hu-HU", { timeZone: "Europe/Budapest", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" });
+    const visits = [...sessions.values()].sort((a, b) => a.minTs - b.minTs).slice(0, 40);
+
+    const fmtShort = ts => new Date(ts).toLocaleString("hu-HU", { timeZone: "Europe/Budapest", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" });
+    const periodLabel = `${fmtShort(lastRun)} – ${fmtShort(runStartedAt)}`;
 
     const html = buildEmailHtml({
       sessionCount,
@@ -244,11 +282,13 @@ export default async function handler(req, res) {
       sectionRows: topRows(sectionCounts),
       pageRows: topRows(pageCounts),
       clickRows: topRows(clickCounts, 12),
+      visits,
       periodLabel,
     });
 
     await sendEmail(html, periodLabel);
-    return res.status(200).json({ ok: true, sessionCount, pageviewCount });
+    await client.set(LAST_RUN_KEY, String(runStartedAt));
+    return res.status(200).json({ ok: true, sessionCount, pageviewCount, windowFrom: new Date(lastRun).toISOString(), windowTo: new Date(runStartedAt).toISOString() });
   } catch (err) {
     console.error("Analytics digest hiba:", err);
     return res.status(500).json({ error: err.message });

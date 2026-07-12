@@ -37,9 +37,9 @@ function todayStr() {
   return new Date().toLocaleDateString("en-CA", { timeZone: "Europe/Budapest" }); // YYYY-MM-DD
 }
 
-function todayKey() {
-  return `rk:events:${todayStr()}`;
-}
+// Egyetlen folyamatos lista (nem naponta külön kulcs) — így a digest pontosan az
+// előző email óta eltelt időszakot tudja kiszűrni, dátumhatártól függetlenül.
+const EVENTS_KEY = "rk:events";
 
 let clientPromise;
 function getRedis() {
@@ -102,9 +102,8 @@ export default async function handler(req, res) {
       ts: ts || Date.now(),
     };
 
-    const key = todayKey();
-    await client.rPush(key, JSON.stringify(event));
-    await client.expire(key, 60 * 60 * 24 * 4); // 4 nap után automatikusan törlődik
+    await client.rPush(EVENTS_KEY, JSON.stringify(event));
+    await client.expire(EVENTS_KEY, 60 * 60 * 24 * 30); // biztonsági háló, minden új eseménnyel újraindul — gyakorlatilag sosem jár le, amíg van forgalom
     return res.status(204).end();
   } catch (err) {
     console.error("track hiba:", err.message);
