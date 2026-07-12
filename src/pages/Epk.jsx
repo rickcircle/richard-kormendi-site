@@ -7,47 +7,55 @@ import Footer from "../components/Footer";
 // Ez az oldal NEM jelenik meg a navigációban — bookereknek / sajtónak szól
 // Direct URL: /epk
 
-import photo1 from "../assets/images/photo-neon.jpg";
-import photo2 from "../assets/images/photo-studio.jpg";
-import photo3 from "../assets/images/photo-3.jpg";
-import photo4 from "../assets/images/photo-4.jpg";
+import photoStudio    from "../assets/images/photo-neon.jpg";
+import photoBar       from "../assets/images/photo-bar-suit.jpg";
+import photoGuitarist from "../assets/images/photo-guitarist.jpg";
+import photoSession   from "../assets/images/photo-studio-portrait.jpg";
+
+const ACCENT = "#e8963a";
+const BG_1 = "#0b0a08";
+const BG_2 = "#141210";
+const CARD_BG = "#1c1814";
+const BORDER = "rgba(255,255,255,0.08)";
+const TEXT = "#f5f1ea";
 
 const pressItems = [
   {
     outlet: "MusicAlive.net",
-    quote: "Richard Körmendi's Cold Urban Sighs is a standout release — cinematic textures, raw emotion, and a voice that demands attention.",
-    quoteHu: "Richard Körmendi Cold Urban Sighs projektje kiemelkedő megjelenés — filmes hangzás, nyers érzelmek és egy hang, amelyet lehetetlen figyelmen kívül hagyni.",
-    type: "Featured Artist",
+    quote: "Richard Körmendi's “Cold Urban Sighs” is a standout release — cinematic textures, raw emotion, and a voice that demands attention.",
+    quoteHu: "Körmendi Richárd „Cold Urban Sighs” című dala kiemelkedő megjelenés — filmszerű hangzás, nyers érzelmek és egy hang, amit lehetetlen figyelmen kívül hagyni.",
+    type: { en: "Featured Artist", hu: "Kiemelt előadó" },
     url: "https://musicalive.net/richard-kormendi-cold-urban-sighs/",
   },
   {
     outlet: "Tony Michaelides Show",
     quote: "International radio play — featured on the Tony Michaelides Show, broadcast worldwide.",
-    quoteHu: "Nemzetközi rádiólejátszás — szerepelt a Tony Michaelides Show-ban, világszerte sugározva.",
-    type: "Radio Play",
+    quoteHu: "Nemzetközi rádiós lejátszás — a Tony Michaelides Show-ban hangzott el, világszerte sugározva.",
+    type: { en: "Radio Play", hu: "Rádiós lejátszás" },
     url: null,
   },
   {
     outlet: "Nosso Som",
     quote: "Playlist feature by Nosso Som — 40.9k followers.",
-    quoteHu: "Playlist-megjelenés a Nosso Som-tól — 40 900 követő.",
-    type: "Playlist Feature",
+    quoteHu: "Playlist-megjelenés a Nosso Somtól — 40 900 követő.",
+    type: { en: "Playlist Feature", hu: "Playlist megjelenés" },
     url: "https://nossosom77.wixsite.com/nossosom",
   },
 ];
 
 const streamingLinks = [
-  { name: "Spotify", url: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
+  { name: "Spotify",     url: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
   { name: "Apple Music", url: "https://music.apple.com/hu/artist/richard-körmendi/1877841316" },
-  { name: "YouTube", url: "https://www.youtube.com/@richardkormendi6379" },
-  { name: "Tidal", url: "https://tidal.com/artist/74624158" },
+  { name: "Tidal",       url: "https://tidal.com/artist/74624158" },
+  { name: "YouTube",     url: "https://www.youtube.com/@richardkormendi6379" },
+  { name: "Instagram",   url: "https://www.instagram.com/rickormendi/" },
 ];
 
 const photos = [
-  { src: photo1, name: "richard-kormendi-neon.jpg", label: "Neon city" },
-  { src: photo2, name: "richard-kormendi-studio.jpg", label: "Studio portrait" },
-  { src: photo3, name: "richard-kormendi-3.jpg", label: "Portrait 3" },
-  { src: photo4, name: "richard-kormendi-4.jpg", label: "Portrait 4" },
+  { src: photoStudio,    name: "richard-kormendi-studio.jpg",    label: { en: "Studio portrait", hu: "Stúdióportré" } },
+  { src: photoBar,       name: "richard-kormendi-bar.jpg",       label: { en: "Portrait, evening", hu: "Esti portré" } },
+  { src: photoGuitarist, name: "richard-kormendi-guitarist.jpg", label: { en: "Performing", hu: "Előadás közben" } },
+  { src: photoSession,   name: "richard-kormendi-session.jpg",   label: { en: "Recording session", hu: "Felvétel közben" } },
 ];
 
 const riderItems = {
@@ -61,56 +69,54 @@ const riderItems = {
     "Sound check: min. 30 minutes before doors open",
   ],
   hu: [
-    "A helyszín méretéhez megfelelő PA rendszer",
-    "Monitor ék vagy in-ear monitor 1 személyre",
+    "A helyszín méretéhez illő PA rendszer",
+    "Monitor ék vagy in-ear monitor 1 fő részére",
     "Mikrofon: kondenzátor vagy dinamikus (pl. Shure SM58 / Beta 87A)",
-    "Mikrofon állvány",
-    "DI box gitárhoz / laptop playbackhez (akusztikus fellépéseknél)",
-    "Megvilágítás: általános szétszórt fény + lehetőség szerint 1 spot",
-    "Hangpróba: minimum 30 perccel a kapunyitás előtt",
+    "Mikrofonállvány",
+    "DI box gitárhoz / laptop-lejátszáshoz (akusztikus fellépéseknél)",
+    "Megvilágítás: általános szórt fény, lehetőség szerint 1 spot",
+    "Hangpróba: legalább 30 perccel a kapunyitás előtt",
   ],
+};
+
+const shortBio = {
+  en: "Richard Körmendi is a Hungarian singer-songwriter and classically trained tenor based in Esztergom, Hungary. He fronted the indie rock band Éberálom, performed in musical theatre, and in 2024 graduated in classical vocal performance from Partium Christian University in Oradea. His English-language solo project — alternative rock shaped by classical training — launched in 2026, with singles including “You Become My Only,” “Like An Ember,” and “Cold Urban Sighs” earning international radio play and press features.",
+  hu: "Körmendi Richárd magyar énekes-dalszerző és klasszikus képzettségű tenor, Esztergomból. Pályáját az Éberálom nevű indie rock zenekar frontembereként kezdte, azután musicalekben szerepelt, mielőtt 2024-ben klasszikus énekdiplomát szerzett a Nagyváradi Partiumi Keresztény Egyetemen. Angol nyelvű szólóprojektje — klasszikus alapokon formálódó alternatív rock — 2026-ban indult, olyan kislemezekkel, mint a „You Become My Only”, a „Like An Ember” és a „Cold Urban Sighs”, amelyek nemzetközi rádiós lejátszást és sajtómegjelenéseket is szereztek neki.",
+};
+
+const longBio = {
+  en: "Richard Körmendi is a Hungarian singer-songwriter and classically trained tenor based in Esztergom, Hungary. He first found his voice fronting the indie rock band Éberálom and performing in musical theatre, before pursuing classical training at Partium Christian University in Oradea, where he graduated in vocal performance in 2024.\n\nIn 2026, Richard launched his English-language solo project — dark, cinematic alternative rock shaped by years of classical discipline. Singles such as “You Become My Only,” “Like An Ember,” “Enthralling,” and “Cold Urban Sighs” pair raw, indie-rooted energy with a trained tenor's control, while instrumental pieces like “Light In The Dark” and “The Absent” explore the same mood through piano and cello alone.\n\nThe project has picked up international attention early on: a feature on MusicAlive.net, radio play on the Tony Michaelides Show, and a playlist placement by Nosso Som (40.9k followers). Richard is based in Hungary and available for bookings, collaborations, and press inquiries.",
+  hu: "Körmendi Richárd magyar énekes-dalszerző és klasszikus képzettségű tenor, Esztergomból. Az Éberálom nevű indie rock zenekar frontembereként és musical-előadóként kezdte pályáját, majd a Nagyváradi Partiumi Keresztény Egyetemen folytatott klasszikus énektanulmányokat, ahol 2024-ben szerzett diplomát.\n\n2026-ban indította el angol nyelvű szólóprojektjét — sötét, filmszerű alternatív rockot, amelyet évek klasszikus fegyelme formált. Az olyan kislemezek, mint a „You Become My Only”, a „Like An Ember”, az „Enthralling” és a „Cold Urban Sighs” nyers, indie gyökerű energiát ötvöznek a képzett tenor kontrolljával, míg az olyan instrumentális darabok, mint a „Light In The Dark” és „The Absent” ugyanezt a hangulatot zongorán és csellón keresztül járják körbe.\n\nA projekt már a kezdetektől nemzetközi figyelmet kapott: bemutatkozás a MusicAlive.net-en, rádiós lejátszás a Tony Michaelides Show-ban, és playlist-elhelyezés a Nosso Somtól (40 900 követő). Richárd Magyarországon él, nyitott fellépésekre, együttműködésekre és sajtómegkeresésekre.",
 };
 
 export default function Epk() {
   const { lang } = useLang();
   const hu = lang === "hu";
 
-  const shortBio = {
-    en: "Richard Körmendi is a Hungarian singer-songwriter and classically trained tenor based in Esztergom, Hungary. Frontman of indie rock band Éberálom and creator of the English-language project Cold Urban Sighs — releasing cinematic alternative rock for international audiences.",
-    hu: "Körmendi Richárd magyar énekes-dalszerző és klasszikusan képzett tenor Esztergomból. Az Éberálom indie rock banda frontembere és a Cold Urban Sighs angol nyelvű projekt alkotója — filmszerű alternatív rock zenét készít nemzetközi közönség számára.",
-  };
-
-  const longBio = {
-    en: "Richard Körmendi is a Hungarian singer-songwriter, classically trained tenor, and digital professional based in Esztergom, Hungary. He studied classical singing at Partium Christian University in Oradea, graduating in 2024. As the frontman of indie rock band Éberálom and a performer in musical theatre, Richard has developed a stage presence that bridges classical training and contemporary alternative rock. In 2026, he launched Cold Urban Sighs — an English-language project rooted in cinematic alternative rock, with debut singles Release Me and My Remedy gaining international traction through radio play on the Tony Michaelides Show, a feature on MusicAlive.net, and playlist placement by Nosso Som (40.9k followers). Alongside his music career, Richard brings 14 years of experience in front-end development, SEO, and digital marketing.",
-    hu: "Körmendi Richárd magyar énekes-dalszerző, klasszikusan képzett tenor és digitális szakember, aki Esztergomban él. A Partiumi Keresztény Egyetemen végezte klasszikus énekes tanulmányait Nagyváradon, diplomát 2024-ben szerzett. Az Éberálom indie rock banda frontembereként és musical-színházi előadóként olyan színpadi jelenlétet fejlesztett ki, amely ötvözi a klasszikus képzettséget és a kortárs alternatív rockot. 2026-ban elindította a Cold Urban Sighs angol nyelvű projektet — filmszerű alternatív rock zenével, amelynek első kislemezei (Release Me, My Remedy) nemzetközi figyelmet kaptak a Tony Michaelides Show rádiójátszásával, a MusicAlive.net-es bemutatóval és a Nosso Som playlist-elhelyezéssel (40 900 követő). Zenei karrierje mellett 14 éves tapasztalattal rendelkezik front-end fejlesztés, SEO és digitális marketing területén.",
-  };
-
   return (
-    <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a" }}>
+    <div style={{ fontFamily: "'Inter', sans-serif", color: TEXT, background: BG_1 }}>
       <Navbar />
 
       {/* Hero */}
-      <section style={{ background: "#1a1a1a", color: "#fff", padding: "10rem 2rem 6rem", textAlign: "center" }}>
+      <section style={{ background: BG_1, color: TEXT, padding: "10rem 2rem 6rem", textAlign: "center" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
-          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
             {hu ? "Sajtóanyag" : "Electronic Press Kit"}
           </p>
-          <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem", color: "#fff" }}>
+          <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem", color: TEXT }}>
             Richard Körmendi
           </h1>
-          <p style={{ fontSize: "1.05rem", color: "#aaa", lineHeight: 1.7, maxWidth: "520px", margin: "0 auto 2.5rem" }}>
-            {hu
-              ? "Énekes-dalszerző · Klasszikus tenor · Cold Urban Sighs"
-              : "Singer-songwriter · Classical tenor · Cold Urban Sighs"}
+          <p style={{ fontSize: "1.05rem", color: "rgba(245,241,234,0.55)", lineHeight: 1.7, maxWidth: "520px", margin: "0 auto 2.5rem" }}>
+            {hu ? "Énekes-dalszerző · Klasszikus képzettségű tenor" : "Singer-Songwriter · Classically Trained Tenor"}
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
             <button
               onClick={() => window.print()}
-              style={{ padding: "0.9rem 2rem", background: "#fff", color: "#1a1a1a", border: "none", borderRadius: "2px", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.05em", cursor: "pointer" }}>
+              style={{ padding: "0.9rem 2rem", background: ACCENT, color: "#fff", border: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em", cursor: "pointer", boxShadow: "0 0 24px rgba(232,150,58,0.3)" }}>
               {hu ? "Letöltés PDF-ként" : "Download as PDF"}
             </button>
             <a href="mailto:richard.kormendi@gmail.com"
-              style={{ padding: "0.9rem 2rem", background: "transparent", color: "#fff", border: "1px solid #333", borderRadius: "2px", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.05em", textDecoration: "none" }}>
+              style={{ padding: "0.9rem 2rem", background: "transparent", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: "4px", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.05em", textDecoration: "none" }}>
               {hu ? "Booking kapcsolat" : "Booking contact"}
             </a>
           </div>
@@ -118,62 +124,68 @@ export default function Epk() {
       </section>
 
       {/* Bio */}
-      <section style={{ padding: "8rem 2rem", background: "#f7f6f3" }}>
+      <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "3rem" }}>
-              {hu ? "Biográfia" : "Biography"}
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "3rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+              {hu ? "Életrajz" : "Biography"}
             </p>
 
             {/* Short bio */}
-            <div style={{ marginBottom: "3rem", padding: "2rem", background: "#fff", border: "1px solid #e8e8e8", borderRadius: "2px" }}>
-              <p style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: "#bbb", textTransform: "uppercase", marginBottom: "1rem" }}>
-                {hu ? "Rövid bio (copy-paste)" : "Short bio (copy-paste)"}
+            <div style={{ marginBottom: "1.25rem", padding: "2rem", background: CARD_BG, border: `1px solid ${BORDER}`, borderRadius: "10px" }}>
+              <p style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", marginBottom: "1rem" }}>
+                {hu ? "Rövid bio (másolható)" : "Short bio (copy-paste)"}
               </p>
-              <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "#333" }}>
+              <p style={{ fontSize: "1rem", lineHeight: 1.8, color: "rgba(245,241,234,0.85)" }}>
                 {hu ? shortBio.hu : shortBio.en}
               </p>
             </div>
 
             {/* Long bio */}
-            <div style={{ padding: "2rem", background: "#fff", border: "1px solid #e8e8e8", borderRadius: "2px" }}>
-              <p style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: "#bbb", textTransform: "uppercase", marginBottom: "1rem" }}>
-                {hu ? "Hosszú bio" : "Full bio"}
+            <div style={{ padding: "2rem", background: CARD_BG, border: `1px solid ${BORDER}`, borderRadius: "10px" }}>
+              <p style={{ fontSize: "0.7rem", letterSpacing: "0.12em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", marginBottom: "1rem" }}>
+                {hu ? "Részletes bio" : "Full bio"}
               </p>
-              <p style={{ fontSize: "0.95rem", lineHeight: 1.9, color: "#444" }}>
-                {hu ? longBio.hu : longBio.en}
-              </p>
+              {(hu ? longBio.hu : longBio.en).split("\n\n").map((para, i) => (
+                <p key={i} style={{ fontSize: "0.95rem", lineHeight: 1.9, color: "rgba(245,241,234,0.75)", margin: i === 0 ? "0 0 1.2rem" : "0 0 1.2rem" }}>
+                  {para}
+                </p>
+              ))}
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Press */}
-      <section style={{ padding: "8rem 2rem", background: "#fff" }}>
-        <div style={{ maxWidth: "760px", margin: "0 auto" }}>
+      <section style={{ padding: "8rem 2rem", background: BG_1 }}>
+        <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "3rem" }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
               {hu ? "Sajtómegjelenések" : "Press"}
             </p>
           </motion.div>
 
           <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
-            style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-            {pressItems.map((item) => (
+            className="epk-press-grid">
+            {pressItems.map(item => (
               <motion.div key={item.outlet} variants={staggerItem}
-                style={{ padding: "2rem", border: "1px solid #f0f0f0", borderRadius: "2px" }}>
-                <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: "1rem", flexWrap: "wrap", gap: "0.5rem" }}>
-                  <p style={{ fontWeight: 600, fontSize: "1rem" }}>{item.outlet}</p>
-                  <span style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "#999", textTransform: "uppercase", border: "1px solid #e8e8e8", padding: "0.2rem 0.6rem", borderRadius: "2px" }}>
-                    {item.type}
-                  </span>
-                </div>
-                <p style={{ fontSize: "0.9rem", color: "#555", lineHeight: 1.7, fontStyle: "italic", marginBottom: item.url ? "1rem" : 0 }}>
+                style={{ display: "flex", flexDirection: "column", gap: "0.85rem", padding: "1.75rem", background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: "10px" }}>
+                <span style={{
+                  display: "inline-block", width: "fit-content",
+                  fontSize: "0.65rem", letterSpacing: "0.08em", color: ACCENT,
+                  textTransform: "uppercase", fontWeight: 700,
+                  border: "1px solid rgba(232,150,58,0.35)", borderRadius: "999px",
+                  padding: "3px 10px",
+                }}>
+                  {hu ? item.type.hu : item.type.en}
+                </span>
+                <p style={{ margin: 0, fontWeight: 600, fontSize: "1.05rem", color: TEXT }}>{item.outlet}</p>
+                <p style={{ fontSize: "0.9rem", color: "rgba(245,241,234,0.6)", lineHeight: 1.7, fontStyle: "italic", margin: 0 }}>
                   "{hu ? item.quoteHu : item.quote}"
                 </p>
                 {item.url && (
                   <a href={item.url} target="_blank" rel="noopener noreferrer"
-                    style={{ fontSize: "0.8rem", color: "#1a1a1a", letterSpacing: "0.05em" }}>
+                    style={{ fontSize: "0.78rem", color: "rgba(245,241,234,0.5)", letterSpacing: "0.05em", textDecoration: "none", marginTop: "auto", paddingTop: "0.25rem" }}>
                     {hu ? "Cikk megtekintése →" : "View article →"}
                   </a>
                 )}
@@ -181,26 +193,29 @@ export default function Epk() {
             ))}
           </motion.div>
         </div>
+        <style>{`
+          .epk-press-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 1.25rem; }
+        `}</style>
       </section>
 
       {/* Photos */}
-      <section style={{ padding: "8rem 2rem", background: "#f7f6f3" }}>
+      <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "960px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "3rem" }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
               {hu ? "Letölthető fotók" : "Press photos"}
             </p>
           </motion.div>
 
           <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
             style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: "1rem" }}>
-            {photos.map((photo) => (
-              <motion.div key={photo.name} variants={staggerItem} style={{ position: "relative", borderRadius: "2px", overflow: "hidden" }}>
-                <img src={photo.src} alt={photo.label}
+            {photos.map(photo => (
+              <motion.div key={photo.name} variants={staggerItem} style={{ position: "relative", borderRadius: "8px", overflow: "hidden", border: `1px solid ${BORDER}` }}>
+                <img src={photo.src} alt={hu ? photo.label.hu : photo.label.en}
                   style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block" }} />
                 <a href={photo.src} download={photo.name}
-                  style={{ display: "block", marginTop: "0.5rem", fontSize: "0.75rem", color: "#666", letterSpacing: "0.05em", textDecoration: "none", textAlign: "center" }}>
-                  ↓ {photo.label}
+                  style={{ display: "block", padding: "0.6rem", fontSize: "0.75rem", color: "rgba(245,241,234,0.6)", letterSpacing: "0.05em", textDecoration: "none", textAlign: "center", background: CARD_BG }}>
+                  ↓ {hu ? photo.label.hu : photo.label.en}
                 </a>
               </motion.div>
             ))}
@@ -209,16 +224,18 @@ export default function Epk() {
       </section>
 
       {/* Streaming */}
-      <section style={{ padding: "8rem 2rem", background: "#fff" }}>
+      <section style={{ padding: "8rem 2rem", background: BG_1 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "2.5rem" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
               {hu ? "Streaming platformok" : "Listen"}
             </p>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "1rem" }}>
-              {streamingLinks.map((link) => (
+            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
+              {streamingLinks.map(link => (
                 <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer"
-                  style={{ padding: "0.75rem 1.5rem", border: "1px solid #e8e8e8", borderRadius: "2px", fontSize: "0.9rem", color: "#1a1a1a", textDecoration: "none", letterSpacing: "0.03em" }}>
+                  style={{ padding: "0.75rem 1.5rem", border: `1px solid ${BORDER}`, borderRadius: "8px", fontSize: "0.9rem", color: TEXT, textDecoration: "none", letterSpacing: "0.03em", background: "rgba(255,255,255,0.03)", transition: "all 0.2s" }}
+                  onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = "#fff"; }}
+                  onMouseOut={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.color = TEXT; }}>
                   {link.name}
                 </a>
               ))}
@@ -228,26 +245,28 @@ export default function Epk() {
       </section>
 
       {/* Technical Rider */}
-      <section style={{ padding: "8rem 2rem", background: "#1a1a1a", color: "#fff" }}>
+      <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#aaa", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
               {hu ? "Technikai rider" : "Technical rider"}
             </p>
-            <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 600, marginBottom: "2.5rem", color: "#fff" }}>
+            <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 600, marginBottom: "2.5rem", color: TEXT }}>
               {hu ? "Helyszíni igények" : "Stage requirements"}
             </h2>
-            <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "1rem" }}>
-              {(hu ? riderItems.hu : riderItems.en).map((item, i) => (
-                <li key={i} style={{ display: "flex", gap: "1rem", alignItems: "flex-start", fontSize: "0.95rem", color: "#aaa", lineHeight: 1.6 }}>
-                  <span style={{ color: "#777", flexShrink: 0, paddingTop: "2px" }}>—</span>
-                  {item}
-                </li>
-              ))}
-            </ul>
-            <p style={{ marginTop: "3rem", fontSize: "0.85rem", color: "#888", lineHeight: 1.7 }}>
+            <div style={{ padding: "1.75rem 2rem", background: CARD_BG, border: `1px solid ${BORDER}`, borderRadius: "10px" }}>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "1rem" }}>
+                {(hu ? riderItems.hu : riderItems.en).map((item, i) => (
+                  <li key={i} style={{ display: "flex", gap: "1rem", alignItems: "flex-start", fontSize: "0.95rem", color: "rgba(245,241,234,0.7)", lineHeight: 1.6 }}>
+                    <span style={{ color: ACCENT, flexShrink: 0, paddingTop: "2px" }}>—</span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <p style={{ marginTop: "2rem", fontSize: "0.85rem", color: "rgba(245,241,234,0.4)", lineHeight: 1.7 }}>
               {hu
-                ? "Kérdések vagy speciális igények esetén keress emailen: richard.kormendi@gmail.com"
+                ? "Kérdés vagy speciális igény esetén keress bátran emailben: richard.kormendi@gmail.com"
                 : "For questions or special requirements, reach out: richard.kormendi@gmail.com"}
             </p>
           </motion.div>
@@ -255,31 +274,35 @@ export default function Epk() {
       </section>
 
       {/* Contact */}
-      <section style={{ padding: "8rem 2rem", background: "#f7f6f3" }}>
+      <section style={{ padding: "8rem 2rem", background: BG_1, textAlign: "center" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "1.5rem" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
               {hu ? "Kapcsolat" : "Contact"}
             </p>
-            <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 600, marginBottom: "2rem" }}>
+            <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 600, marginBottom: "2rem", color: TEXT }}>
               {hu ? "Booking & sajtó" : "Booking & press"}
             </h2>
-            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+            <div style={{ display: "inline-flex", flexDirection: "column", gap: "1rem", textAlign: "left" }}>
               <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span style={{ fontSize: "0.8rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", width: "80px", flexShrink: 0 }}>Email</span>
-                <a href="mailto:richard.kormendi@gmail.com" style={{ color: "#1a1a1a", fontSize: "0.95rem" }}>
+                <span style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", width: "90px", flexShrink: 0 }}>Email</span>
+                <a href="mailto:richard.kormendi@gmail.com" style={{ color: TEXT, fontSize: "0.95rem", textDecoration: "none", borderBottom: `1px solid ${BORDER}` }}>
                   richard.kormendi@gmail.com
                 </a>
               </div>
               <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span style={{ fontSize: "0.8rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", width: "80px", flexShrink: 0 }}>Instagram</span>
-                <a href="https://www.instagram.com/rickormendi/" target="_blank" rel="noopener noreferrer" style={{ color: "#1a1a1a", fontSize: "0.95rem" }}>
+                <span style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", width: "90px", flexShrink: 0 }}>Instagram</span>
+                <a href="https://www.instagram.com/rickormendi/" target="_blank" rel="noopener noreferrer" style={{ color: TEXT, fontSize: "0.95rem", textDecoration: "none", borderBottom: `1px solid ${BORDER}` }}>
                   @rickormendi
                 </a>
               </div>
               <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
-                <span style={{ fontSize: "0.8rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", width: "80px", flexShrink: 0 }}>Location</span>
-                <span style={{ color: "#555", fontSize: "0.95rem" }}>Esztergom, Hungary</span>
+                <span style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", width: "90px", flexShrink: 0 }}>
+                  {hu ? "Székhely" : "Location"}
+                </span>
+                <span style={{ color: "rgba(245,241,234,0.7)", fontSize: "0.95rem" }}>
+                  {hu ? "Esztergom, Magyarország" : "Esztergom, Hungary"}
+                </span>
               </div>
             </div>
           </motion.div>
@@ -288,7 +311,7 @@ export default function Epk() {
 
       <Footer />
 
-      {/* Print styles */}
+      {/* Print styles — nyomtatáskor/PDF-nél olvasható, tinta-takarékos világos oldal */}
       <style>{`
         @media print {
           nav, footer, button { display: none !important; }
@@ -296,6 +319,7 @@ export default function Epk() {
           section { padding: 2rem 1rem !important; background: #fff !important; color: #000 !important; page-break-inside: avoid; }
           a { color: #000 !important; }
           h1, h2 { color: #000 !important; }
+          p, li, span { color: #000 !important; }
         }
       `}</style>
     </div>
