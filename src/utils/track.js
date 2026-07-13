@@ -46,7 +46,24 @@ function getUtm() {
   return { source, medium: params.get("utm_medium") || null, campaign: params.get("utm_campaign") || null };
 }
 
+// Saját forgalom kizárása — látogasd meg egyszer a https://richardkormendi.com/?rk_owner=1 linket
+// bármelyik eszközödön/böngésződben, onnantól az a böngésző soha nem kerül a statisztikába.
+// Visszakapcsoláshoz (pl. teszteléshez): ?rk_owner=0
+function isOwnerExcluded() {
+  try {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("rk_owner")) {
+      if (params.get("rk_owner") === "0") localStorage.removeItem("rk_owner");
+      else localStorage.setItem("rk_owner", "1");
+    }
+    return localStorage.getItem("rk_owner") === "1";
+  } catch {
+    return false;
+  }
+}
+
 export function track(type, extra = {}) {
+  if (isOwnerExcluded()) return;
   try {
     const payload = {
       type,
