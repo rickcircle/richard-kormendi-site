@@ -5,9 +5,18 @@ import { t } from "../i18n/translations";
 
 const ACCENT = "#e8963a";
 
-// Kurátori visszajelzés hozzáadásához: { quote: { en, hu }, author, role: { en, hu } }
+// Kurátori visszajelzés hozzáadásához: { quote: { en, hu }, author, role: { en, hu }, href? }
 // Sima sajtómegjelenéshez: { type, outlet, desc, href }
 const pressItems = [
+  {
+    quote: {
+      en: "The vocal performance is one of the song's strongest elements, blending deep textures with bright, energetic tones — with an excellent balance between heaviness and clarity.",
+      hu: "Az énekhang a dal egyik legerősebb eleme — mély textúrák és fényes, energikus tónusok keverednek benne, kiváló egyensúlyban a nyerseség és a tisztaság között.",
+    },
+    author: "Expansión Radial",
+    role: { en: "Oliver Zurita, on “You Become My Only”", hu: "Oliver Zurita, „You Become My Only” kritika" },
+    href: "https://www.expansionradial.mx/richard-kormendi-you-become-my-only-hard-rock/",
+  },
   {
     type:    { en: "Feature",  hu: "Cikk" },
     outlet:  "MusicAlive.net",
@@ -75,6 +84,12 @@ export default function Press() {
                   — <span style={{ color: "#f5f1ea", fontWeight: 500 }}>{item.author}</span>
                   {item.role && <span>, {item.role[lang]}</span>}
                 </p>
+                {item.href && (
+                  <a href={item.href} target="_blank" rel="noreferrer"
+                    style={{ display: "inline-block", marginTop: "0.85rem", fontSize: "0.78rem", letterSpacing: "0.06em", color: ACCENT, textDecoration: "none" }}>
+                    {lang === "hu" ? "Teljes kritika →" : "Read full review →"}
+                  </a>
+                )}
               </motion.div>
             ))}
           </motion.div>

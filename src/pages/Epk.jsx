@@ -21,6 +21,13 @@ const TEXT = "#f5f1ea";
 
 const pressItems = [
   {
+    outlet: "Expansión Radial",
+    quote: "“The vocal performance is one of the song's strongest elements, blending deep textures with bright, energetic tones,” with “an excellent balance between heaviness and clarity.”",
+    quoteHu: "„Az énekhang a dal egyik legerősebb eleme — mély textúrák és fényes, energikus tónusok keverednek benne”, kiváló egyensúlyban „a nyerseség és a tisztaság között”.",
+    type: { en: "Review", hu: "Kritika" },
+    url: "https://www.expansionradial.mx/richard-kormendi-you-become-my-only-hard-rock/",
+  },
+  {
     outlet: "MusicAlive.net",
     quote: "Richard Körmendi's “Cold Urban Sighs” is a standout release — cinematic textures, raw emotion, and a voice that demands attention.",
     quoteHu: "Körmendi Richárd „Cold Urban Sighs” című dala kiemelkedő megjelenés — filmszerű hangzás, nyers érzelmek és egy hang, amit lehetetlen figyelmen kívül hagyni.",
