@@ -5,14 +5,14 @@ import { t } from "../i18n/translations";
 import profilePhoto from "../assets/images/photo-img3953.jpg";
 import { track } from "../utils/track";
 
-const CARD_BG = "#1c1814";
+const CARD_BG = "#28221a";
 
 export default function About() {
   const { lang } = useLang();
   const tx = t[lang].about;
 
   return (
-    <section id="about" style={{ padding: "8rem 2rem", background: "#141210" }}>
+    <section id="about" style={{ padding: "8rem 2rem", background: "#1d1913" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
@@ -78,7 +78,7 @@ export default function About() {
             <TileTitle style={{ whiteSpace: "pre-line" }}>{tx.tiles.singles.title}</TileTitle>
             <TileBody>{tx.tiles.singles.body}</TileBody>
             <a
-              href="https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp"
+              href="https://open.spotify.com/album/539fHNOQNfCHWLW2mWoijM"
               target="_blank" rel="noreferrer"
               onClick={() => track("click", { label: "about_spotify_link" })}
               style={{ display: "inline-block", marginTop: "1.25rem", fontSize: "0.8rem", letterSpacing: "0.08em", color: "#f5f1ea", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.25)", paddingBottom: "2px", transition: "border-color 0.2s, color 0.2s" }}

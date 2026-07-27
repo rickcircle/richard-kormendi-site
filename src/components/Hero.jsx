@@ -193,7 +193,7 @@ export default function Hero() {
 
         {/* OUT NOW badge */}
         <motion.a
-          href="https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp"
+          href="https://open.spotify.com/album/539fHNOQNfCHWLW2mWoijM"
           target="_blank" rel="noreferrer"
           onClick={() => track("click", { label: "hero_out_now_badge" })}
           initial={{ opacity: 0, y: 6 }}
@@ -223,7 +223,36 @@ export default function Hero() {
             flexShrink: 0,
             animation: "pulse-dot 1.8s ease-in-out infinite",
           }} />
-          Out Now — You Become My Only
+          Out Now — Fall Into You
+        </motion.a>
+
+        {/* Press badge */}
+        <motion.a
+          href="https://kindlinemagazine.com/richard-kormendi-takes-loves-deepest-surrender-on-latest-release-fall-into-you/"
+          target="_blank" rel="noreferrer"
+          onClick={() => track("click", { label: "hero_press_badge" })}
+          initial={{ opacity: 0, y: 6 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, delay: 2.6 }}
+          style={{
+            display: "inline-flex",
+            alignItems: "center",
+            gap: "0.5rem",
+            width: "fit-content",
+            marginTop: "0.6rem",
+            padding: "0.35rem 0.9rem",
+            background: "rgba(255,255,255,0.05)",
+            border: "1px solid rgba(255,255,255,0.18)",
+            borderRadius: "999px",
+            color: "rgba(255,255,255,0.75)",
+            fontSize: "0.7rem",
+            letterSpacing: "0.1em",
+            textTransform: "uppercase",
+            textDecoration: "none",
+            fontWeight: 500,
+          }}
+        >
+          📰 {lang === "hu" ? "Kritika — Kindline Magazine" : "Featured in Kindline Magazine"}
         </motion.a>
 
         {/* Listen Now CTA */}
@@ -233,7 +262,7 @@ export default function Hero() {
           onClick={() => track("click", { label: "hero_listen_now" })}
           initial={{ opacity: 0, y: 6 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 2.8 }}
+          transition={{ duration: 0.5, delay: 3.0 }}
           style={{
             display: "inline-flex",
             alignItems: "center",

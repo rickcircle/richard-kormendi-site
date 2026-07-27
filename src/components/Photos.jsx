@@ -38,7 +38,7 @@ export default function Photos() {
   const scroll = dir => scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
 
   return (
-    <section id="photos" style={{ padding: "8rem 0", background: "#141210", overflow: "hidden" }}>
+    <section id="photos" style={{ padding: "8rem 0", background: "#1d1913", overflow: "hidden" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto", padding: "0 2rem", marginBottom: "3rem" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
           <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", marginBottom: "2rem" }}>

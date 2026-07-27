@@ -4,6 +4,7 @@ import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { track } from "../utils/track";
 
+import coverFallIntoYou     from "../assets/images/cover-fall-into-you.jpg";
 import coverStillIGo        from "../assets/images/cover-still-i-go.jpg";
 import coverTheAbsent       from "../assets/images/cover-the-absent.jpg";
 import coverYouBecomeMyOnly from "../assets/images/cover-you-become-my-only.jpg";
@@ -17,7 +18,8 @@ import coverMyRemedy        from "../assets/images/cover-my-remedy.jpg";
 const ACCENT = "#e8963a";
 
 const RELEASES = [
-  { title: "Still I Go",         year: "2026", cover: coverStillIGo,        spotifyId: "7gT1yqH7HjtBA3wWcTwtD7",  isNew: true },
+  { title: "Fall Into You",      year: "2026", cover: coverFallIntoYou,     spotifyId: "539fHNOQNfCHWLW2mWoijM", isNew: true },
+  { title: "Still I Go",         year: "2026", cover: coverStillIGo,        spotifyId: "7gT1yqH7HjtBA3wWcTwtD7" },
   { title: "The Absent",         year: "2026", cover: coverTheAbsent,       spotifyId: "29BOxHtSuQC7qTGJBeKP3D" },
   { title: "You Become My Only", year: "2026", cover: coverYouBecomeMyOnly, spotifyId: "3bCpO4FDUqgNGp4D4aIYTJ" },
   { title: "Like An Ember",      year: "2026", cover: coverLikeAnEmber,     spotifyId: "07fRNFTqUkQynMTCABulTu" },
@@ -34,7 +36,7 @@ export default function Releases() {
   const heading = lang === "hu" ? "Összes kiadás." : "All releases.";
 
   return (
-    <section id="releases" style={{ background: "#141210", padding: "8rem 2rem" }}>
+    <section id="releases" style={{ background: "#1d1913", padding: "8rem 2rem" }}>
       <div style={{ maxWidth: "980px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
           <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>

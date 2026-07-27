@@ -40,7 +40,7 @@ export default function Shows() {
   };
 
   return (
-    <section id="shows" style={{ padding: "8rem 2rem", background: "#141210" }}>
+    <section id="shows" style={{ padding: "8rem 2rem", background: "#1d1913" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
           <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>

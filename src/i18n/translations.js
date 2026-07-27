@@ -20,7 +20,7 @@ export const t = {
       tiles: {
         eberalom: { label: "Roots", title: "Éberálom", body: "Hungarian indie rock band. Raw energy, packed stages, and the first real proof of what a voice can do." },
         classical: { label: "2024", title: "Classical tenor", body: "Graduated in classical vocal performance from Partium Christian University, Oradea. The long road paid off." },
-        singles: { label: "2026 — Latest", title: "You Become My Only", body: "The newest single — out now on all platforms." },
+        singles: { label: "2026 — Latest", title: "Fall Into You", body: "The newest single — out now on all platforms." },
       },
     },
     music: {
@@ -123,7 +123,7 @@ export const t = {
       tiles: {
         eberalom: { label: "Gyökerek", title: "Éberálom", body: "Magyar indie rock banda. Nyers energia, teli házak — az első valódi bizonyíték arra, mire képes ez a hang." },
         classical: { label: "2024", title: "Klasszikus tenor", body: "Klasszikus énekdiploma a Nagyváradi Partiumi Keresztény Egyetemen. A hosszú út megtérült." },
-        singles: { label: "2026 — Legújabb", title: "You Become My Only", body: "A legfrissebb kislemez — már elérhető minden platformon." },
+        singles: { label: "2026 — Legújabb", title: "Fall Into You", body: "A legfrissebb kislemez — már elérhető minden platformon." },
       },
     },
     music: {

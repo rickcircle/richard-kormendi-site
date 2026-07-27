@@ -14,12 +14,19 @@ import photoSession   from "../assets/images/photo-studio-portrait.jpg";
 
 const ACCENT = "#e8963a";
 const BG_1 = "#0b0a08";
-const BG_2 = "#141210";
-const CARD_BG = "#1c1814";
+const BG_2 = "#1d1913";
+const CARD_BG = "#28221a";
 const BORDER = "rgba(255,255,255,0.08)";
 const TEXT = "#f5f1ea";
 
 const pressItems = [
+  {
+    outlet: "Kindline Magazine",
+    quote: "“Delivers a cinematic dark-pop release that makes a powerful emotional statement.”",
+    quoteHu: "„Filmszerű dark-pop kiadás, amely erőteljes érzelmi állásfoglalást fogalmaz meg.”",
+    type: { en: "Review", hu: "Kritika" },
+    url: "https://kindlinemagazine.com/richard-kormendi-takes-loves-deepest-surrender-on-latest-release-fall-into-you/",
+  },
   {
     outlet: "Expansión Radial",
     quote: "“The vocal performance is one of the song's strongest elements, blending deep textures with bright, energetic tones,” with “an excellent balance between heaviness and clarity.”",

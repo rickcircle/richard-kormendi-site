@@ -10,6 +10,15 @@ const ACCENT = "#e8963a";
 const pressItems = [
   {
     quote: {
+      en: "Delivers a cinematic dark-pop release that makes a powerful emotional statement.",
+      hu: "Filmszerű dark-pop kiadás, amely erőteljes érzelmi állásfoglalást fogalmaz meg.",
+    },
+    author: "Kindline Magazine",
+    role: { en: "Review of “Fall Into You”", hu: "„Fall Into You” kritika" },
+    href: "https://kindlinemagazine.com/richard-kormendi-takes-loves-deepest-surrender-on-latest-release-fall-into-you/",
+  },
+  {
+    quote: {
       en: "The vocal performance is one of the song's strongest elements, blending deep textures with bright, energetic tones — with an excellent balance between heaviness and clarity.",
       hu: "Az énekhang a dal egyik legerősebb eleme — mély textúrák és fényes, energikus tónusok keverednek benne, kiváló egyensúlyban a nyerseség és a tisztaság között.",
     },
