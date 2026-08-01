@@ -5,8 +5,8 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import { track } from "../utils/track";
 
-const ACCENT = "#e8963a";
-const SPOTIFY_EMBED_URL = "https://open.spotify.com/embed/artist/5UW4cZ0M83TG2nJWYvkVkp?utm_source=generator&theme=0";
+const ACCENT = "#c23b3b";
+const SPOTIFY_EMBED_URL = "https://open.spotify.com/embed/album/539fHNOQNfCHWLW2mWoijM?utm_source=generator&theme=0";
 
 const VIDEOS = [
   { id: "3SgUws3Gkuw", title: "You Become My Only", tag: "vocal" },
@@ -65,7 +65,7 @@ export default function Music() {
     <section id="music" style={{ background: "#0b0a08", padding: "8rem 2rem" }}>
       <div style={{ maxWidth: "860px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "2rem", color: "#f5f1ea" }}>
@@ -89,12 +89,12 @@ export default function Music() {
                   padding: "1rem 1.25rem",
                   borderRadius: "10px",
                   border: `1px solid ${tab === key ? ACCENT : "rgba(255,255,255,0.1)"}`,
-                  background: tab === key ? "rgba(232,150,58,0.1)" : "rgba(255,255,255,0.03)",
+                  background: tab === key ? "rgba(194, 59, 59,0.1)" : "rgba(255,255,255,0.03)",
                   cursor: "pointer",
                   fontFamily: "inherit",
                   textAlign: "left",
                   transition: "all 0.25s",
-                  boxShadow: tab === key ? "0 0 24px rgba(232,150,58,0.18)" : "none",
+                  boxShadow: tab === key ? "0 0 24px rgba(194, 59, 59,0.18)" : "none",
                 }}
               >
                 <span style={{
@@ -166,7 +166,7 @@ export default function Music() {
                         cursor: "pointer",
                         background: "none",
                         textAlign: "left",
-                        boxShadow: activeVideo === i ? "0 0 18px rgba(232,150,58,0.3)" : "none",
+                        boxShadow: activeVideo === i ? "0 0 18px rgba(194, 59, 59,0.3)" : "none",
                         transition: "border-color 0.2s, box-shadow 0.2s",
                       }}
                     >
@@ -179,7 +179,7 @@ export default function Music() {
                         />
                         <div style={{
                           position: "absolute", inset: 0,
-                          background: activeVideo === i ? "rgba(232,150,58,0.15)" : "rgba(0,0,0,0.15)",
+                          background: activeVideo === i ? "rgba(194, 59, 59,0.15)" : "rgba(0,0,0,0.15)",
                         }} />
                         <span style={{
                           position: "absolute", top: "0.4rem", left: "0.4rem",

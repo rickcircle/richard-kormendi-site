@@ -1,4 +1,4 @@
-const ACCENT = "#e8963a";
+const ACCENT = "#c23b3b";
 
 const socials = [
   { label: "Spotify",   href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },

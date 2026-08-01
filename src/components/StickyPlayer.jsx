@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ACCENT = "#e8963a";
-const SPOTIFY_URL = "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp";
+const ACCENT = "#c23b3b";
+const SPOTIFY_URL = "https://open.spotify.com/album/539fHNOQNfCHWLW2mWoijM";
 
 export default function StickyPlayer() {
   const [visible, setVisible] = useState(false);
@@ -48,11 +48,11 @@ export default function StickyPlayer() {
             alignItems: "center",
             gap: isMobile ? "0.6rem" : "0.9rem",
             padding: isMobile ? "0.6rem 0.75rem 0.6rem 0.9rem" : "0.7rem 1rem 0.7rem 1.1rem",
-            background: "rgba(18, 18, 18, 0.94)",
+            background: "rgba(30, 12, 13, 0.96)",
             backdropFilter: "blur(16px)",
-            border: "1px solid rgba(255,255,255,0.08)",
+            border: `1px solid rgba(194, 59, 59, 0.55)`,
             borderRadius: "999px",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 28px rgba(194, 59, 59, 0.35)",
             whiteSpace: "nowrap",
             maxWidth: "calc(100vw - 2rem)",
           }}
@@ -68,7 +68,7 @@ export default function StickyPlayer() {
 
           {/* Szöveg */}
           <span style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            <span style={{ color: "#fff", fontWeight: 600 }}>You Become My Only</span>
+            <span style={{ color: "#fff", fontWeight: 600 }}>Fall Into You</span>
             <span className="sticky-artist-name"> · Richard Körmendi</span>
           </span>
 
@@ -119,8 +119,8 @@ export default function StickyPlayer() {
       )}
       <style>{`
         @keyframes pulse-sticky {
-          0%,100%{ box-shadow: 0 0 0 0 rgba(232,150,58,0.5); }
-          50%{ box-shadow: 0 0 0 6px rgba(232,150,58,0); }
+          0%,100%{ box-shadow: 0 0 0 0 rgba(194, 59, 59,0.5); }
+          50%{ box-shadow: 0 0 0 6px rgba(194, 59, 59,0); }
         }
         @media (max-width: 520px) { .sticky-artist-name { display: none; } }
       `}</style>

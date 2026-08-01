@@ -4,6 +4,7 @@ import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { track } from "../utils/track";
 
+import coverMyBurningDevotion from "../assets/images/cover-my-burning-devotion.jpg";
 import coverFallIntoYou     from "../assets/images/cover-fall-into-you.jpg";
 import coverStillIGo        from "../assets/images/cover-still-i-go.jpg";
 import coverTheAbsent       from "../assets/images/cover-the-absent.jpg";
@@ -15,9 +16,14 @@ import coverColdUrbanSighs  from "../assets/images/cover-cold-urban-sighs.jpg";
 import coverLightInTheDark  from "../assets/images/cover-light-in-the-dark.jpg";
 import coverMyRemedy        from "../assets/images/cover-my-remedy.jpg";
 
-const ACCENT = "#e8963a";
+const ACCENT = "#c23b3b";
 
 const RELEASES = [
+  {
+    title: "My Burning Devotion", cover: coverMyBurningDevotion,
+    href: "https://distrokid.com/hyperfollow/richardkrmendi/my-burning-devotion",
+    comingSoon: true,
+  },
   { title: "Fall Into You",      year: "2026", cover: coverFallIntoYou,     spotifyId: "539fHNOQNfCHWLW2mWoijM", isNew: true },
   { title: "Still I Go",         year: "2026", cover: coverStillIGo,        spotifyId: "7gT1yqH7HjtBA3wWcTwtD7" },
   { title: "The Absent",         year: "2026", cover: coverTheAbsent,       spotifyId: "29BOxHtSuQC7qTGJBeKP3D" },
@@ -36,10 +42,10 @@ export default function Releases() {
   const heading = lang === "hu" ? "Összes kiadás." : "All releases.";
 
   return (
-    <section id="releases" style={{ background: "#1d1913", padding: "8rem 2rem" }}>
+    <section id="releases" style={{ background: "#1f1113", padding: "8rem 2rem" }}>
       <div style={{ maxWidth: "980px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
             {label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "3rem", color: "#fff" }}>
@@ -49,7 +55,7 @@ export default function Releases() {
 
         <div className="releases-grid">
           {RELEASES.map((release, i) => (
-            <ReleaseCard key={release.spotifyId} release={release} delay={i * 0.06} />
+            <ReleaseCard key={release.spotifyId || release.title} release={release} delay={i * 0.06} lang={lang} />
           ))}
         </div>
       </div>
@@ -81,12 +87,13 @@ export default function Releases() {
   );
 }
 
-function ReleaseCard({ release, delay }) {
+function ReleaseCard({ release, delay, lang }) {
   const [hovered, setHovered] = useState(false);
+  const href = release.href || `https://open.spotify.com/album/${release.spotifyId}`;
 
   return (
     <motion.a
-      href={`https://open.spotify.com/album/${release.spotifyId}`}
+      href={href}
       target="_blank" rel="noreferrer"
       variants={{ hidden: { opacity: 0, y: 20 }, visible: { opacity: 1, y: 0 } }}
       initial="hidden"
@@ -134,12 +141,12 @@ function ReleaseCard({ release, delay }) {
             display: "flex", alignItems: "center", gap: "0.4rem",
           }}>
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
-            Listen
+            {release.comingSoon ? (lang === "hu" ? "Előrendelés" : "Pre-Save") : "Listen"}
           </span>
         </div>
 
-        {/* NEW badge */}
-        {release.isNew && (
+        {/* NEW / Coming soon badge */}
+        {(release.isNew || release.comingSoon) && (
           <span style={{
             position: "absolute", top: "0.6rem", left: "0.6rem",
             background: ACCENT, color: "#fff",
@@ -147,7 +154,7 @@ function ReleaseCard({ release, delay }) {
             textTransform: "uppercase", fontWeight: 700,
             padding: "2px 7px", borderRadius: "2px",
           }}>
-            New
+            {release.comingSoon ? (lang === "hu" ? "Hamarosan" : "Coming Soon") : "New"}
           </span>
         )}
       </div>
@@ -157,7 +164,7 @@ function ReleaseCard({ release, delay }) {
         {release.title}
       </p>
       <p style={{ margin: "0.25rem 0 0", fontSize: "0.75rem", color: "#666", letterSpacing: "0.04em" }}>
-        Single · {release.year}
+        {release.comingSoon ? (lang === "hu" ? "Előrendelés most" : "Pre-save now") : `Single · ${release.year}`}
       </p>
     </motion.a>
   );

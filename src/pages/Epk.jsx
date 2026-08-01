@@ -12,26 +12,36 @@ import photoBar       from "../assets/images/photo-bar-suit.jpg";
 import photoGuitarist from "../assets/images/photo-guitarist.jpg";
 import photoSession   from "../assets/images/photo-studio-portrait.jpg";
 
-const ACCENT = "#e8963a";
+const ACCENT = "#c23b3b";
 const BG_1 = "#0b0a08";
-const BG_2 = "#1d1913";
-const CARD_BG = "#28221a";
+const BG_2 = "#1f1113";
+const CARD_BG = "#2b171a";
 const BORDER = "rgba(255,255,255,0.08)";
 const TEXT = "#f5f1ea";
 
 const pressItems = [
   {
     outlet: "Kindline Magazine",
-    quote: "“Delivers a cinematic dark-pop release that makes a powerful emotional statement.”",
-    quoteHu: "„Filmszerű dark-pop kiadás, amely erőteljes érzelmi állásfoglalást fogalmaz meg.”",
+    quote: "“Delivers a cinematic dark-pop release that makes a powerful emotional statement. A hallmark of the track is Richard Körmendi's serious, conscious vocal delivery.”",
+    quoteHu: "„Filmszerű dark-pop kiadás, amely erőteljes érzelmi állásfoglalást fogalmaz meg. A dal egyik védjegye Körmendi Richárd komoly, tudatos énekhangja.”",
     type: { en: "Review", hu: "Kritika" },
+    song: "Fall Into You",
     url: "https://kindlinemagazine.com/richard-kormendi-takes-loves-deepest-surrender-on-latest-release-fall-into-you/",
+  },
+  {
+    outlet: "Sagar Kari",
+    quote: "“Fall Into You is a really beautiful song. There's so much pain and emotion in the track, and it comes through in a very raw and genuine way. The song feels unique in its own way, and the overall mood really stays with you. I liked how deeply emotional it feels without trying too hard. Really nice track overall!”",
+    quoteHu: "„A Fall Into You egy igazán gyönyörű dal. Rengeteg fájdalom és érzelem van benne, és ez nagyon nyers és őszinte módon jön át. A dal a maga módján egyedi, és az összhangulat tényleg veled marad. Tetszett, mennyire mélyen érzelmes anélkül, hogy túl erőltetett lenne. Összességében egy nagyon szép szám!”",
+    type: { en: "Listener", hu: "Hallgatói vélemény" },
+    song: "Fall Into You",
+    url: null,
   },
   {
     outlet: "Expansión Radial",
     quote: "“The vocal performance is one of the song's strongest elements, blending deep textures with bright, energetic tones,” with “an excellent balance between heaviness and clarity.”",
     quoteHu: "„Az énekhang a dal egyik legerősebb eleme — mély textúrák és fényes, energikus tónusok keverednek benne”, kiváló egyensúlyban „a nyerseség és a tisztaság között”.",
     type: { en: "Review", hu: "Kritika" },
+    song: "You Become My Only",
     url: "https://www.expansionradial.mx/richard-kormendi-you-become-my-only-hard-rock/",
   },
   {
@@ -39,6 +49,7 @@ const pressItems = [
     quote: "Richard Körmendi's “Cold Urban Sighs” is a standout release — cinematic textures, raw emotion, and a voice that demands attention.",
     quoteHu: "Körmendi Richárd „Cold Urban Sighs” című dala kiemelkedő megjelenés — filmszerű hangzás, nyers érzelmek és egy hang, amit lehetetlen figyelmen kívül hagyni.",
     type: { en: "Featured Artist", hu: "Kiemelt előadó" },
+    song: "Cold Urban Sighs",
     url: "https://musicalive.net/richard-kormendi-cold-urban-sighs/",
   },
   {
@@ -46,13 +57,15 @@ const pressItems = [
     quote: "International radio play — featured on the Tony Michaelides Show, broadcast worldwide.",
     quoteHu: "Nemzetközi rádiós lejátszás — a Tony Michaelides Show-ban hangzott el, világszerte sugározva.",
     type: { en: "Radio Play", hu: "Rádiós lejátszás" },
+    song: null,
     url: null,
   },
   {
     outlet: "Nosso Som",
-    quote: "Playlist feature by Nosso Som — 40.9k followers.",
-    quoteHu: "Playlist-megjelenés a Nosso Somtól — 40 900 követő.",
+    quote: "Playlist feature by Nosso Som for “Enthralling” — 40.9k followers.",
+    quoteHu: "Playlist-megjelenés a Nosso Somtól az „Enthralling” című dalra — 40 900 követő.",
     type: { en: "Playlist Feature", hu: "Playlist megjelenés" },
+    song: "Enthralling",
     url: "https://nossosom77.wixsite.com/nossosom",
   },
 ];
@@ -114,7 +127,7 @@ export default function Epk() {
       {/* Hero */}
       <section style={{ background: BG_1, color: TEXT, padding: "10rem 2rem 6rem", textAlign: "center" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
-          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
             {hu ? "Sajtóanyag" : "Electronic Press Kit"}
           </p>
           <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem", color: TEXT }}>
@@ -126,7 +139,7 @@ export default function Epk() {
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
             <button
               onClick={() => window.print()}
-              style={{ padding: "0.9rem 2rem", background: ACCENT, color: "#fff", border: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em", cursor: "pointer", boxShadow: "0 0 24px rgba(232,150,58,0.3)" }}>
+              style={{ padding: "0.9rem 2rem", background: ACCENT, color: "#fff", border: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em", cursor: "pointer", boxShadow: "0 0 24px rgba(194, 59, 59,0.3)" }}>
               {hu ? "Letöltés PDF-ként" : "Download as PDF"}
             </button>
             <a href="mailto:richard.kormendi@gmail.com"
@@ -141,7 +154,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "3rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "3rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
               {hu ? "Életrajz" : "Biography"}
             </p>
 
@@ -174,7 +187,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_1 }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "3rem" }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
               {hu ? "Sajtómegjelenések" : "Press"}
             </p>
           </motion.div>
@@ -184,15 +197,28 @@ export default function Epk() {
             {pressItems.map(item => (
               <motion.div key={item.outlet} variants={staggerItem}
                 style={{ display: "flex", flexDirection: "column", gap: "0.85rem", padding: "1.75rem", background: "rgba(255,255,255,0.03)", border: `1px solid ${BORDER}`, borderRadius: "10px" }}>
-                <span style={{
-                  display: "inline-block", width: "fit-content",
-                  fontSize: "0.65rem", letterSpacing: "0.08em", color: ACCENT,
-                  textTransform: "uppercase", fontWeight: 700,
-                  border: "1px solid rgba(232,150,58,0.35)", borderRadius: "999px",
-                  padding: "3px 10px",
-                }}>
-                  {hu ? item.type.hu : item.type.en}
-                </span>
+                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                  <span style={{
+                    display: "inline-block", width: "fit-content",
+                    fontSize: "0.65rem", letterSpacing: "0.08em", color: ACCENT,
+                    textTransform: "uppercase", fontWeight: 700,
+                    border: "1px solid rgba(194, 59, 59,0.35)", borderRadius: "999px",
+                    padding: "3px 10px",
+                  }}>
+                    {hu ? item.type.hu : item.type.en}
+                  </span>
+                  {item.song && (
+                    <span style={{
+                      display: "inline-block", width: "fit-content",
+                      fontSize: "0.65rem", letterSpacing: "0.08em", color: "#fff",
+                      textTransform: "uppercase", fontWeight: 700,
+                      background: ACCENT, borderRadius: "999px",
+                      padding: "3px 10px",
+                    }}>
+                      🎵 {item.song}
+                    </span>
+                  )}
+                </div>
                 <p style={{ margin: 0, fontWeight: 600, fontSize: "1.05rem", color: TEXT }}>{item.outlet}</p>
                 <p style={{ fontSize: "0.9rem", color: "rgba(245,241,234,0.6)", lineHeight: 1.7, fontStyle: "italic", margin: 0 }}>
                   "{hu ? item.quoteHu : item.quote}"
@@ -216,7 +242,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "960px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "3rem" }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
               {hu ? "Letölthető fotók" : "Press photos"}
             </p>
           </motion.div>
@@ -241,7 +267,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_1 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
               {hu ? "Streaming platformok" : "Listen"}
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
@@ -262,7 +288,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
               {hu ? "Technikai rider" : "Technical rider"}
             </p>
             <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 600, marginBottom: "2.5rem", color: TEXT }}>
@@ -291,7 +317,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_1, textAlign: "center" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
               {hu ? "Kapcsolat" : "Contact"}
             </p>
             <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 600, marginBottom: "2rem", color: TEXT }}>

@@ -5,7 +5,7 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import { track } from "../utils/track";
 
-const ACCENT = "#e8963a";
+const ACCENT = "#c23b3b";
 const SECTION_IDS = ["about", "music", "releases", "press", "shows", "photos", "contact"];
 
 export default function Navbar() {
@@ -91,7 +91,7 @@ export default function Navbar() {
               style={{
                 ...navLinkStyle,
                 color: isActive ? ACCENT : "rgba(245,241,234,0.65)",
-                textShadow: isActive ? "0 0 12px rgba(232,150,58,0.4)" : "none",
+                textShadow: isActive ? "0 0 12px rgba(194, 59, 59,0.4)" : "none",
               }}
               onMouseOver={e => e.currentTarget.style.color = ACCENT}
               onMouseOut={e => e.currentTarget.style.color = isActive ? ACCENT : "rgba(245,241,234,0.65)"}>

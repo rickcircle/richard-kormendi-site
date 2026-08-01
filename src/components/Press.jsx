@@ -3,19 +3,30 @@ import { fadeUp, staggerContainer, staggerItem } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 
-const ACCENT = "#e8963a";
+const ACCENT = "#c23b3b";
 
-// Kurátori visszajelzés hozzáadásához: { quote: { en, hu }, author, role: { en, hu }, href? }
+// Kurátori visszajelzés hozzáadásához: { quote: { en, hu }, author, song, role: { en, hu }, href? }
 // Sima sajtómegjelenéshez: { type, outlet, desc, href }
 const pressItems = [
   {
     quote: {
-      en: "Delivers a cinematic dark-pop release that makes a powerful emotional statement.",
-      hu: "Filmszerű dark-pop kiadás, amely erőteljes érzelmi állásfoglalást fogalmaz meg.",
+      en: "Delivers a cinematic dark-pop release that makes a powerful emotional statement. A hallmark of the track is Richard Körmendi's serious, conscious vocal delivery.",
+      hu: "Filmszerű dark-pop kiadás, amely erőteljes érzelmi állásfoglalást fogalmaz meg. A dal egyik védjegye Körmendi Richárd komoly, tudatos énekhangja.",
     },
     author: "Kindline Magazine",
-    role: { en: "Review of “Fall Into You”", hu: "„Fall Into You” kritika" },
+    song: "Fall Into You",
+    role: { en: "Review", hu: "Kritika" },
     href: "https://kindlinemagazine.com/richard-kormendi-takes-loves-deepest-surrender-on-latest-release-fall-into-you/",
+  },
+  {
+    quote: {
+      en: "Fall Into You is a really beautiful song. There's so much pain and emotion in the track, and it comes through in a very raw and genuine way. The song feels unique in its own way, and the overall mood really stays with you. I liked how deeply emotional it feels without trying too hard. Really nice track overall!",
+      hu: "A Fall Into You egy igazán gyönyörű dal. Rengeteg fájdalom és érzelem van benne, és ez nagyon nyers és őszinte módon jön át. A dal a maga módján egyedi, és az összhangulat tényleg veled marad. Tetszett, mennyire mélyen érzelmes anélkül, hogy túl erőltetett lenne. Összességében egy nagyon szép szám!",
+    },
+    author: "Sagar Kari",
+    song: "Fall Into You",
+    role: null,
+    href: null,
   },
   {
     quote: {
@@ -23,7 +34,8 @@ const pressItems = [
       hu: "Az énekhang a dal egyik legerősebb eleme — mély textúrák és fényes, energikus tónusok keverednek benne, kiváló egyensúlyban a nyerseség és a tisztaság között.",
     },
     author: "Expansión Radial",
-    role: { en: "Oliver Zurita, on “You Become My Only”", hu: "Oliver Zurita, „You Become My Only” kritika" },
+    song: "You Become My Only",
+    role: { en: "Oliver Zurita", hu: "Oliver Zurita" },
     href: "https://www.expansionradial.mx/richard-kormendi-you-become-my-only-hard-rock/",
   },
   {
@@ -41,7 +53,7 @@ const pressItems = [
   {
     type:    { en: "Playlist", hu: "Playlist" },
     outlet:  "Nosso Som",
-    desc:    { en: "Playlist feature — 40.9k followers", hu: "Playlist szereplés — 40,9 ezer követő" },
+    desc:    { en: "Playlist feature — “Enthralling”, 40.9k followers", hu: "Playlist szereplés — „Enthralling”, 40,9 ezer követő" },
     href:    "https://nossosom77.wixsite.com/nossosom/post/enthralling-mergulha-na-obsessão-com-intensidade-e-transforma-tensão-em-linguagem-sonora",
   },
 ];
@@ -58,7 +70,7 @@ export default function Press() {
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, color: "#f5f1ea" }}>
@@ -82,10 +94,21 @@ export default function Press() {
                 <span style={{
                   position: "absolute", top: "0.75rem", left: "1.1rem",
                   fontSize: "3rem", fontFamily: "Georgia, serif", lineHeight: 1,
-                  color: "rgba(232,150,58,0.25)", userSelect: "none",
+                  color: "rgba(194, 59, 59,0.25)", userSelect: "none",
                 }}>
                   "
                 </span>
+                {item.song && (
+                  <span style={{
+                    display: "inline-block", width: "fit-content",
+                    fontSize: "0.65rem", letterSpacing: "0.08em", color: "#fff",
+                    textTransform: "uppercase", fontWeight: 700,
+                    background: ACCENT, borderRadius: "999px",
+                    padding: "3px 10px", marginBottom: "0.85rem",
+                  }}>
+                    🎵 {item.song}
+                  </span>
+                )}
                 <p style={{ fontSize: "1.05rem", lineHeight: 1.7, color: "#f5f1ea", fontStyle: "italic", margin: "0 0 1rem", position: "relative" }}>
                   {item.quote[lang]}
                 </p>
@@ -122,14 +145,14 @@ export default function Press() {
                   textDecoration: "none",
                   transition: "border-color 0.2s, background 0.2s",
                 }}
-                onMouseOver={e => { e.currentTarget.style.borderColor = "rgba(232,150,58,0.4)"; e.currentTarget.style.background = "rgba(232,150,58,0.05)"; }}
+                onMouseOver={e => { e.currentTarget.style.borderColor = "rgba(194, 59, 59,0.4)"; e.currentTarget.style.background = "rgba(194, 59, 59,0.05)"; }}
                 onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
               >
                 <span style={{
                   display: "inline-block", width: "fit-content",
                   fontSize: "0.65rem", letterSpacing: "0.08em", color: ACCENT,
                   textTransform: "uppercase", fontWeight: 700,
-                  border: `1px solid rgba(232,150,58,0.35)`, borderRadius: "999px",
+                  border: `1px solid rgba(194, 59, 59,0.35)`, borderRadius: "999px",
                   padding: "3px 10px",
                 }}>
                   {item.type[lang]}

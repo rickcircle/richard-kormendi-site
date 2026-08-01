@@ -5,19 +5,19 @@ import { t } from "../i18n/translations";
 import profilePhoto from "../assets/images/photo-img3953.jpg";
 import { track } from "../utils/track";
 
-const CARD_BG = "#28221a";
+const CARD_BG = "#2b171a";
 
 export default function About() {
   const { lang } = useLang();
   const tx = t[lang].about;
 
   return (
-    <section id="about" style={{ padding: "8rem 2rem", background: "#1d1913" }}>
+    <section id="about" style={{ padding: "8rem 2rem", background: "#1f1113" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
 
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#e8963a", textTransform: "uppercase", marginBottom: "1.25rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#c23b3b", textTransform: "uppercase", marginBottom: "1.25rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, whiteSpace: "pre-line", margin: 0, color: "#f5f1ea" }}>
@@ -82,7 +82,7 @@ export default function About() {
               target="_blank" rel="noreferrer"
               onClick={() => track("click", { label: "about_spotify_link" })}
               style={{ display: "inline-block", marginTop: "1.25rem", fontSize: "0.8rem", letterSpacing: "0.08em", color: "#f5f1ea", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.25)", paddingBottom: "2px", transition: "border-color 0.2s, color 0.2s" }}
-              onMouseOver={e => { e.currentTarget.style.borderColor = "#e8963a"; e.currentTarget.style.color = "#e8963a"; }}
+              onMouseOver={e => { e.currentTarget.style.borderColor = "#c23b3b"; e.currentTarget.style.color = "#c23b3b"; }}
               onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "#f5f1ea"; }}
             >
               Listen on Spotify →

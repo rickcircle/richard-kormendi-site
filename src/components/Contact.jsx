@@ -4,7 +4,7 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import { track } from "../utils/track";
 
-const ACCENT = "#e8963a";
+const ACCENT = "#c23b3b";
 
 const socials = [
   { label: "YouTube", href: "https://www.youtube.com/@richardkormendi6379" },

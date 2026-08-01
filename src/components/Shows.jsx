@@ -6,7 +6,7 @@ import { t } from "../i18n/translations";
 import showsData from "../data/shows.json";
 import { track } from "../utils/track";
 
-const ACCENT = "#e8963a";
+const ACCENT = "#c23b3b";
 
 // Formspree endpoint — hozz létre free fiókot a https://formspree.io oldalon
 // majd cseréld le ezt az URL-t: https://formspree.io/f/YOUR_FORM_ID
@@ -40,10 +40,10 @@ export default function Shows() {
   };
 
   return (
-    <section id="shows" style={{ padding: "8rem 2rem", background: "#1d1913" }}>
+    <section id="shows" style={{ padding: "8rem 2rem", background: "#1f1113" }}>
       <div style={{ maxWidth: "720px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "3rem", color: "#f5f1ea" }}>
@@ -65,7 +65,7 @@ export default function Shows() {
                 </a>
                 <a href="#newsletter"
                   onClick={() => track("click", { label: "shows_notify_click" })}
-                  style={{ fontSize: "0.8rem", letterSpacing: "0.06em", color: "#fff", textDecoration: "none", background: ACCENT, borderRadius: "2px", padding: "0.6rem 1.25rem", boxShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+                  style={{ fontSize: "0.8rem", letterSpacing: "0.06em", color: "#fff", textDecoration: "none", background: ACCENT, borderRadius: "2px", padding: "0.6rem 1.25rem", boxShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
                   {tx.noShowsNotify}
                 </a>
               </div>
@@ -108,7 +108,7 @@ export default function Shows() {
         {/* Booking inquiry form */}
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "4rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(232,150,58,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
             {tx.bookingLabel}
           </p>
           <h3 style={{ fontSize: "clamp(1.4rem, 3vw, 2rem)", fontWeight: 600, marginBottom: "1rem", color: "#f5f1ea" }}>
@@ -164,7 +164,7 @@ export default function Shows() {
                   opacity: status === "loading" ? 0.7 : 1,
                   fontFamily: "inherit",
                   transition: "opacity 0.2s",
-                  boxShadow: "0 0 20px rgba(232,150,58,0.3)",
+                  boxShadow: "0 0 20px rgba(194, 59, 59,0.3)",
                 }}>
                 {status === "loading" ? "..." : tx.bookingSubmit}
               </button>
