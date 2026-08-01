@@ -189,7 +189,7 @@ export default function Hero() {
                 style={{
                   width: "100%", height: "100%",
                   objectFit: "contain",
-                  objectPosition: "center center",
+                  objectPosition: "center top",
                   display: "block",
                 }}
               />
