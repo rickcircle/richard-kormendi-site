@@ -16,7 +16,11 @@ const SLIDE_INTERVAL_MS = 3000;
 
 // A Hero "canvasa" — a saját fotó és a promó-diák között váltakozik
 const SLIDES = [
-  { kind: "self" },
+  {
+    kind: "self",
+    href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp",
+    trackLabel: "hero_slide_self",
+  },
   {
     kind: "promo",
     image: burningDevotionCanvas,
@@ -132,6 +136,10 @@ export default function Hero() {
   // ne induljon újra a fő badge-ek 2.4–3.0 mp-es belépő animációja.
   const promoSlide = isSelf ? SLIDES[1] : slide;
 
+  const goToSlide = i => setSlideIndex(((i % SLIDES.length) + SLIDES.length) % SLIDES.length);
+  const goPrev = () => goToSlide(slideIndex - 1);
+  const goNext = () => goToSlide(slideIndex + 1);
+
   return (
     <section
       ref={sectionRef}
@@ -151,49 +159,59 @@ export default function Hero() {
       >
         <AnimatePresence mode="sync">
           {isSelf ? (
-            <motion.picture
+            <motion.a
               key="self"
+              href={SLIDES[0].href}
+              target="_blank" rel="noreferrer"
+              onClick={() => track("click", { label: SLIDES[0].trackLabel })}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }}
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block", cursor: "pointer" }}
             >
-              <source media="(max-width: 768px)" srcSet={heroPhotoMobile} />
-              <img
-                src={heroPhoto}
-                alt="Richard Körmendi"
-                className="hero-photo"
-                style={{
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "contain",
-                  objectPosition: "center top",
-                  display: "block",
-                }}
-              />
-            </motion.picture>
+              <picture style={{ width: "100%", height: "100%", display: "block" }}>
+                <source media="(max-width: 768px)" srcSet={heroPhotoMobile} />
+                <img
+                  src={heroPhoto}
+                  alt="Richard Körmendi"
+                  className="hero-photo"
+                  style={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                    objectPosition: "center top",
+                    display: "block",
+                  }}
+                />
+              </picture>
+            </motion.a>
           ) : (
-            <motion.picture
+            <motion.a
               key={slide.title}
+              href={slide.href}
+              target="_blank" rel="noreferrer"
+              onClick={() => track("click", { label: `${slide.trackLabel}_image` })}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }}
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block", cursor: "pointer" }}
             >
-              <source media="(max-width: 768px)" srcSet={slide.mobileImage} />
-              <img
-                src={slide.image}
-                alt={slide.title}
-                style={{
-                  width: "100%", height: "100%",
-                  objectFit: "contain",
-                  objectPosition: "center top",
-                  display: "block",
-                }}
-              />
-            </motion.picture>
+              <picture style={{ width: "100%", height: "100%", display: "block" }}>
+                <source media="(max-width: 768px)" srcSet={slide.mobileImage} />
+                <img
+                  src={slide.image}
+                  alt={slide.title}
+                  style={{
+                    width: "100%", height: "100%",
+                    objectFit: "contain",
+                    objectPosition: "center top",
+                    display: "block",
+                  }}
+                />
+              </picture>
+            </motion.a>
           )}
         </AnimatePresence>
       </motion.div>
@@ -203,6 +221,22 @@ export default function Hero() {
         position: "absolute", inset: 0, zIndex: 1,
         background: "linear-gradient(to bottom, rgba(0,0,0,0.05) 0%, rgba(0,0,0,0.2) 40%, rgba(0,0,0,0.6) 80%, rgba(0,0,0,0.85) 100%)",
       }} />
+
+      {/* Kézi navigáció nyilakkal — a kép alatta továbbra is kattintható marad */}
+      <button
+        onClick={e => { e.stopPropagation(); goPrev(); }}
+        aria-label="Previous slide"
+        style={arrowButtonStyle("left")}
+      >
+        ‹
+      </button>
+      <button
+        onClick={e => { e.stopPropagation(); goNext(); }}
+        aria-label="Next slide"
+        style={arrowButtonStyle("right")}
+      >
+        ›
+      </button>
 
       {/* Tartalom */}
       <motion.div
@@ -447,7 +481,7 @@ export default function Hero() {
           {SLIDES.map((_, i) => (
             <button
               key={i}
-              onClick={() => setSlideIndex(i)}
+              onClick={() => goToSlide(i)}
               aria-label={`Slide ${i + 1}`}
               style={{
                 width: 32, height: 32, padding: 0,
@@ -491,4 +525,26 @@ export default function Hero() {
       </motion.div>
     </section>
   );
+}
+
+function arrowButtonStyle(side) {
+  return {
+    position: "absolute",
+    top: "50%",
+    [side]: "clamp(0.75rem, 2vw, 1.5rem)",
+    transform: "translateY(-50%)",
+    zIndex: 3,
+    width: "40px",
+    height: "40px",
+    borderRadius: "50%",
+    border: "1px solid rgba(255,255,255,0.15)",
+    background: "rgba(11,10,8,0.45)",
+    color: "#fff",
+    fontSize: "1.4rem",
+    lineHeight: 1,
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+  };
 }
