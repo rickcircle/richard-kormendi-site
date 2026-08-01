@@ -4,8 +4,10 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import heroPhoto from "../assets/images/photo_main.png";
 import heroPhotoMobile from "../assets/images/photo_main_mobil.png";
-import coverMyBurningDevotion from "../assets/images/cover-my-burning-devotion.jpg";
-import coverFallIntoYou from "../assets/images/cover-fall-into-you.jpg";
+import burningDevotionCanvas from "../assets/images/burning-devotion-canvas.png";
+import burningDevotionCanvasMobile from "../assets/images/burning-devotion-canvas-mobil.png";
+import fallIntoYouCanvas from "../assets/images/fall-into-you-canvas.png";
+import fallIntoYouCanvasMobile from "../assets/images/fall-into-you-canvas-mobil.png";
 import { track } from "../utils/track";
 
 const ACCENT = "#c23b3b";
@@ -17,7 +19,8 @@ const SLIDES = [
   { kind: "self" },
   {
     kind: "promo",
-    image: coverMyBurningDevotion,
+    image: burningDevotionCanvas,
+    mobileImage: burningDevotionCanvasMobile,
     href: "https://distrokid.com/hyperfollow/richardkrmendi/my-burning-devotion",
     badge: { en: "Pre-Save", hu: "Előrendelés" },
     title: "My Burning Devotion",
@@ -25,7 +28,8 @@ const SLIDES = [
   },
   {
     kind: "promo",
-    image: coverFallIntoYou,
+    image: fallIntoYouCanvas,
+    mobileImage: fallIntoYouCanvasMobile,
     href: "https://open.spotify.com/album/539fHNOQNfCHWLW2mWoijM",
     badge: { en: "Out Now", hu: "Már elérhető" },
     title: "Fall Into You",
@@ -113,12 +117,14 @@ export default function Hero() {
   const scrambledName = useScramble("Richard Körmendi", ready, 1600);
   const { displayed: typedSubtitle, done: subtitleDone } = useTypewriter(tx.subtitle, 1350, 46);
 
-  // A "canvas" — saját fotó / My Burning Devotion / Fall Into You, 3 mp-enként váltva
+  // A "canvas" — saját fotó / My Burning Devotion / Fall Into You, 3 mp-enként váltva.
+  // A slideIndex a függőségi lista tagja, így egy kézi pötty-váltás mindig újraindítja
+  // a 3 mp-es órát ahelyett, hogy egy már ütemezett lépés rögtön felülírná a kattintást.
   const [slideIndex, setSlideIndex] = useState(0);
   useEffect(() => {
     const id = setInterval(() => setSlideIndex(i => (i + 1) % SLIDES.length), SLIDE_INTERVAL_MS);
     return () => clearInterval(id);
-  }, []);
+  }, [slideIndex]);
 
   const slide = SLIDES[slideIndex];
   const isSelf = slide.kind === "self";
@@ -168,22 +174,26 @@ export default function Hero() {
               />
             </motion.picture>
           ) : (
-            <motion.img
+            <motion.picture
               key={slide.title}
-              src={slide.image}
-              alt={slide.title}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               transition={{ duration: 0.8, ease: "easeInOut" }}
-              style={{
-                position: "absolute", inset: 0,
-                width: "100%", height: "100%",
-                objectFit: "contain",
-                objectPosition: "center center",
-                display: "block",
-              }}
-            />
+              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", display: "block" }}
+            >
+              <source media="(max-width: 768px)" srcSet={slide.mobileImage} />
+              <img
+                src={slide.image}
+                alt={slide.title}
+                style={{
+                  width: "100%", height: "100%",
+                  objectFit: "contain",
+                  objectPosition: "center center",
+                  display: "block",
+                }}
+              />
+            </motion.picture>
           )}
         </AnimatePresence>
       </motion.div>
@@ -256,11 +266,14 @@ export default function Hero() {
           )}
         </motion.p>
 
-        {/* Saját-dia badge-ei — mindig a DOM-ban, csak opacitással rejtve/mutatva */}
+        {/* Saját-dia badge-ei — mindig a DOM-ban, de max-height 0-ra összecsukva, amikor
+            nincs aktívan mutatva, hogy ne foglaljon láthatatlan helyet / ne fogja el a kattintást */}
         <div style={{
+          maxHeight: isSelf ? "320px" : "0px",
           opacity: isSelf ? 1 : 0,
+          overflow: "hidden",
           pointerEvents: isSelf ? "auto" : "none",
-          transition: "opacity 0.4s ease",
+          transition: "opacity 0.4s ease, max-height 0.4s ease",
           display: "flex", flexDirection: "column", alignItems: "flex-start",
         }}>
           {/* OUT NOW badge */}
@@ -359,12 +372,14 @@ export default function Hero() {
           </motion.a>
         </div>
 
-        {/* Promó-dia badge-e — mindig a DOM-ban, csak opacitással rejtve/mutatva */}
+        {/* Promó-dia badge-e — mindig a DOM-ban, de max-height 0-ra összecsukva, amikor
+            nincs aktívan mutatva, hogy ne foglaljon láthatatlan helyet / ne fogja el a kattintást */}
         <div style={{
-          position: isSelf ? "absolute" : "relative",
+          maxHeight: isSelf ? "0px" : "320px",
           opacity: isSelf ? 0 : 1,
+          overflow: "hidden",
           pointerEvents: isSelf ? "none" : "auto",
-          transition: "opacity 0.4s ease",
+          transition: "opacity 0.4s ease, max-height 0.4s ease",
         }}>
           <AnimatePresence mode="wait">
             <motion.a
@@ -427,20 +442,25 @@ export default function Hero() {
           }
         `}</style>
 
-        {/* Slide indikátor pöttyök */}
-        <div style={{ display: "flex", gap: "0.4rem", marginTop: "1.25rem" }}>
+        {/* Slide indikátor pöttyök — nagyobb, könnyen koppintható terület mobilon */}
+        <div style={{ display: "flex", gap: "0.2rem", marginTop: "1.25rem", position: "relative", zIndex: 3 }}>
           {SLIDES.map((_, i) => (
             <button
               key={i}
               onClick={() => setSlideIndex(i)}
               aria-label={`Slide ${i + 1}`}
               style={{
-                width: 6, height: 6, borderRadius: "50%", padding: 0,
-                border: "none", cursor: "pointer",
+                width: 32, height: 32, padding: 0,
+                border: "none", background: "transparent", cursor: "pointer",
+                display: "flex", alignItems: "center", justifyContent: "center",
+              }}
+            >
+              <span style={{
+                width: 6, height: 6, borderRadius: "50%",
                 background: i === slideIndex ? ACCENT : "rgba(255,255,255,0.25)",
                 transition: "background 0.3s",
-              }}
-            />
+              }} />
+            </button>
           ))}
         </div>
 
