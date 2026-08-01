@@ -10,6 +10,7 @@ import Photos from "../components/Photos";
 import Contact from "../components/Contact";
 import Footer from "../components/Footer";
 import StickyPlayer from "../components/StickyPlayer";
+import PreSavePopup from "../components/PreSavePopup";
 
 export default function Home() {
   return (
@@ -26,6 +27,7 @@ export default function Home() {
       <Contact />
       <Footer />
       <StickyPlayer />
+      <PreSavePopup />
     </>
   );
 }

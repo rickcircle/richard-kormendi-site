@@ -271,14 +271,31 @@ export default function Epk() {
               {hu ? "Streaming platformok" : "Listen"}
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
-              {streamingLinks.map(link => (
-                <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer"
-                  style={{ padding: "0.75rem 1.5rem", border: `1px solid ${BORDER}`, borderRadius: "8px", fontSize: "0.9rem", color: TEXT, textDecoration: "none", letterSpacing: "0.03em", background: "rgba(255,255,255,0.03)", transition: "all 0.2s" }}
-                  onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = "#fff"; }}
-                  onMouseOut={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.borderColor = BORDER; e.currentTarget.style.color = TEXT; }}>
-                  {link.name}
-                </a>
-              ))}
+              {streamingLinks.map(link => {
+                const primary = link.name === "Spotify";
+                return (
+                  <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer"
+                    style={{
+                      padding: "0.75rem 1.5rem",
+                      border: `1px solid ${primary ? ACCENT : BORDER}`,
+                      borderRadius: "8px", fontSize: "0.9rem",
+                      color: primary ? "#fff" : TEXT,
+                      fontWeight: primary ? 700 : 400,
+                      textDecoration: "none", letterSpacing: "0.03em",
+                      background: primary ? ACCENT : "rgba(255,255,255,0.03)",
+                      boxShadow: primary ? "0 0 24px rgba(194,59,59,0.3)" : "none",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = "#fff"; }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.background = primary ? ACCENT : "rgba(255,255,255,0.03)";
+                      e.currentTarget.style.borderColor = primary ? ACCENT : BORDER;
+                      e.currentTarget.style.color = primary ? "#fff" : TEXT;
+                    }}>
+                    {link.name}
+                  </a>
+                );
+              })}
             </div>
           </motion.div>
         </div>

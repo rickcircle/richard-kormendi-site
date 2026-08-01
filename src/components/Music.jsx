@@ -217,22 +217,33 @@ export default function Music() {
               {lang === "hu" ? "Hallgass mindenhol" : "Listen everywhere"}
             </p>
             <div className="streaming-grid">
-              {streamingLinks.map(link => (
-                <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="streaming-link"
-                  onClick={() => track("click", { label: `stream: ${link.label}` })}
-                  style={{
-                    display: "flex", alignItems: "center", gap: "0.6rem",
-                    padding: "0.7rem 1.1rem", border: "1px solid rgba(255,255,255,0.12)",
-                    borderRadius: "8px", textDecoration: "none", color: "#f5f1ea",
-                    fontSize: "0.85rem", fontWeight: 500, letterSpacing: "0.02em",
-                    background: "rgba(255,255,255,0.03)", transition: "all 0.2s",
-                  }}
-                  onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = ACCENT; }}
-                  onMouseOut={e => { e.currentTarget.style.background = "rgba(255,255,255,0.03)"; e.currentTarget.style.color = "#f5f1ea"; e.currentTarget.style.borderColor = "rgba(255,255,255,0.12)"; }}>
-                  <PlatformIcon name={link.icon} />
-                  {link.label}
-                </a>
-              ))}
+              {streamingLinks.map(link => {
+                const primary = link.label === "Spotify";
+                return (
+                  <a key={link.label} href={link.href} target="_blank" rel="noreferrer" className="streaming-link"
+                    onClick={() => track("click", { label: `stream: ${link.label}` })}
+                    style={{
+                      display: "flex", alignItems: "center", gap: "0.6rem",
+                      padding: "0.7rem 1.1rem",
+                      border: `1px solid ${primary ? ACCENT : "rgba(255,255,255,0.12)"}`,
+                      borderRadius: "8px", textDecoration: "none",
+                      color: primary ? "#fff" : "#f5f1ea",
+                      fontSize: "0.85rem", fontWeight: primary ? 700 : 500, letterSpacing: "0.02em",
+                      background: primary ? ACCENT : "rgba(255,255,255,0.03)",
+                      boxShadow: primary ? "0 0 24px rgba(194,59,59,0.3)" : "none",
+                      transition: "all 0.2s",
+                    }}
+                    onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.color = "#fff"; e.currentTarget.style.borderColor = ACCENT; }}
+                    onMouseOut={e => {
+                      e.currentTarget.style.background = primary ? ACCENT : "rgba(255,255,255,0.03)";
+                      e.currentTarget.style.color = primary ? "#fff" : "#f5f1ea";
+                      e.currentTarget.style.borderColor = primary ? ACCENT : "rgba(255,255,255,0.12)";
+                    }}>
+                    <PlatformIcon name={link.icon} />
+                    {link.label}
+                  </a>
+                );
+              })}
             </div>
             <style>{`
               .streaming-grid { display: flex; flex-wrap: wrap; gap: 0.6rem; }
