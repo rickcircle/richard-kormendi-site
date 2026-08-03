@@ -5,7 +5,7 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import { track } from "../utils/track";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
 
 // Mailchimp feliratkozás a Vercel serverless proxyn keresztül (/api/subscribe.js)
 // Env vars kellenek a Vercel dashboardon: MAILCHIMP_API_KEY + MAILCHIMP_LIST_ID
@@ -82,7 +82,7 @@ export default function Newsletter() {
                     opacity: status === "loading" ? 0.7 : 1,
                     fontFamily: "inherit",
                     whiteSpace: "nowrap",
-                    boxShadow: "0 0 20px rgba(194, 59, 59,0.3)",
+                    boxShadow: "0 0 20px rgba(209, 107, 99,0.3)",
                   }}>
                   {status === "loading" ? "..." : tx.cta}
                 </button>

@@ -2,6 +2,8 @@ import Navbar from "../components/Navbar";
 import Hero from "../components/Hero";
 import About from "../components/About";
 import Music from "../components/Music";
+import Releases from "../components/Releases";
+import Press from "../components/Press";
 import Shows from "../components/Shows";
 import Newsletter from "../components/Newsletter";
 import Photos from "../components/Photos";
@@ -17,6 +19,8 @@ export default function Home() {
       <Hero />
       <About />
       <Music />
+      <Releases />
+      <Press />
       <Shows />
       <Newsletter />
       <Photos />

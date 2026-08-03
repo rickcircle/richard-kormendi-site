@@ -5,10 +5,10 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import { track } from "../utils/track";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
 const SPOTIFY_GREEN = "#1DB954";
 const SPOTIFY_URL = "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp";
-const SECTION_IDS = ["about", "music", "shows", "photos", "contact"];
+const SECTION_IDS = ["about", "music", "releases", "press", "shows", "photos", "contact"];
 
 export default function Navbar() {
   const { lang, setLang } = useLang();
@@ -25,8 +25,8 @@ export default function Navbar() {
   const navLinks = [
     { id: "about",       label: tx.about,    href: href("#about") },
     { id: "music",       label: tx.music,    href: href("#music") },
-    { id: "releases",    label: tx.releases, href: "/discography" },
-    { id: "press",       label: tx.press,    href: "/press" },
+    { id: "releases",    label: tx.releases, href: href("#releases") },
+    { id: "press",       label: tx.press,    href: href("#press") },
     { id: "shows",       label: tx.shows,    href: href("#shows") },
     { id: "photos",      label: tx.photos,   href: href("#photos") },
     { id: "contact",     label: tx.contact,  href: href("#contact") },
@@ -96,7 +96,7 @@ export default function Navbar() {
               style={{
                 ...navLinkStyle,
                 color: isActive ? ACCENT : "rgba(245,241,234,0.65)",
-                textShadow: isActive ? "0 0 12px rgba(194, 59, 59,0.4)" : "none",
+                textShadow: isActive ? "0 0 12px rgba(209, 107, 99,0.4)" : "none",
               }}
               onMouseOver={e => e.currentTarget.style.color = ACCENT}
               onMouseOut={e => e.currentTarget.style.color = isActive ? ACCENT : "rgba(245,241,234,0.65)"}>

@@ -10,7 +10,7 @@ import fallIntoYouCanvas from "../assets/images/fall-into-you-canvas.png";
 import fallIntoYouCanvasMobile from "../assets/images/fall-into-you-canvas-mobil.png";
 import { track } from "../utils/track";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
 const SCRAMBLE_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 const SLIDE_INTERVAL_MS = 3000;
 
@@ -324,8 +324,8 @@ export default function Hero() {
               gap: "0.5rem",
               width: "fit-content",
               padding: "0.35rem 0.9rem",
-              background: `rgba(194, 59, 59, 0.12)`,
-              border: `1px solid rgba(194, 59, 59, 0.35)`,
+              background: `rgba(209, 107, 99, 0.12)`,
+              border: `1px solid rgba(209, 107, 99, 0.35)`,
               borderRadius: "999px",
               color: ACCENT,
               fontSize: "0.7rem",
@@ -396,7 +396,7 @@ export default function Hero() {
               letterSpacing: "0.08em",
               textTransform: "uppercase",
               textDecoration: "none",
-              boxShadow: "0 0 30px rgba(194, 59, 59,0.35)",
+              boxShadow: "0 0 30px rgba(209, 107, 99,0.35)",
             }}
           >
             <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
@@ -436,8 +436,8 @@ export default function Hero() {
               <span style={{
                 display: "inline-flex", alignItems: "center", gap: "0.5rem",
                 padding: "0.35rem 0.9rem",
-                background: "rgba(194, 59, 59, 0.12)",
-                border: "1px solid rgba(194, 59, 59, 0.35)",
+                background: "rgba(209, 107, 99, 0.12)",
+                border: "1px solid rgba(209, 107, 99, 0.35)",
                 borderRadius: "999px",
                 color: ACCENT,
                 fontSize: "0.7rem",
@@ -460,7 +460,7 @@ export default function Hero() {
                 fontSize: "0.9rem",
                 fontWeight: 600,
                 letterSpacing: "0.02em",
-                boxShadow: "0 0 30px rgba(194, 59, 59,0.35)",
+                boxShadow: "0 0 30px rgba(209, 107, 99,0.35)",
               }}>
                 {promoSlide.title} →
               </span>
@@ -471,8 +471,8 @@ export default function Hero() {
         <style>{`
           @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
           @keyframes pulse-dot {
-            0%,100%{ box-shadow: 0 0 0 0 rgba(194, 59, 59,0.5); }
-            50%{ box-shadow: 0 0 0 5px rgba(194, 59, 59,0); }
+            0%,100%{ box-shadow: 0 0 0 0 rgba(209, 107, 99,0.5); }
+            50%{ box-shadow: 0 0 0 5px rgba(209, 107, 99,0); }
           }
         `}</style>
 
@@ -519,7 +519,7 @@ export default function Hero() {
           <motion.div
             animate={{ y: [0, 8, 0] }}
             transition={{ repeat: Infinity, duration: 1.8, ease: "easeInOut" }}
-            style={{ width: "1px", height: "32px", background: `rgba(194, 59, 59,0.45)` }}
+            style={{ width: "1px", height: "32px", background: `rgba(209, 107, 99,0.45)` }}
           />
         </motion.div>
       </motion.div>

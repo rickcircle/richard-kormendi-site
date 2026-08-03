@@ -16,7 +16,10 @@ import coverColdUrbanSighs  from "../assets/images/cover-cold-urban-sighs.jpg";
 import coverLightInTheDark  from "../assets/images/cover-light-in-the-dark.jpg";
 import coverMyRemedy        from "../assets/images/cover-my-remedy.jpg";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
+// Erősebb, telítettebb piros — kizárólag a kiemelt (legfontosabb) elemekhez, hogy
+// tényleg elváljon a mindenhol használt lágyabb alap-pirostól.
+const ACCENT_STRONG = "#e8342b";
 
 const RELEASES = [
   {
@@ -36,37 +39,60 @@ const RELEASES = [
   { title: "My Remedy",          year: "2026", cover: coverMyRemedy,        spotifyId: "3ezfX2qHayGF374BPqJ99j" },
 ];
 
+// Az első 2 kiadás (legújabb + soron következő) kap kiemelt, nagyobb kártyát.
+const FEATURED_COUNT = 2;
+
 export default function Releases() {
   const { lang } = useLang();
   const label   = lang === "hu" ? "Diszkográfia" : "Discography";
   const heading = lang === "hu" ? "Összes kiadás." : "All releases.";
+  const featured = RELEASES.slice(0, FEATURED_COUNT);
+  const rest = RELEASES.slice(FEATURED_COUNT);
 
   return (
     <section id="releases" style={{ background: "#1f1113", padding: "8rem 2rem" }}>
       <div style={{ maxWidth: "980px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
             {label}
           </p>
-          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "3rem", color: "#fff" }}>
+          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "0.85rem", color: "#fff" }}>
             {heading}
           </h2>
+          <p style={{ fontSize: "0.9rem", color: "rgba(245,241,234,0.45)", marginBottom: "3rem" }}>
+            💿 {RELEASES.length} {lang === "hu" ? "kiadás — és egyre több" : "releases — and counting"}
+          </p>
         </motion.div>
 
+        {/* Kiemelt kiadások — nagyobb kártyák */}
+        <div className="releases-featured-grid">
+          {featured.map((release, i) => (
+            <FeaturedReleaseCard key={release.spotifyId || release.title} release={release} delay={i * 0.08} lang={lang} />
+          ))}
+        </div>
+
+        {/* Korábbi kiadások — kompakt rács */}
         <div className="releases-grid">
-          {RELEASES.map((release, i) => (
+          {rest.map((release, i) => (
             <ReleaseCard key={release.spotifyId || release.title} release={release} delay={i * 0.06} lang={lang} />
           ))}
         </div>
       </div>
 
       <style>{`
+        .releases-featured-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1.5rem;
+          margin-bottom: 2.5rem;
+        }
         .releases-grid {
           display: grid;
           grid-template-columns: repeat(4, 1fr);
           gap: 1.25rem;
         }
         @media (max-width: 700px) {
+          .releases-featured-grid { grid-template-columns: 1fr; }
           .releases-grid { grid-template-columns: repeat(3, 1fr); }
           .releases-grid > *:last-child:nth-child(3n+1) {
             grid-column: 1 / -1;
@@ -84,6 +110,64 @@ export default function Releases() {
         }
       `}</style>
     </section>
+  );
+}
+
+function FeaturedReleaseCard({ release, delay, lang }) {
+  const [hovered, setHovered] = useState(false);
+  const href = release.href || `https://open.spotify.com/album/${release.spotifyId}`;
+
+  return (
+    <motion.a
+      href={href}
+      target="_blank" rel="noreferrer"
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.05 }}
+      transition={{ duration: 0.5, delay, ease: "easeOut" }}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      onClick={() => track("click", { label: `release_featured: ${release.title}` })}
+      style={{
+        display: "flex", alignItems: "center", gap: "1.25rem",
+        padding: "1.25rem",
+        border: `1px solid ${ACCENT_STRONG}`,
+        borderRadius: "12px",
+        background: "linear-gradient(135deg, rgba(232, 52, 43, 0.14), rgba(255,255,255,0.03))",
+        boxShadow: "0 0 40px rgba(232, 52, 43, 0.22)",
+        textDecoration: "none",
+      }}
+    >
+      <div style={{ position: "relative", flexShrink: 0, width: "clamp(100px, 24vw, 150px)", aspectRatio: "1 / 1", overflow: "hidden", borderRadius: "8px" }}>
+        <img
+          src={release.cover}
+          alt={release.title}
+          style={{
+            width: "100%", height: "100%", objectFit: "cover", display: "block",
+            transition: "transform 0.4s ease",
+            transform: hovered ? "scale(1.05)" : "scale(1)",
+          }}
+        />
+      </div>
+      <div>
+        <span style={{
+          display: "inline-block", width: "fit-content",
+          background: ACCENT_STRONG, color: "#fff",
+          fontSize: "0.6rem", letterSpacing: "0.1em", whiteSpace: "nowrap",
+          textTransform: "uppercase", fontWeight: 700,
+          padding: "3px 8px", borderRadius: "999px",
+          marginBottom: "0.6rem",
+        }}>
+          {release.comingSoon ? (lang === "hu" ? "Hamarosan" : "Coming Soon") : "New"}
+        </span>
+        <p style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "#fff", lineHeight: 1.25 }}>
+          {release.title}
+        </p>
+        <p style={{ margin: "0.4rem 0 0", fontSize: "0.85rem", color: "rgba(255,255,255,0.55)" }}>
+          {release.comingSoon ? (lang === "hu" ? "Előrendelés most →" : "Pre-save now →") : (lang === "hu" ? "Hallgatás →" : "Listen now →")}
+        </p>
+      </div>
+    </motion.a>
   );
 }
 

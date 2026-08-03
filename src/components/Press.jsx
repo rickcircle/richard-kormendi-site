@@ -3,7 +3,10 @@ import { fadeUp, staggerContainer, staggerItem } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
+// Erősebb, telítettebb piros — kizárólag a kiemelt (legfontosabb) elemekhez, hogy
+// tényleg elváljon a mindenhol használt lágyabb alap-pirostól.
+const ACCENT_STRONG = "#e8342b";
 
 // Egységes sajtó-kártya formátum: { type: {en,hu}, outlet, song, quote: {en,hu}, role: {en,hu}|null, href }
 const pressItems = [
@@ -86,86 +89,77 @@ const pressItems = [
   },
 ];
 
+// Az első 2 elem (mindig a legfrissebb) kap kiemelt, nagyobb kártyát — a többi a kisebb rácsban.
+const FEATURED_COUNT = 2;
+
 export default function Press() {
   const { lang } = useLang();
   const tx = t[lang].press;
+  const featured = pressItems.slice(0, FEATURED_COUNT);
+  const rest = pressItems.slice(FEATURED_COUNT);
 
   return (
     <section id="press" style={{ padding: "8rem 2rem", background: "#0b0a08" }}>
       <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
             {tx.label}
           </p>
-          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, color: "#f5f1ea" }}>
+          <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "0.85rem", color: "#f5f1ea" }}>
             {tx.heading}
           </h2>
+          <p style={{ fontSize: "0.9rem", color: "rgba(245,241,234,0.45)" }}>
+            🎙️ {pressItems.length} {lang === "hu" ? "sajtómegjelenés — és egyre több" : "press features — and counting"}
+          </p>
         </motion.div>
 
+        {/* Kiemelt megjelenések — nagyobb, feltűnőbb kártyák */}
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
-          className="press-grid">
-          {pressItems.map((item, i) => {
+          className="press-featured-grid" style={{ marginBottom: "1.25rem" }}>
+          {featured.map((item, i) => {
             const Tag = item.href ? motion.a : motion.div;
             return (
               <Tag key={i} variants={staggerItem}
                 {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer" } : {})}
-                className="press-card"
                 style={{
-                  display: "flex", flexDirection: "column", gap: "0.85rem",
-                  padding: "1.75rem",
-                  border: "1px solid rgba(255,255,255,0.08)",
-                  borderRadius: "10px",
-                  background: "rgba(255,255,255,0.03)",
+                  position: "relative",
+                  display: "flex", flexDirection: "column", gap: "1rem",
+                  padding: "2.25rem 2.25rem 2.25rem 2.75rem",
+                  border: "1px solid rgba(232, 52, 43, 0.4)",
+                  borderLeft: `5px solid ${ACCENT_STRONG}`,
+                  borderRadius: "0 12px 12px 0",
+                  background: "linear-gradient(135deg, rgba(232, 52, 43, 0.12), rgba(255,255,255,0.03))",
+                  boxShadow: "0 0 44px rgba(232, 52, 43, 0.22)",
                   textDecoration: "none",
-                  transition: "border-color 0.2s, background 0.2s",
+                  transition: "transform 0.2s ease, box-shadow 0.2s ease",
                 }}
-                onMouseOver={e => { e.currentTarget.style.borderColor = "rgba(194, 59, 59,0.4)"; e.currentTarget.style.background = "rgba(194, 59, 59,0.05)"; }}
-                onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+                onMouseOver={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 44px rgba(232, 52, 43, 0.32)"; }}
+                onMouseOut={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 0 44px rgba(232, 52, 43, 0.22)"; }}
               >
+                <span style={{
+                  position: "absolute", top: "0.9rem", left: "1.15rem",
+                  fontSize: "3.5rem", fontFamily: "Georgia, serif", lineHeight: 1,
+                  color: "rgba(232, 52, 43, 0.35)", userSelect: "none",
+                }}>
+                  “
+                </span>
                 <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                  <span style={{
-                    display: "inline-block", width: "fit-content",
-                    fontSize: "0.65rem", letterSpacing: "0.08em", color: ACCENT,
-                    textTransform: "uppercase", fontWeight: 700,
-                    border: "1px solid rgba(194, 59, 59,0.35)", borderRadius: "999px",
-                    padding: "3px 10px",
-                  }}>
-                    {item.type[lang]}
-                  </span>
-                  {item.song && (
-                    <span style={{
-                      display: "inline-block", width: "fit-content",
-                      fontSize: "0.65rem", letterSpacing: "0.08em", color: "#fff",
-                      textTransform: "uppercase", fontWeight: 700,
-                      background: ACCENT, borderRadius: "999px",
-                      padding: "3px 10px",
-                    }}>
-                      🎵 {item.song}
-                    </span>
-                  )}
+                  <TypeBadge strong>{item.type[lang]}</TypeBadge>
+                  {item.song && <SongBadge strong>🎵 {item.song}</SongBadge>}
                 </div>
 
-                <p style={{ margin: 0, fontWeight: 600, fontSize: "1.1rem", color: "#f5f1ea" }}>
-                  {item.outlet}
-                </p>
-
-                <p style={{ margin: 0, fontSize: "0.9rem", color: "rgba(245,241,234,0.65)", lineHeight: 1.6, fontStyle: "italic" }}>
+                <p style={{ margin: 0, fontSize: "1.2rem", lineHeight: 1.65, color: "#f5f1ea", fontStyle: "italic", position: "relative" }}>
                   “{item.quote[lang]}”
                 </p>
 
-                {item.role && (
-                  <p style={{ margin: 0, fontSize: "0.78rem", color: "rgba(245,241,234,0.4)" }}>
-                    — {item.role[lang]}
-                  </p>
-                )}
+                <p style={{ margin: 0, fontSize: "0.85rem", color: "rgba(245,241,234,0.5)" }}>
+                  — <span style={{ color: "#f5f1ea", fontWeight: 600 }}>{item.outlet}</span>
+                  {item.role && <span>, {item.role[lang]}</span>}
+                </p>
 
                 {item.href && (
-                  <span style={{
-                    marginTop: "auto", paddingTop: "0.5rem",
-                    fontSize: "0.78rem", letterSpacing: "0.06em",
-                    color: "rgba(245,241,234,0.6)",
-                  }}>
+                  <span style={{ fontSize: "0.8rem", letterSpacing: "0.06em", color: ACCENT_STRONG, fontWeight: 600 }}>
                     {lang === "hu" ? "Teljes cikk →" : "Read full article →"}
                   </span>
                 )}
@@ -173,14 +167,108 @@ export default function Press() {
             );
           })}
         </motion.div>
+
+        {/* További megjelenések — kompakt rács */}
+        {rest.length > 0 && (
+          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
+            className="press-grid">
+            {rest.map((item, i) => {
+              const Tag = item.href ? motion.a : motion.div;
+              return (
+                <Tag key={i} variants={staggerItem}
+                  {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer" } : {})}
+                  className="press-card"
+                  style={{
+                    display: "flex", flexDirection: "column", gap: "0.85rem",
+                    padding: "1.75rem",
+                    border: "1px solid rgba(255,255,255,0.08)",
+                    borderRadius: "10px",
+                    background: "rgba(255,255,255,0.03)",
+                    textDecoration: "none",
+                    transition: "border-color 0.2s, background 0.2s",
+                  }}
+                  onMouseOver={e => { e.currentTarget.style.borderColor = "rgba(209, 107, 99,0.4)"; e.currentTarget.style.background = "rgba(209, 107, 99,0.05)"; }}
+                  onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+                >
+                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                    <TypeBadge outline>{item.type[lang]}</TypeBadge>
+                    {item.song && <SongBadge>🎵 {item.song}</SongBadge>}
+                  </div>
+
+                  <p style={{ margin: 0, fontWeight: 600, fontSize: "1.1rem", color: "#f5f1ea" }}>
+                    {item.outlet}
+                  </p>
+
+                  <p style={{ margin: 0, fontSize: "0.9rem", color: "rgba(245,241,234,0.65)", lineHeight: 1.6, fontStyle: "italic" }}>
+                    “{item.quote[lang]}”
+                  </p>
+
+                  {item.role && (
+                    <p style={{ margin: 0, fontSize: "0.78rem", color: "rgba(245,241,234,0.4)" }}>
+                      — {item.role[lang]}
+                    </p>
+                  )}
+
+                  {item.href && (
+                    <span style={{
+                      marginTop: "auto", paddingTop: "0.5rem",
+                      fontSize: "0.78rem", letterSpacing: "0.06em",
+                      color: "rgba(245,241,234,0.6)",
+                    }}>
+                      {lang === "hu" ? "Teljes cikk →" : "Read full article →"}
+                    </span>
+                  )}
+                </Tag>
+              );
+            })}
+          </motion.div>
+        )}
       </div>
       <style>{`
+        .press-featured-grid {
+          display: grid;
+          grid-template-columns: repeat(2, 1fr);
+          gap: 1.25rem;
+        }
         .press-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+          grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
           gap: 1.25rem;
+        }
+        @media (max-width: 760px) {
+          .press-featured-grid { grid-template-columns: 1fr; }
         }
       `}</style>
     </section>
+  );
+}
+
+function TypeBadge({ children, strong }) {
+  const color = strong ? ACCENT_STRONG : ACCENT;
+  return (
+    <span style={{
+      display: "inline-block", width: "fit-content",
+      fontSize: "0.65rem", letterSpacing: "0.08em", color,
+      textTransform: "uppercase", fontWeight: 700,
+      border: `1px solid ${strong ? "rgba(232, 52, 43, 0.5)" : "rgba(209, 107, 99,0.35)"}`,
+      borderRadius: "999px",
+      padding: "3px 10px",
+    }}>
+      {children}
+    </span>
+  );
+}
+
+function SongBadge({ children, strong }) {
+  return (
+    <span style={{
+      display: "inline-block", width: "fit-content",
+      fontSize: "0.65rem", letterSpacing: "0.08em", color: "#fff",
+      textTransform: "uppercase", fontWeight: 700,
+      background: strong ? ACCENT_STRONG : ACCENT, borderRadius: "999px",
+      padding: "3px 10px",
+    }}>
+      {children}
+    </span>
   );
 }

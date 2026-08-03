@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
 const SPOTIFY_URL = "https://open.spotify.com/album/539fHNOQNfCHWLW2mWoijM";
 
 export default function StickyPlayer() {
@@ -50,9 +50,9 @@ export default function StickyPlayer() {
             padding: isMobile ? "0.6rem 0.75rem 0.6rem 0.9rem" : "0.7rem 1rem 0.7rem 1.1rem",
             background: "rgba(30, 12, 13, 0.96)",
             backdropFilter: "blur(16px)",
-            border: `1px solid rgba(194, 59, 59, 0.55)`,
+            border: `1px solid rgba(209, 107, 99, 0.55)`,
             borderRadius: "999px",
-            boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 28px rgba(194, 59, 59, 0.35)",
+            boxShadow: "0 8px 32px rgba(0,0,0,0.5), 0 0 28px rgba(209, 107, 99, 0.35)",
             whiteSpace: "nowrap",
             maxWidth: "calc(100vw - 2rem)",
           }}
@@ -119,8 +119,8 @@ export default function StickyPlayer() {
       )}
       <style>{`
         @keyframes pulse-sticky {
-          0%,100%{ box-shadow: 0 0 0 0 rgba(194, 59, 59,0.5); }
-          50%{ box-shadow: 0 0 0 6px rgba(194, 59, 59,0); }
+          0%,100%{ box-shadow: 0 0 0 0 rgba(209, 107, 99,0.5); }
+          50%{ box-shadow: 0 0 0 6px rgba(209, 107, 99,0); }
         }
         @media (max-width: 520px) { .sticky-artist-name { display: none; } }
       `}</style>

@@ -17,7 +17,7 @@ export default function About() {
 
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           style={{ marginBottom: "3rem" }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#c23b3b", textTransform: "uppercase", marginBottom: "1.25rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: "#d16b63", textTransform: "uppercase", marginBottom: "1.25rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, whiteSpace: "pre-line", margin: 0, color: "#f5f1ea" }}>
@@ -82,7 +82,7 @@ export default function About() {
               target="_blank" rel="noreferrer"
               onClick={() => track("click", { label: "about_spotify_link" })}
               style={{ display: "inline-block", marginTop: "1.25rem", fontSize: "0.8rem", letterSpacing: "0.08em", color: "#f5f1ea", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.25)", paddingBottom: "2px", transition: "border-color 0.2s, color 0.2s" }}
-              onMouseOver={e => { e.currentTarget.style.borderColor = "#c23b3b"; e.currentTarget.style.color = "#c23b3b"; }}
+              onMouseOver={e => { e.currentTarget.style.borderColor = "#d16b63"; e.currentTarget.style.color = "#d16b63"; }}
               onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.25)"; e.currentTarget.style.color = "#f5f1ea"; }}
             >
               Listen on Spotify →

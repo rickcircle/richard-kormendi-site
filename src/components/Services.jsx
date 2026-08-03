@@ -4,7 +4,7 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import MagneticLink from "./MagneticLink";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
 
 export default function Services() {
   const { lang } = useLang();
@@ -14,7 +14,7 @@ export default function Services() {
     <section id="digital" style={{ padding: "8rem 2rem", background: "#0b0a08" }}>
       <div style={{ maxWidth: "900px", margin: "0 auto" }}>
         <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+          <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
             {tx.label}
           </p>
           <h2 style={{ fontSize: "clamp(1.8rem, 4vw, 2.8rem)", fontWeight: 600, lineHeight: 1.2, marginBottom: "1rem", color: "#f5f1ea" }}>
@@ -37,7 +37,7 @@ export default function Services() {
                 borderRadius: "2px",
                 background: pkg.highlight ? "#1c1814" : "rgba(255,255,255,0.03)",
                 color: "#f5f1ea",
-                boxShadow: pkg.highlight ? "0 0 30px rgba(194, 59, 59,0.15)" : "none",
+                boxShadow: pkg.highlight ? "0 0 30px rgba(209, 107, 99,0.15)" : "none",
                 display: "flex", flexDirection: "column", gap: "1.25rem",
               }}>
               <div>

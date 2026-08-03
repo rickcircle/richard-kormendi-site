@@ -12,7 +12,7 @@ import photoBar       from "../assets/images/photo-bar-suit.jpg";
 import photoGuitarist from "../assets/images/photo-guitarist.jpg";
 import photoSession   from "../assets/images/photo-studio-portrait.jpg";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
 const BG_1 = "#0b0a08";
 const BG_2 = "#1f1113";
 const CARD_BG = "#2b171a";
@@ -135,7 +135,7 @@ export default function Epk() {
       {/* Hero */}
       <section style={{ background: BG_1, color: TEXT, padding: "10rem 2rem 6rem", textAlign: "center" }}>
         <motion.div variants={fadeUp} initial="hidden" animate="visible">
-          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
             {hu ? "Sajtóanyag" : "Electronic Press Kit"}
           </p>
           <h1 style={{ fontSize: "clamp(2.2rem, 6vw, 4rem)", fontWeight: 700, lineHeight: 1.1, marginBottom: "1rem", color: TEXT }}>
@@ -147,7 +147,7 @@ export default function Epk() {
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
             <button
               onClick={() => window.print()}
-              style={{ padding: "0.9rem 2rem", background: ACCENT, color: "#fff", border: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em", cursor: "pointer", boxShadow: "0 0 24px rgba(194, 59, 59,0.3)" }}>
+              style={{ padding: "0.9rem 2rem", background: ACCENT, color: "#fff", border: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em", cursor: "pointer", boxShadow: "0 0 24px rgba(209, 107, 99,0.3)" }}>
               {hu ? "Letöltés PDF-ként" : "Download as PDF"}
             </button>
             <a href="mailto:richard.kormendi@gmail.com"
@@ -162,7 +162,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "3rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "3rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
               {hu ? "Életrajz" : "Biography"}
             </p>
 
@@ -195,7 +195,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_1 }}>
         <div style={{ maxWidth: "900px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "3rem" }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
               {hu ? "Sajtómegjelenések" : "Press"}
             </p>
           </motion.div>
@@ -210,7 +210,7 @@ export default function Epk() {
                     display: "inline-block", width: "fit-content",
                     fontSize: "0.65rem", letterSpacing: "0.08em", color: ACCENT,
                     textTransform: "uppercase", fontWeight: 700,
-                    border: "1px solid rgba(194, 59, 59,0.35)", borderRadius: "999px",
+                    border: "1px solid rgba(209, 107, 99,0.35)", borderRadius: "999px",
                     padding: "3px 10px",
                   }}>
                     {hu ? item.type.hu : item.type.en}
@@ -250,7 +250,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "960px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }} style={{ marginBottom: "3rem" }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
               {hu ? "Letölthető fotók" : "Press photos"}
             </p>
           </motion.div>
@@ -275,7 +275,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_1 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "2.5rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
               {hu ? "Streaming platformok" : "Listen"}
             </p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
@@ -291,7 +291,7 @@ export default function Epk() {
                       fontWeight: primary ? 700 : 400,
                       textDecoration: "none", letterSpacing: "0.03em",
                       background: primary ? ACCENT : "rgba(255,255,255,0.03)",
-                      boxShadow: primary ? "0 0 24px rgba(194,59,59,0.3)" : "none",
+                      boxShadow: primary ? "0 0 24px rgba(209, 107, 99,0.3)" : "none",
                       transition: "all 0.2s",
                     }}
                     onMouseOver={e => { e.currentTarget.style.background = ACCENT; e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = "#fff"; }}
@@ -313,7 +313,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_2 }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
               {hu ? "Technikai rider" : "Technical rider"}
             </p>
             <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.2rem)", fontWeight: 600, marginBottom: "2.5rem", color: TEXT }}>
@@ -342,7 +342,7 @@ export default function Epk() {
       <section style={{ padding: "8rem 2rem", background: BG_1, textAlign: "center" }}>
         <div style={{ maxWidth: "760px", margin: "0 auto" }}>
           <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}>
-            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(194, 59, 59,0.3)" }}>
+            <p style={{ fontSize: "0.8rem", letterSpacing: "0.15em", color: ACCENT, textTransform: "uppercase", marginBottom: "1.5rem", textShadow: "0 0 16px rgba(209, 107, 99,0.3)" }}>
               {hu ? "Kapcsolat" : "Contact"}
             </p>
             <h2 style={{ fontSize: "clamp(1.6rem, 3vw, 2.4rem)", fontWeight: 600, marginBottom: "2rem", color: TEXT }}>

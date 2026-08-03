@@ -4,7 +4,7 @@ import { useLang } from "../context/LanguageContext";
 import { track } from "../utils/track";
 import coverMyBurningDevotion from "../assets/images/cover-my-burning-devotion.jpg";
 
-const ACCENT = "#c23b3b";
+const ACCENT = "#d16b63";
 const SEEN_KEY = "rk_popup_mbd_seen";
 const SHOW_DELAY_MS = 4000;
 const MBD_URL = "https://distrokid.com/hyperfollow/richardkrmendi/my-burning-devotion";
@@ -54,9 +54,9 @@ export default function PreSavePopup() {
             onClick={e => e.stopPropagation()}
             style={{
               position: "relative", width: "min(360px, 100%)",
-              background: "#150b0c", border: "1px solid rgba(194,59,59,0.4)",
+              background: "#150b0c", border: "1px solid rgba(209, 107, 99,0.4)",
               borderRadius: "16px", overflow: "hidden",
-              boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(194,59,59,0.2)",
+              boxShadow: "0 20px 60px rgba(0,0,0,0.6), 0 0 40px rgba(209, 107, 99,0.2)",
             }}
           >
             <button
@@ -105,7 +105,7 @@ export default function PreSavePopup() {
                   padding: "0.85rem", background: ACCENT, color: "#fff",
                   borderRadius: "8px", textDecoration: "none", fontWeight: 600,
                   fontSize: "0.9rem", letterSpacing: "0.03em",
-                  boxShadow: "0 0 24px rgba(194,59,59,0.35)",
+                  boxShadow: "0 0 24px rgba(209, 107, 99,0.35)",
                 }}
               >
                 {lang === "hu" ? "Előrendelés most →" : "Pre-Save Now →"}
