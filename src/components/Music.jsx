@@ -6,7 +6,7 @@ import { t } from "../i18n/translations";
 import { track } from "../utils/track";
 
 const ACCENT = "#d16b63";
-const SPOTIFY_EMBED_URL = "https://open.spotify.com/embed/album/539fHNOQNfCHWLW2mWoijM?utm_source=generator&theme=0";
+const SPOTIFY_EMBED_URL = "https://open.spotify.com/embed/artist/5UW4cZ0M83TG2nJWYvkVkp?utm_source=generator&theme=0";
 
 const VIDEOS = [
   { id: "3SgUws3Gkuw", title: "You Become My Only", tag: "vocal" },
