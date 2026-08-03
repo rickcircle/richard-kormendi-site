@@ -21,6 +21,14 @@ const TEXT = "#f5f1ea";
 
 const pressItems = [
   {
+    outlet: "Indie Dream",
+    quote: "“The vocal moment at 2:42 feels like the push you need to realize there's still so much left to do in life.”",
+    quoteHu: "„A 2:42-es pillanat éneke olyan, mint a lökés, amire szükséged van, hogy ráébredj: még oly sok mindent kell tenned az életben.”",
+    type: { en: "Review", hu: "Kritika" },
+    song: "Still I Go",
+    url: "https://www.indiedream.com.mx/2026/08/richard-kormendi-still-i-go.html",
+  },
+  {
     outlet: "Kindline Magazine",
     quote: "“Delivers a cinematic dark-pop release that makes a powerful emotional statement. A hallmark of the track is Richard Körmendi's serious, conscious vocal delivery.”",
     quoteHu: "„Filmszerű dark-pop kiadás, amely erőteljes érzelmi állásfoglalást fogalmaz meg. A dal egyik védjegye Körmendi Richárd komoly, tudatos énekhangja.”",

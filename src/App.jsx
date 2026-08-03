@@ -6,6 +6,8 @@ import Epk from "./pages/Epk";
 import Audit from "./pages/Audit";
 import Proposal from "./pages/Proposal";
 import Analytics from "./pages/Analytics";
+import PressPage from "./pages/PressPage";
+import DiscographyPage from "./pages/DiscographyPage";
 import Cursor from "./components/Cursor";
 import { track } from "./utils/track";
 
@@ -26,6 +28,8 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/hire" element={<Hire />} />
         <Route path="/epk" element={<Epk />} />
+        <Route path="/press" element={<PressPage />} />
+        <Route path="/discography" element={<DiscographyPage />} />
         <Route path="/audit" element={<Audit />} />
         <Route path="/proposal/:id" element={<Proposal />} />
         <Route path="/analytics" element={<Analytics />} />

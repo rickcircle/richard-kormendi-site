@@ -250,6 +250,20 @@ export default function Music() {
               .streaming-link { flex: 1 1 150px; justify-content: center; }
               @media (max-width: 520px) { .streaming-link { flex: 1 1 calc(50% - 0.3rem); } }
             `}</style>
+
+            <a href="/discography"
+              onClick={() => track("click", { label: "music_view_discography" })}
+              style={{
+                display: "inline-block", marginTop: "1.5rem",
+                fontSize: "0.85rem", letterSpacing: "0.03em",
+                color: "rgba(245,241,234,0.6)", textDecoration: "none",
+                borderBottom: "1px solid rgba(255,255,255,0.2)", paddingBottom: "2px",
+                transition: "border-color 0.2s, color 0.2s",
+              }}
+              onMouseOver={e => { e.currentTarget.style.borderColor = ACCENT; e.currentTarget.style.color = ACCENT; }}
+              onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.2)"; e.currentTarget.style.color = "rgba(245,241,234,0.6)"; }}>
+              {lang === "hu" ? "Teljes diszkográfia →" : "View full discography →"}
+            </a>
           </div>
         </motion.div>
       </div>

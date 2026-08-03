@@ -8,7 +8,7 @@ import { track } from "../utils/track";
 const ACCENT = "#c23b3b";
 const SPOTIFY_GREEN = "#1DB954";
 const SPOTIFY_URL = "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp";
-const SECTION_IDS = ["about", "music", "releases", "press", "shows", "photos", "contact"];
+const SECTION_IDS = ["about", "music", "shows", "photos", "contact"];
 
 export default function Navbar() {
   const { lang, setLang } = useLang();
@@ -23,13 +23,13 @@ export default function Navbar() {
   const href = anchor => isHome ? anchor : `/${anchor}`;
 
   const navLinks = [
-    { id: "about",    label: tx.about,    href: href("#about") },
-    { id: "music",    label: tx.music,    href: href("#music") },
-    { id: "releases", label: tx.releases, href: href("#releases") },
-    { id: "press",    label: tx.press,    href: href("#press") },
-    { id: "shows",    label: tx.shows,    href: href("#shows") },
-    { id: "photos",   label: tx.photos,   href: href("#photos") },
-    { id: "contact",  label: tx.contact,  href: href("#contact") },
+    { id: "about",       label: tx.about,    href: href("#about") },
+    { id: "music",       label: tx.music,    href: href("#music") },
+    { id: "releases",    label: tx.releases, href: "/discography" },
+    { id: "press",       label: tx.press,    href: "/press" },
+    { id: "shows",       label: tx.shows,    href: href("#shows") },
+    { id: "photos",      label: tx.photos,   href: href("#photos") },
+    { id: "contact",     label: tx.contact,  href: href("#contact") },
   ];
 
   useEffect(() => {
