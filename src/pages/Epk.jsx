@@ -7,7 +7,7 @@ import Footer from "../components/Footer";
 // Ez az oldal NEM jelenik meg a navigációban — bookereknek / sajtónak szól
 // Direct URL: /epk
 
-import photoStudio    from "../assets/images/photo-neon.jpg";
+import photoStudio    from "../assets/images/photo-golden-hour.jpg";
 import photoBar       from "../assets/images/photo-bar-suit.jpg";
 import photoGuitarist from "../assets/images/photo-guitarist.jpg";
 import photoSession   from "../assets/images/photo-studio-portrait.jpg";
@@ -87,7 +87,7 @@ const streamingLinks = [
 ];
 
 const photos = [
-  { src: photoStudio,    name: "richard-kormendi-studio.jpg",    label: { en: "Studio portrait", hu: "Stúdióportré" } },
+  { src: photoStudio,    name: "richard-kormendi-portrait.jpg",  label: { en: "Portrait", hu: "Portré" } },
   { src: photoBar,       name: "richard-kormendi-bar.jpg",       label: { en: "Portrait, evening", hu: "Esti portré" } },
   { src: photoGuitarist, name: "richard-kormendi-guitarist.jpg", label: { en: "Performing", hu: "Előadás közben" } },
   { src: photoSession,   name: "richard-kormendi-session.jpg",   label: { en: "Recording session", hu: "Felvétel közben" } },
