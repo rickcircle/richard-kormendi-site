@@ -150,20 +150,57 @@ function getSummary(mobile, desktop, hu) {
   };
 }
 
-// Csak akkor generál üzenetet, ha VALÓBAN látható, ügyfélkört érintő probléma van
-// (telefon link, meta leírás stb. egyedül nem elég ok a hideg megkereséshez)
-function generateOutreach(mobileScore, desktopScore, checks = {}) {
-  const bigGap         = (desktopScore - mobileScore) > 30;
-  const noHttps        = checks.https === false;
+// ── Kritikus hiba detektálás ─────────────────────────────────────────────────
+// Csak ez a 4 dolog számít "kritikusnak" — ezek indokolják önmagukban a hideg
+// megkeresést. Minden más (meta leírás, schema, analytics stb.) csak
+// "észrevétel", nem generál riasztást vagy önálló pitchet.
+function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
+  const bigGap          = (desktopScore - mobileScore) > 30;
+  const noHttps         = checks.https === false;
   const mobileTrulySlow = mobileScore < 40;
-  const mobileBroken   = bigGap && mobileScore < 55;
+  const mobileBroken    = bigGap && mobileScore < 55;
 
-  if (noHttps)
-    return "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Ha érdekel, szívesen segítek rajta.";
-  if (mobileBroken)
-    return "Szia! Megnéztem a weboldalatokat — asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok látogatót eltérít, mielőtt még kapcsolatba lépnének. Ha érdekel, szívesen megmutatom, mi okozza és hogyan lehet megoldani.";
-  if (mobileTrulySlow)
-    return `Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon igen lassan tölt be — a Google mérése szerint ${mobileScore}/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe. Ma már az ügyfelek nagy része telefonon keres, és ha az oldal sokat várat, sokan inkább továbblépnek. Ha kíváncsi vagy rá, szívesen átbeszéljük.`;
+  if (noHttps) return {
+    type: "nohttps",
+    message: "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Ha érdekel, szívesen segítek rajta.",
+  };
+  if (mobileBroken) return {
+    type: "mobilebroken",
+    message: "Szia! Megnéztem a weboldalatokat — asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok látogatót eltérít, mielőtt még kapcsolatba lépnének. Ha érdekel, szívesen megmutatom, mi okozza és hogyan lehet megoldani.",
+  };
+  if (mobileTrulySlow) return {
+    type: "mobileslow",
+    message: `Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon igen lassan tölt be — a Google mérése szerint ${mobileScore}/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe. Ma már az ügyfelek nagy része telefonon keres, és ha az oldal sokat várat, sokan inkább továbblépnek. Ha kíváncsi vagy rá, szívesen átbeszéljük.`,
+  };
+  return null;
+}
+
+// ── Második kör: egyetlen, tényleg ütős AI-lehetőség ─────────────────────────
+// Csak akkor fut, ha NINCS kritikus hiba. Nem "hát végülis kellene egy
+// chatbot" jellegű gyenge javaslat — vagy egy sürgető, dátumhoz kötött ok
+// (AI Act), vagy egy konkrét, demózható fájdalompont (elveszett esti lead).
+// Ha egyik sem áll fenn, nincs javaslat — jobb a csend, mint egy erőltetett.
+function getOpportunity(checks = {}) {
+  const quality = checks.businessQuality || 0;
+
+  if (checks.hasChatbot === true) {
+    return {
+      icon: "⚖️",
+      title: "EU AI Act megfelelés — sürgős, dátumhoz kötött",
+      desc: `Már fut chatbot az oldalon${checks.chatbotName ? ` (${checks.chatbotName})` : ""} — 2026. augusztus 2-től ez EU AI Act átláthatósági kötelezettség alá esik (jelezni kell, hogy a látogató AI-val beszél, és dokumentálni kell a bevezetést). A cégek nagy része erről nem is tud.`,
+      pitch: "Szia! Látom, van chatbototok a weboldalon — ez remek. Viszont 2026. augusztus 2-től az EU AI Act miatt kötelező egyértelmű jelzést tenni, hogy a látogató AI-val beszélget, és dokumentálni a bevezetési folyamatot. A legtöbb cég erről még nem is hallott, pedig utólag bírságolható. Szívesen segítek ezt gyorsan, technikailag rendbe tenni.",
+    };
+  }
+
+  if (checks.hasChatbot === false && checks.hasBooking === false && quality >= 5 && (checks.hasMapsEmbed || checks.hasPhoneLink)) {
+    return {
+      icon: "💬",
+      title: "Esti/hétvégi érdeklődők valószínűleg elvesznek",
+      desc: `Fizikai helyszínt üzemeltetnek, aktív az online jelenlétük (cégminőség: ${quality}/8), de nincs sem chatbot, sem online foglalás. Az esti/hétvégi megkeresésekre valószínűleg csak másnap érkezik válasz — addigra sokan máshol foglalnak.`,
+      pitch: "Szia! Megnéztem a weboldalatokat, jónak tűnik. Egyvalamit vettem észre: ha valaki este vagy hétvégén ír nektek, gondolom csak másnap tudtok válaszolni — addigra az érdeklődők egy része már máshol foglal. Van egy megoldásom, ami azonnal, bármilyen nyelven válaszol a bejövő érdeklődésekre, ti csak jóváhagyjátok. Szívesen megmutatom élőben, 15 perc.",
+    };
+  }
+
   return null;
 }
 
@@ -420,7 +457,9 @@ export default function Audit() {
   const current = results?.[activeTab];
   const summary = results ? getSummary(results.mobile, results.desktop, hu) : null;
   const summaryBg = summary?.tone === "good" ? "#f0fdf6" : summary?.tone === "bad" ? "#fff5f5" : "#fffbf0";
-  const outreachMsg = results ? generateOutreach(results.mobile.score, results.desktop.score, results.checks) : null;
+  const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks) : null;
+  const opportunity = results && !critical ? getOpportunity(results.checks) : null;
+  const outreachMsg = critical?.message || null;
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
@@ -480,10 +519,29 @@ export default function Audit() {
               </button>
             </div>
             {status === "error" && (
-              <p style={{ fontSize: "0.85rem", color: "#e74c3c", marginTop: "1rem" }}>
-                {hu ? "Nem sikerült lekérni az adatokat. Ellenőrizd az URL-t és próbáld újra." : "Could not fetch data. Check the URL and try again."}
-                {errorDetail ? <span style={{ display: "block", fontSize: "0.75rem", color: "#aaa", marginTop: "0.25rem" }}>{errorDetail}</span> : null}
-              </p>
+              <div style={{ marginTop: "1.5rem", textAlign: "left", maxWidth: "480px", marginLeft: "auto", marginRight: "auto" }}>
+                <p style={{ fontSize: "0.85rem", color: "#e74c3c", fontWeight: 600 }}>
+                  {hu ? "Az oldal nem töltött be / nem elérhető." : "The page didn't load / isn't reachable."}
+                  {errorDetail ? <span style={{ display: "block", fontSize: "0.75rem", color: "#aaa", marginTop: "0.25rem", fontWeight: 400 }}>{errorDetail}</span> : null}
+                </p>
+                <p style={{ fontSize: "0.8rem", color: "#999", lineHeight: 1.6, marginTop: "0.6rem" }}>
+                  {hu
+                    ? "Ez önmagában is kritikus hiba, és erős ok a megkeresésre — lehet, hogy csak nálad nem töltött be, ellenőrizd az URL-t; de ha valóban nem elérhető az oldal, ez önmagában véve is elég a hideg megkereséshez."
+                    : "This alone is a critical issue and a strong reason to reach out — double-check the URL first, but if the site is genuinely unreachable, that's reason enough on its own."}
+                </p>
+                <button onClick={() => handleCopy(hu
+                  ? "Szia! Rá akartam nézni a weboldalatokra, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Ez elég komoly probléma, mert minden érdeklődő, aki most rátok keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő."
+                  : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
+                )} style={{
+                  marginTop: "1rem", padding: "0.5rem 1.25rem",
+                  background: copied ? "#0cce6b" : "#1a1a1a",
+                  color: "#fff", border: "none", borderRadius: "4px",
+                  fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                  fontFamily: "inherit", transition: "background 0.2s",
+                }}>
+                  {copied ? (hu ? "✓ Másolva!" : "✓ Copied!") : (hu ? "Másolható üzenet másolása" : "Copy outreach message")}
+                </button>
+              </div>
             )}
           </form>
         </motion.div>
@@ -513,6 +571,8 @@ export default function Audit() {
       <AnimatePresence>
         {status === "done" && results && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }}>
+            {critical ? (
+            <>
 
             {/* ── 1. Összefoglaló ── */}
             <section style={{ padding: "4rem 2rem", background: summaryBg, borderBottom: "1px solid #e8e8e8" }}>
@@ -934,49 +994,6 @@ export default function Audit() {
                   </motion.div>
                 )}
 
-                {/* ── Üzleti lehetőségek ── */}
-                {(() => {
-                  const c = results.checks;
-                  const quality = c.businessQuality || 0;
-                  const THRESHOLD = 5;
-                  const opps = [];
-
-                  if (c.hasChatbot === false && quality >= THRESHOLD) {
-                    opps.push({
-                      icon: "🤖",
-                      title: "AI chatbot — be lehetne vezetni",
-                      desc: `Aktív online jelenlétük van (cégminőség: ${quality}/8) és valószínűleg ismétlődő kérdéseket kapnak. Egy AI chatbot 24/7 automatizálhatja ezeket — nyitvatartás, árak, foglalás, irányok. Nincs meglévő chatbotjuk.`,
-                      pitch: "Szia! Megnéztem a weboldalatokat — jól néz ki, aktív az online jelenlétetek. Egy dolgot látok amivel tudnék segíteni: sok vállalkozásnál ugyanazokat a kérdéseket kapják nap mint nap. Egy AI chatbot ezekre automatikusan válaszolna a weboldalon, ti csak az ügyfelekre koncentrálhattok. Megmutatnám 15 perc alatt?",
-                    });
-                  }
-
-                  if (c.hasBooking === false && quality >= THRESHOLD && (c.hasMapsEmbed || c.hasPhoneLink)) {
-                    opps.push({
-                      icon: "📅",
-                      title: "Online foglalás — nincs automatizálva",
-                      desc: `Fizikai helyszínt üzemeltetnek és aktív a jelenlétük (cégminőség: ${quality}/8), de nincs online foglalási rendszer. Valószínűleg telefonon szervezik az időpontokat — este és hétvégén elvesznek a leadek.`,
-                      pitch: "Szia! Megnéztem a weboldalatokat — aktív, jó a jelenlétetek. Egy lehetőséget látok: jelenleg valószínűleg telefonon szervezitek az időpontokat. Rengeteg érdeklődő este vagy hétvégén keres, de nem tud egyből foglalni — ezek a leadek elvesznek. Egy egyszerű online rendszerrel éjjel-nappal lehetne fogadni a foglalásokat. Érdemes lenne 15 percet rá szánni?",
-                    });
-                  }
-
-                  if (opps.length === 0) return null;
-
-                  return (
-                    <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
-                      style={{ marginTop: "3rem", padding: "2rem", background: "#f5f5ff", borderRadius: "8px", border: "1px solid #e0e0f0" }}>
-                      <p style={{ fontSize: "0.7rem", letterSpacing: "0.15em", color: "#6366f1", textTransform: "uppercase", marginBottom: "0.4rem", fontWeight: 600 }}>
-                        💡 Üzleti lehetőségek
-                      </p>
-                      <p style={{ fontSize: "0.82rem", color: "#666", marginBottom: "1.5rem", lineHeight: 1.6 }}>
-                        Ez a vállalkozás aktív és befektető — nagy valószínűséggel megvennének egy jól megcsinált megoldást.
-                      </p>
-                      <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-                        {opps.map((opp, i) => <OppCard key={i} {...opp} />)}
-                      </div>
-                    </motion.div>
-                  );
-                })()}
-
                 {/* ── Ajánlat generálása ── */}
                 {results && (
                   <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true }}
@@ -1063,6 +1080,34 @@ export default function Audit() {
 
               </div>
             </section>
+
+            </>
+            ) : (
+              <section style={{ padding: "6rem 2rem", background: "#f7f6f3" }}>
+                <div style={{ maxWidth: "640px", margin: "0 auto", textAlign: "center" }}>
+                  <motion.div variants={fadeUp} initial="hidden" animate="visible">
+                    <p style={{ fontSize: "2.2rem", marginBottom: "1rem" }}>✅</p>
+                    <h2 style={{ fontSize: "clamp(1.3rem, 3vw, 1.8rem)", fontWeight: 700, color: "#1a1a1a", marginBottom: "0.75rem" }}>
+                      {hu ? "Nem találtam kritikus hibát" : "No critical issue found"}
+                    </h2>
+                    <p style={{ fontSize: "0.9rem", color: "#888", lineHeight: 1.7, marginBottom: opportunity ? "3rem" : 0 }}>
+                      {hu
+                        ? "Az oldal HTTPS-en fut, gyorsan tölt be mobilon is — nincs itt elég erős, önmagában is megálló ok a megkeresésre."
+                        : "The site runs on HTTPS and loads fast on mobile — there's no issue strong enough on its own to justify reaching out."}
+                    </p>
+
+                    {opportunity && (
+                      <div style={{ textAlign: "left" }}>
+                        <p style={{ fontSize: "0.7rem", letterSpacing: "0.15em", color: "#6366f1", textTransform: "uppercase", marginBottom: "1rem", fontWeight: 600, textAlign: "center" }}>
+                          {hu ? "De van egy dolog, amivel érdemes megkeresni" : "But there's one thing worth reaching out about"}
+                        </p>
+                        <OppCard {...opportunity} />
+                      </div>
+                    )}
+                  </motion.div>
+                </div>
+              </section>
+            )}
 
           </motion.div>
         )}
