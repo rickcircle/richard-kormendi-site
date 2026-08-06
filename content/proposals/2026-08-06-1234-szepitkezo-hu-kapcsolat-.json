@@ -1,0 +1,55 @@
+{
+  "id": "2026-08-06-1234-szepitkezo-hu-kapcsolat-",
+  "url": "http://szepitkezo.hu/kapcsolat/",
+  "mobileScore": 86,
+  "desktopScore": 98,
+  "checks": {
+    "https": false,
+    "metaDescription": false,
+    "tapTargets": false,
+    "fontSizeOk": false,
+    "hasPhoneLink": false,
+    "hasAnyPhone": false,
+    "hasSchemaOrg": true,
+    "hasLocalBizSchema": false,
+    "hasMapsEmbed": false,
+    "hasFacebook": true,
+    "hasInstagram": true,
+    "copyrightYear": 2026,
+    "siteIsRecent": true,
+    "hasAnalytics": true,
+    "pageTitle": "Kapcsolat",
+    "hasChatbot": false,
+    "chatbotName": null,
+    "hasBooking": false,
+    "bookingName": null,
+    "businessQuality": 4
+  },
+  "pageTitle": "Kapcsolat",
+  "date": "2026-08-06T12:34:40.315Z",
+  "services": [
+    {
+      "key": "https",
+      "title": "HTTPS — Biztonságos kapcsolat",
+      "desc": "SSL tanúsítvány telepítése és beállítása. Megszűnik a \"Nem biztonságos\" figyelmeztetés minden böngészőben.",
+      "price": 35000,
+      "optional": false
+    },
+    {
+      "key": "maintenance",
+      "title": "Havi karbantartás + teljesítményriport",
+      "desc": "Havonta egyoldalas összefoglaló: forgalom, sebesség, Google helyezés. Bármikor lemondható.",
+      "price": 15000,
+      "monthly": true,
+      "optional": true
+    }
+  ],
+  "total": 35000,
+  "contact": {
+    "phone": "+36 30 148 0917",
+    "phoneRaw": "+36301480917",
+    "email": "richard.kormendi@gmail.com",
+    "web": "richardkormendi.com",
+    "instagram": "https://www.instagram.com/rickormendi/"
+  }
+}
