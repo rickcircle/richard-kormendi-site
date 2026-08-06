@@ -130,6 +130,8 @@ export default async function handler(req, res) {
         { label: "Resmio",     pattern: /resmio/i },
         { label: "TheFork",    pattern: /thefork|lafourchette/i },
         { label: "Timely",     pattern: /gettimely/i },
+        { label: "Salonic",    pattern: /salonic\.hu/i },
+        { label: "Foglaljorvost", pattern: /foglaljorvost\.hu/i },
       ];
       const bookingMatch = BOOKING_PATTERNS.find(b => b.pattern.test(html));
       const hasBooking   = !!bookingMatch;
