@@ -1,0 +1,48 @@
+{
+  "id": "2026-08-06-0753-emilisimon-com",
+  "url": "https://emilisimon.com",
+  "mobileScore": 69,
+  "desktopScore": 99,
+  "checks": {
+    "https": true,
+    "metaDescription": true,
+    "tapTargets": false,
+    "fontSizeOk": false,
+    "hasPhoneLink": false,
+    "hasAnyPhone": false,
+    "hasSchemaOrg": true,
+    "hasLocalBizSchema": false,
+    "hasMapsEmbed": false,
+    "hasFacebook": true,
+    "hasInstagram": true,
+    "copyrightYear": null,
+    "siteIsRecent": null,
+    "hasAnalytics": true,
+    "pageTitle": "Emili Simon",
+    "hasChatbot": false,
+    "chatbotName": null,
+    "hasBooking": false,
+    "bookingName": null,
+    "businessQuality": 5
+  },
+  "pageTitle": "Emili Simon",
+  "date": "2026-08-06T07:53:11.018Z",
+  "services": [
+    {
+      "key": "maintenance",
+      "title": "Havi karbantartás + teljesítményriport",
+      "desc": "Havonta egyoldalas összefoglaló: forgalom, sebesség, Google helyezés. Bármikor lemondható.",
+      "price": 15000,
+      "monthly": true,
+      "optional": true
+    }
+  ],
+  "total": 0,
+  "contact": {
+    "phone": "+36 30 148 0917",
+    "phoneRaw": "+36301480917",
+    "email": "richard.kormendi@gmail.com",
+    "web": "richardkormendi.com",
+    "instagram": "https://www.instagram.com/rickormendi/"
+  }
+}
