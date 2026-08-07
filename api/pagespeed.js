@@ -134,6 +134,17 @@ export default async function handler(req, res) {
         { label: "Foglaljorvost", pattern: /foglaljorvost\.hu/i },
         { label: "Dentalpocket", pattern: /dentalpocket\.com/i },
         { label: "ManageDoc",  pattern: /managedoc\.com/i },
+        // Magyar piaci foglalási platformok (fodrász/kozmetikus/orvosi) — 2026-08-07 kutatás
+        { label: "Booked4us",  pattern: /booked4\.us/i },
+        { label: "Minup",      pattern: /minup\.io/i },
+        { label: "BWNET",      pattern: /bwnet\.hu/i },
+        { label: "TimeBeeZ",   pattern: /timebeez\.hu/i },
+        { label: "BR Works",   pattern: /brworks\.hu/i },
+        { label: "Időpontmester", pattern: /idopontmester\.hu/i },
+        { label: "Orvoshoz.hu", pattern: /orvoshoz\.hu/i },
+        { label: "Erodium",    pattern: /erodium\.hu/i },
+        { label: "Planfy",     pattern: /planfy\.com/i },
+        { label: "Időpontok.hu", pattern: /idopontok\.hu/i },
       ];
       const bookingMatch = BOOKING_PATTERNS.find(b => b.pattern.test(html));
       const hasBooking   = !!bookingMatch;
