@@ -151,18 +151,23 @@ function getSummary(mobile, desktop, hu) {
 }
 
 // ── Kritikus hiba detektálás ─────────────────────────────────────────────────
-// Csak ez a 4 dolog számít "kritikusnak" — ezek indokolják önmagukban a hideg
-// megkeresést. Minden más (meta leírás, schema, analytics stb.) csak
+// Csak ezek a dolgok számítanak "kritikusnak" — ezek indokolják önmagukban a
+// hideg megkeresést. Minden más (meta leírás, schema, analytics stb.) csak
 // "észrevétel", nem generál riasztást vagy önálló pitchet.
 function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
   const bigGap          = (desktopScore - mobileScore) > 30;
   const noHttps         = checks.https === false;
   const mobileTrulySlow = mobileScore < 40;
   const mobileBroken    = bigGap && mobileScore < 55;
+  const phpEol          = checks.phpEol === true;
 
   if (noHttps) return {
     type: "nohttps",
     message: "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Ha érdekel, szívesen segítek rajta.",
+  };
+  if (phpEol) return {
+    type: "phpeol",
+    message: `Szia! Megnéztem a weboldalatokat, és azt látom, hogy a szerver elavult PHP-verziót (${checks.phpVersion}) futtat, amihez már nem érkezik biztonsági frissítés. Ha most találnak benne egy sebezhetőséget, az sosem lesz javítva — ez a fajta oldal tipikus célpontja a feltöréseknek. Szívesen segítek frissíteni, mielőtt gond lenne belőle.`,
   };
   if (mobileBroken) return {
     type: "mobilebroken",
@@ -727,6 +732,13 @@ export default function Audit() {
                     : `Online booking system${c.bookingName ? ` (${c.bookingName})` : ""}`,
                   good: hu ? `Van foglalási rendszer (${c.bookingName}) — éjjel-nappal fogadja az időpontokat` : `Booking system present (${c.bookingName}) — accepts appointments 24/7`,
                   bad:  hu ? "Nincs online foglalás — valószínűleg telefonon szervezik az időpontokat" : "No online booking — appointments likely managed by phone",
+                },
+                {
+                  ok: c.phpEol !== true,
+                  skip: c.phpVersion === null || c.phpVersion === undefined,
+                  label: hu ? `Szerver szoftver-frissessége (PHP ${c.phpVersion})` : `Server software freshness (PHP ${c.phpVersion})`,
+                  good: hu ? `Támogatott PHP-verzió (${c.phpVersion}) — kap biztonsági frissítést` : `Supported PHP version (${c.phpVersion}) — receives security updates`,
+                  bad:  hu ? `Elavult PHP-verzió (${c.phpVersion}) — nem kap biztonsági frissítést, sebezhető marad` : `Outdated PHP version (${c.phpVersion}) — no security updates, stays vulnerable`,
                 },
               ];
               return (

@@ -60,6 +60,20 @@ export default async function handler(req, res) {
       clearTimeout(timeout);
       const html = await response.text();
 
+      // ── PHP verzió detektálás (X-Powered-By fejléc, ha a szerver felfedi) ──
+      // A szerver gyakran letiltja ezt a fejlécet biztonsági okból — ha nincs,
+      // egyszerűen nem tudjuk megmondani, nem jelenti azt, hogy nincs PHP.
+      const poweredBy = response.headers.get("x-powered-by") || "";
+      const phpVersionMatch = poweredBy.match(/PHP\/(\d+)\.(\d+)(?:\.(\d+))?/i);
+      const phpVersion = phpVersionMatch
+        ? `${phpVersionMatch[1]}.${phpVersionMatch[2]}${phpVersionMatch[3] ? `.${phpVersionMatch[3]}` : ""}`
+        : null;
+      // 2026 augusztusi állapot szerint minden 8.2 alatti PHP verzió EOL (nincs
+      // biztonsági támogatás) — lásd php.net/eol és a kapcsolódó kutatást.
+      const phpEol = phpVersionMatch
+        ? (parseInt(phpVersionMatch[1]) < 8 || (parseInt(phpVersionMatch[1]) === 8 && parseInt(phpVersionMatch[2]) < 2))
+        : null;
+
       // Telefonszám
       const hasPhoneLink = /href=["']tel:/i.test(html);
       const hasAnyPhone  = /(\+36|06)[\s\-\(]?[0-9]{1,2}[\s\-\(]?[0-9]{3,4}[\s\-]?[0-9]{3,4}/.test(html);
@@ -150,9 +164,9 @@ export default async function handler(req, res) {
       const hasBooking   = !!bookingMatch;
       const bookingName  = bookingMatch?.label || null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasBooking, bookingName };
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasBooking, bookingName, phpVersion, phpEol };
     } catch {
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasBooking: null, bookingName: null };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null };
     }
   };
 
@@ -201,6 +215,9 @@ export default async function handler(req, res) {
       chatbotName:     page.chatbotName,
       hasBooking:      page.hasBooking,
       bookingName:     page.bookingName,
+      // Szerver-oldali elavultság
+      phpVersion:      page.phpVersion,
+      phpEol:          page.phpEol,
       // Cégminőség
       businessQuality: businessQuality,
     };
