@@ -45,6 +45,33 @@ export default async function handler(req, res) {
     }
   };
 
+  // ── HTTP → HTTPS kikényszerítés ellenőrzése ────────────────────────────────
+  // A checkPage() csak azt nézi, amit a felhasználó beírt (jellemzően https).
+  // Ez itt külön lekéri a sima http:// verziót, redirect KÖVETÉSE NÉLKÜL, hogy
+  // lássuk, tényleg átirányít-e https-re, vagy simán kiszolgálja titkosítatlanul.
+  const checkHttpEnforced = async () => {
+    try {
+      const { hostname } = new URL(url);
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 8000);
+      const response = await fetch(`http://${hostname}/`, {
+        signal: controller.signal,
+        redirect: "manual",
+        headers: {
+          "User-Agent": "Mozilla/5.0 (iPhone; CPU iPhone OS 16_0 like Mac OS X) AppleWebKit/605.1.15",
+        },
+      });
+      clearTimeout(timeout);
+      // 2xx a sima http:// verzión = kritikus: nincs kikényszerítve a HTTPS.
+      // 3xx (átirányítás) = rendben. Bármi más (4xx/5xx) = nem ez a probléma.
+      return response.status >= 200 && response.status < 300;
+    } catch {
+      // Nem elérhető http-n (időtúllépés, kapcsolat elutasítva) — ez NEM hiba,
+      // sőt jó jel: a szerver eleve nem szolgál ki titkosítatlan kérést.
+      return false;
+    }
+  };
+
   // ── HTML alapú ellenőrzések ───────────────────────────────────────────────────
   const checkPage = async () => {
     try {
@@ -171,10 +198,11 @@ export default async function handler(req, res) {
   };
 
   try {
-    const [mobile, desktop, page] = await Promise.all([
+    const [mobile, desktop, page, httpNotEnforced] = await Promise.all([
       fetchStrategy("mobile"),
       fetchStrategy("desktop"),
       checkPage(),
+      checkHttpEnforced(),
     ]);
 
     // ── Extra ellenőrzések kinyerése a Lighthouse auditokból ──────────────────
@@ -195,6 +223,7 @@ export default async function handler(req, res) {
     const checks = {
       // Lighthouse alapú
       https:           url.startsWith("https://"),
+      httpNotEnforced: httpNotEnforced,
       metaDescription: audits["meta-description"]?.score === 1,
       tapTargets:      audits["tap-targets"]?.score === 1,
       fontSizeOk:      audits["font-size"]?.score === 1,

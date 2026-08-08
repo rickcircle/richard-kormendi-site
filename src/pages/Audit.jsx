@@ -160,10 +160,15 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
   const mobileTrulySlow = mobileScore < 40;
   const mobileBroken    = bigGap && mobileScore < 55;
   const phpEol          = checks.phpEol === true;
+  const httpNotEnforced = checks.httpNotEnforced === true;
 
   if (noHttps) return {
     type: "nohttps",
     message: "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Ha érdekel, szívesen segítek rajta.",
+  };
+  if (httpNotEnforced) return {
+    type: "httpnotenforced",
+    message: "Szia! Megnéztem a weboldalatokat — a biztonságos (https) verziótok rendben működik, de a sima http:// verzió is simán betölt, nincs átirányítva. Aki így nyit meg egy linket (pl. régi megosztásból, nyomtatott anyagból), az a böngészőjében \"Nem biztonságos\" jelzést kap, pedig lenne biztonságos verziótok — csak nincs kikényszerítve. Gyors, egyszerű javítás, szívesen megcsinálom.",
   };
   if (phpEol) return {
     type: "phpeol",
@@ -658,6 +663,13 @@ export default function Audit() {
                   label: hu ? "Biztonságos kapcsolat (HTTPS)" : "Secure connection (HTTPS)",
                   good: hu ? "Biztonságos — a böngészők nem mutatnak figyelmeztetést" : "Secure — no browser warnings shown",
                   bad:  hu ? "Nem biztonságos — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak, és a Google is hátrányba sorolja" : "Not secure — browsers show a warning and Google ranks it lower",
+                },
+                {
+                  ok: c.httpNotEnforced !== true,
+                  skip: c.httpNotEnforced === null || c.httpNotEnforced === undefined,
+                  label: hu ? "HTTPS kikényszerítve (http:// átirányít)" : "HTTPS enforced (http:// redirects)",
+                  good: hu ? "A sima http:// verzió átirányít a biztonságosra, vagy nem is szolgál ki kérést" : "The plain http:// version redirects to the secure one, or refuses the request",
+                  bad:  hu ? "A sima http:// verzió is betölt, átirányítás nélkül — aki így nyit meg egy linket, nem biztonságos kapcsolaton landol" : "The plain http:// version loads without redirecting — visitors who open it that way land on an insecure connection",
                 },
                 {
                   ok: c.hasPhoneLink,
