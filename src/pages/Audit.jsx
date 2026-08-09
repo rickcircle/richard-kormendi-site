@@ -171,15 +171,15 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
 
   if (noHttps) {
     types.push("nohttps");
-    bullets.push("nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak, és a Google is hátrányba sorolja az ilyen oldalakat");
+    bullets.push("nem biztonságos kapcsolaton tölt be — az oldalon beküldött adatok (pl. egy kapcsolat-űrlap) titkosítatlanul utaznak, bárki elolvashatja őket útközben egy közös hálózaton, és a böngészők is \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak");
   }
   if (httpNotEnforced) {
     types.push("httpnotenforced");
-    bullets.push("a biztonságos (https) verziótok rendben működik, de a sima http:// verzió is simán betölt, nincs átirányítva — aki így nyit meg egy linket (pl. régi megosztásból, nyomtatott anyagból), az \"Nem biztonságos\" jelzést kap, pedig lenne biztonságos verziótok, csak nincs kikényszerítve");
+    bullets.push("van biztonságos (https) verziótok, de nincs kikényszerítve — aki csak beírja a domaint vagy egy régi linket nyit meg (pl. nyomtatott anyagból), titkosítatlan kapcsolaton landol, pedig a megoldás már megvan nálatok, csak be kell kapcsolni");
   }
   if (phpEol) {
     types.push("phpeol");
-    bullets.push(`a szerver elavult PHP-verziót (${checks.phpVersion}) futtat, amihez már nem érkezik biztonsági frissítés — ha most találnak benne egy sebezhetőséget, az sosem lesz javítva`);
+    bullets.push(`a szerver elavult PHP-verziót (${checks.phpVersion}) futtat, amihez már nem érkezik biztonsági frissítés — ha ma találnak benne egy rést, az sosem lesz javítva, és pont az ilyen oldalakat keresik célzottan a feltörésre szakosodott automatizált eszközök`);
   }
   if (mobileBroken) {
     types.push("mobilebroken");
@@ -193,7 +193,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
 
   const message = bullets.length === 1
     ? `Szia! Megnéztem a weboldalatokat, és azt látom, hogy ${bullets[0]}. Ha érdekel, szívesen segítek rajta.`
-    : `Szia! Megnéztem a weboldalatokat, és pár dolgot találtam, amit érdemes tudnod:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nSzívesen segítek ezeket rendbe tenni.`;
+    : `Szia! Megnéztem a weboldalatokat, és pár dolgot találtam, amit érdemes tudnod:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nEgyik sem bonyolult javítás, de valós kockázatot jelentenek — szívesen segítek gyorsan rendbe tenni őket.`;
 
   return { types, message };
 }
