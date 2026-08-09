@@ -175,7 +175,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
   }
   if (httpNotEnforced) {
     types.push("httpnotenforced");
-    bullets.push("van biztonságos (https) verziótok, de nincs kikényszerítve — aki csak beírja a domaint vagy egy régi linket nyit meg (pl. nyomtatott anyagból), titkosítatlan kapcsolaton landol, pedig a megoldás már megvan nálatok, csak be kell kapcsolni");
+    bullets.push("van biztonságos (https) verziójuk, de nincs kikényszerítve — aki csak beírja a domaint vagy egy régi linket nyit meg (pl. nyomtatott anyagból), titkosítatlan kapcsolaton landol");
   }
   if (phpEol) {
     types.push("phpeol");
@@ -192,8 +192,8 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
   if (bullets.length === 0) return null;
 
   const message = bullets.length === 1
-    ? `Szia! Megnéztem a weboldalatokat, és azt látom, hogy ${bullets[0]}. Ha érdekel, szívesen segítek rajta.`
-    : `Szia! Megnéztem a weboldalatokat, és pár dolgot találtam, amit érdemes tudnod:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nEgyik sem bonyolult javítás, de valós kockázatot jelentenek — szívesen segítek gyorsan rendbe tenni őket.`;
+    ? `Jó napot kívánok! Megnéztem a weboldalukat, és azt látom, hogy ${bullets[0]}. Ha érdekli, szívesen segítek benne.`
+    : `Jó napot kívánok! Megnéztem a weboldalukat, és pár dolgot találtam, amit érdemes tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nValós kockázatot jelentenek — szívesen segítek rendbe tenni ezeket.`;
 
   return { types, message };
 }
@@ -211,7 +211,7 @@ function getOpportunity(checks = {}) {
       icon: "⚖️",
       title: "EU AI Act megfelelés — sürgős, dátumhoz kötött",
       desc: `Már fut chatbot az oldalon${checks.chatbotName ? ` (${checks.chatbotName})` : ""}, de nem találtunk rajta AI-jelzést — 2026. augusztus 2. óta ez EU AI Act átláthatósági kötelezettség alá esik (jelezni kell, hogy a látogató AI-val beszél). A javítás gyakran csak pár perces beállítás a chat-szolgáltató saját felületén. FONTOS: ez csak a betöltéskori HTML alapján készült becslés — a jelzés néha csak a chat MEGNYITÁSA után jelenik meg, ezt kattintással érdemes kézzel is ellenőrizni, mielőtt megkeresed őket.`,
-      pitch: "Szia! Látom, van chatbototok a weboldalon — ez remek. Viszont 2026. augusztus 2. óta az EU AI Act miatt kötelező egyértelmű jelzést tenni, hogy a látogató AI-val beszélget. A legtöbb cég erről még nem is hallott, pedig ez most már aktív bírságolási kockázat. Ez gyakran egy nagyon gyors, technikai javítás — szívesen segítek rendbe tenni.",
+      pitch: "Jó napot kívánok! Látom, van chatbot a weboldalukon — ez remek. Viszont 2026. augusztus 2. óta az EU AI Act miatt kötelező egyértelmű jelzést tenni, hogy a látogató AI-val beszélget. A legtöbb cég erről még nem is hallott, pedig ez most már aktív bírságolási kockázat. Szívesen segítek ezt technikailag rendbe tenni.",
     };
   }
 
@@ -220,7 +220,7 @@ function getOpportunity(checks = {}) {
       icon: "💬",
       title: "Esti/hétvégi érdeklődők valószínűleg elvesznek",
       desc: `Fizikai helyszínt üzemeltetnek, aktív az online jelenlétük (cégminőség: ${quality}/8), de nincs sem chatbot, sem online foglalás. Az esti/hétvégi megkeresésekre valószínűleg csak másnap érkezik válasz — addigra sokan máshol foglalnak.`,
-      pitch: "Szia! Megnéztem a weboldalatokat, jónak tűnik. Egyvalamit vettem észre: ha valaki este vagy hétvégén ír nektek, gondolom csak másnap tudtok válaszolni — addigra az érdeklődők egy része már máshol foglal. Van egy megoldásom, ami azonnal, bármilyen nyelven válaszol a bejövő érdeklődésekre, ti csak jóváhagyjátok. Szívesen megmutatom élőben, 15 perc.",
+      pitch: "Jó napot kívánok! Megnéztem a weboldalukat, jónak tűnik. Egyvalamit vettem észre: ha valaki este vagy hétvégén ír Önöknek, gondolom csak másnap tudnak válaszolni — addigra az érdeklődők egy része már máshol foglal. Van egy megoldásom, ami azonnal, bármilyen nyelven válaszol a bejövő érdeklődésekre, Önök csak jóváhagyják. Szívesen megmutatom élőben, 15 perc.",
     };
   }
 
@@ -553,7 +553,7 @@ export default function Audit() {
                     : "This alone is a critical issue and a strong reason to reach out — double-check the URL first, but if the site is genuinely unreachable, that's reason enough on its own."}
                 </p>
                 <button onClick={() => handleCopy(hu
-                  ? "Szia! Rá akartam nézni a weboldalatokra, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Ez elég komoly probléma, mert minden érdeklődő, aki most rátok keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő."
+                  ? "Jó napot kívánok! Rá akartam nézni a weboldalukra, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Ez elég komoly probléma, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő."
                   : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
                 )} style={{
                   marginTop: "1rem", padding: "0.5rem 1.25rem",
