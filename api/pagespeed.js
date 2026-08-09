@@ -152,6 +152,16 @@ export default async function handler(req, res) {
       const hasChatbot   = !!chatbotMatch;
       const chatbotName  = chatbotMatch?.label || null;
 
+      // ── AI-átláthatósági jelzés keresése (EU AI Act) ────────────────────────
+      // Csak akkor releváns, ha van chatbot. FONTOS KORLÁT: ez csak a nyers,
+      // betöltéskor kapott HTML-t nézi — sok chat-widget csak a chat MEGNYITÁSA
+      // után írja ki az AI-jelzést (JS-sel, kattintás után), amit ez nem lát.
+      // Tehát hiányzó találat NEM bizonyíték a hiányra — mindig nézd meg kézzel
+      // is (kattints a chatre), mielőtt bármit állítasz egy ügyfélnek.
+      const hasAiDisclosure = hasChatbot
+        ? /mesterséges\s?intelligenciá|AI[\s-]?asszisztens|AI[\s-]?ügynök|ez egy chatbot|automated\s?bot|chatting with an AI|talking to an AI|you'?re\s+(chatting|talking)\s+(with|to)\s+an?\s+AI|powered by AI/i.test(html)
+        : null;
+
       // ── Foglalási rendszer detektálás ──────────────────────────────────────
       const BOOKING_PATTERNS = [
         { label: "Calendly",   pattern: /calendly/i },
@@ -191,9 +201,9 @@ export default async function handler(req, res) {
       const hasBooking   = !!bookingMatch;
       const bookingName  = bookingMatch?.label || null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasBooking, bookingName, phpVersion, phpEol };
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol };
     } catch {
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null };
     }
   };
 
@@ -242,6 +252,7 @@ export default async function handler(req, res) {
       // Chatbot + foglalás
       hasChatbot:      page.hasChatbot,
       chatbotName:     page.chatbotName,
+      hasAiDisclosure: page.hasAiDisclosure,
       hasBooking:      page.hasBooking,
       bookingName:     page.bookingName,
       // Szerver-oldali elavultság

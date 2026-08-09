@@ -193,12 +193,12 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
 function getOpportunity(checks = {}) {
   const quality = checks.businessQuality || 0;
 
-  if (checks.hasChatbot === true) {
+  if (checks.hasChatbot === true && checks.hasAiDisclosure !== true) {
     return {
       icon: "⚖️",
       title: "EU AI Act megfelelés — sürgős, dátumhoz kötött",
-      desc: `Már fut chatbot az oldalon${checks.chatbotName ? ` (${checks.chatbotName})` : ""} — 2026. augusztus 2-től ez EU AI Act átláthatósági kötelezettség alá esik (jelezni kell, hogy a látogató AI-val beszél, és dokumentálni kell a bevezetést). A cégek nagy része erről nem is tud.`,
-      pitch: "Szia! Látom, van chatbototok a weboldalon — ez remek. Viszont 2026. augusztus 2-től az EU AI Act miatt kötelező egyértelmű jelzést tenni, hogy a látogató AI-val beszélget, és dokumentálni a bevezetési folyamatot. A legtöbb cég erről még nem is hallott, pedig utólag bírságolható. Szívesen segítek ezt gyorsan, technikailag rendbe tenni.",
+      desc: `Már fut chatbot az oldalon${checks.chatbotName ? ` (${checks.chatbotName})` : ""}, de nem találtunk rajta AI-jelzést — 2026. augusztus 2. óta ez EU AI Act átláthatósági kötelezettség alá esik (jelezni kell, hogy a látogató AI-val beszél). A javítás gyakran csak pár perces beállítás a chat-szolgáltató saját felületén. FONTOS: ez csak a betöltéskori HTML alapján készült becslés — a jelzés néha csak a chat MEGNYITÁSA után jelenik meg, ezt kattintással érdemes kézzel is ellenőrizni, mielőtt megkeresed őket.`,
+      pitch: "Szia! Látom, van chatbototok a weboldalon — ez remek. Viszont 2026. augusztus 2. óta az EU AI Act miatt kötelező egyértelmű jelzést tenni, hogy a látogató AI-val beszélget. A legtöbb cég erről még nem is hallott, pedig ez most már aktív bírságolási kockázat. Ez gyakran egy nagyon gyors, technikai javítás — szívesen segítek rendbe tenni.",
     };
   }
 
@@ -735,6 +735,13 @@ export default function Audit() {
                     : `Chatbot / Live chat${c.chatbotName ? ` (${c.chatbotName})` : ""}`,
                   good: hu ? `Van chatbot (${c.chatbotName}) — automatikusan kezeli az ismétlődő kérdéseket` : `Chatbot present (${c.chatbotName}) — handles repetitive questions automatically`,
                   bad:  hu ? "Nincs chatbot — az ismétlődő kérdések kézzel kezelendők" : "No chatbot — repetitive questions handled manually",
+                },
+                {
+                  ok: c.hasAiDisclosure,
+                  skip: c.hasChatbot !== true,
+                  label: hu ? "AI-átláthatósági jelzés (EU AI Act)" : "AI transparency notice (EU AI Act)",
+                  good: hu ? "Van AI-jelzés az oldal betöltésekor — ellenőrizd kézzel is a chat megnyitása után" : "AI notice found on page load — worth double-checking manually after opening the chat too",
+                  bad:  hu ? "Nem találtunk AI-jelzést a betöltéskori HTML-ben — kattints rá a chatre kézi ellenőrzéshez, mielőtt megkeresed őket" : "No AI notice found in the initial HTML — click into the chat to verify manually before reaching out",
                 },
                 {
                   ok: c.hasBooking,
