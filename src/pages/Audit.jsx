@@ -154,35 +154,48 @@ function getSummary(mobile, desktop, hu) {
 // Csak ezek a dolgok számítanak "kritikusnak" — ezek indokolják önmagukban a
 // hideg megkeresést. Minden más (meta leírás, schema, analytics stb.) csak
 // "észrevétel", nem generál riasztást vagy önálló pitchet.
+// FONTOS: ha TÖBB kritikus hiba is fennáll egyszerre, mindegyik bekerül az
+// üzenetbe — nem csak az első találat (korábban ez volt a hiba).
 function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
   const bigGap          = (desktopScore - mobileScore) > 30;
   const noHttps         = checks.https === false;
-  const mobileTrulySlow = mobileScore < 40;
-  const mobileBroken    = bigGap && mobileScore < 55;
-  const phpEol          = checks.phpEol === true;
   const httpNotEnforced = checks.httpNotEnforced === true;
+  const phpEol          = checks.phpEol === true;
+  const mobileBroken    = bigGap && mobileScore < 55;
+  // Ha mobileBroken is fennáll, azt mutatjuk — a kettő ugyanazt a tünetet írja
+  // le más szögből, kettő együtt redundáns lenne.
+  const mobileTrulySlow = !mobileBroken && mobileScore < 40;
 
-  if (noHttps) return {
-    type: "nohttps",
-    message: "Szia! Megnéztem a weboldalatokat, és azt látom, hogy nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak. Ez bizalmat ront, és a Google is hátrányba sorolja az ilyen oldalakat. Ha érdekel, szívesen segítek rajta.",
-  };
-  if (httpNotEnforced) return {
-    type: "httpnotenforced",
-    message: "Szia! Megnéztem a weboldalatokat — a biztonságos (https) verziótok rendben működik, de a sima http:// verzió is simán betölt, nincs átirányítva. Aki így nyit meg egy linket (pl. régi megosztásból, nyomtatott anyagból), az a böngészőjében \"Nem biztonságos\" jelzést kap, pedig lenne biztonságos verziótok — csak nincs kikényszerítve. Gyors, egyszerű javítás, szívesen megcsinálom.",
-  };
-  if (phpEol) return {
-    type: "phpeol",
-    message: `Szia! Megnéztem a weboldalatokat, és azt látom, hogy a szerver elavult PHP-verziót (${checks.phpVersion}) futtat, amihez már nem érkezik biztonsági frissítés. Ha most találnak benne egy sebezhetőséget, az sosem lesz javítva — ez a fajta oldal tipikus célpontja a feltöréseknek. Szívesen segítek frissíteni, mielőtt gond lenne belőle.`,
-  };
-  if (mobileBroken) return {
-    type: "mobilebroken",
-    message: "Szia! Megnéztem a weboldalatokat — asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata. Ma már az érdeklődők nagy része telefonon keres, és egy nem mobilbarát oldal sok látogatót eltérít, mielőtt még kapcsolatba lépnének. Ha érdekel, szívesen megmutatom, mi okozza és hogyan lehet megoldani.",
-  };
-  if (mobileTrulySlow) return {
-    type: "mobileslow",
-    message: `Szia! Ránéztem a weboldalatokra, és azt látom, hogy mobilon igen lassan tölt be — a Google mérése szerint ${mobileScore}/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe. Ma már az ügyfelek nagy része telefonon keres, és ha az oldal sokat várat, sokan inkább továbblépnek. Ha kíváncsi vagy rá, szívesen átbeszéljük.`,
-  };
-  return null;
+  const types = [];
+  const bullets = [];
+
+  if (noHttps) {
+    types.push("nohttps");
+    bullets.push("nem biztonságos kapcsolaton tölt be — a böngészők \"Nem biztonságos\" figyelmeztetést mutatnak minden látogatónak, és a Google is hátrányba sorolja az ilyen oldalakat");
+  }
+  if (httpNotEnforced) {
+    types.push("httpnotenforced");
+    bullets.push("a biztonságos (https) verziótok rendben működik, de a sima http:// verzió is simán betölt, nincs átirányítva — aki így nyit meg egy linket (pl. régi megosztásból, nyomtatott anyagból), az \"Nem biztonságos\" jelzést kap, pedig lenne biztonságos verziótok, csak nincs kikényszerítve");
+  }
+  if (phpEol) {
+    types.push("phpeol");
+    bullets.push(`a szerver elavult PHP-verziót (${checks.phpVersion}) futtat, amihez már nem érkezik biztonsági frissítés — ha most találnak benne egy sebezhetőséget, az sosem lesz javítva`);
+  }
+  if (mobileBroken) {
+    types.push("mobilebroken");
+    bullets.push("asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata — ma már az érdeklődők nagy része telefonon keres, és ez sok látogatót eltérít, mielőtt még kapcsolatba lépnének");
+  } else if (mobileTrulySlow) {
+    types.push("mobileslow");
+    bullets.push(`mobilon igen lassan tölt be — a Google mérése szerint ${mobileScore}/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe`);
+  }
+
+  if (bullets.length === 0) return null;
+
+  const message = bullets.length === 1
+    ? `Szia! Megnéztem a weboldalatokat, és azt látom, hogy ${bullets[0]}. Ha érdekel, szívesen segítek rajta.`
+    : `Szia! Megnéztem a weboldalatokat, és pár dolgot találtam, amit érdemes tudnod:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nSzívesen segítek ezeket rendbe tenni.`;
+
+  return { types, message };
 }
 
 // ── Második kör: egyetlen, tényleg ütős AI-lehetőség ─────────────────────────
@@ -1009,7 +1022,7 @@ export default function Audit() {
                     <p style={{ fontSize: "0.8rem", color: "#aaa", marginBottom: "1rem", lineHeight: 1.5 }}>
                       LinkedIn-en vagy emailben küldheted el — nem hivatkozik eszközre, nem kér semmit:
                     </p>
-                    <p style={{ fontSize: "0.92rem", color: "#333", lineHeight: 1.8, marginBottom: "1.25rem", fontStyle: "italic" }}>
+                    <p style={{ fontSize: "0.92rem", color: "#333", lineHeight: 1.8, marginBottom: "1.25rem", fontStyle: "italic", whiteSpace: "pre-line" }}>
                       "{outreachMsg}"
                     </p>
                     <button onClick={() => handleCopy(outreachMsg)}
