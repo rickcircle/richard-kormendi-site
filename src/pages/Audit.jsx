@@ -195,7 +195,16 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
     ? `Jó napot kívánok! Megnéztem a weboldalukat, és azt látom, hogy ${bullets[0]}. Ha érdekli, szívesen segítek benne.`
     : `Jó napot kívánok! Megnéztem a weboldalukat, és pár dolgot találtam, amit érdemes tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nValós kockázatot jelentenek — szívesen segítek rendbe tenni ezeket.`;
 
-  return { types, message };
+  // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
+  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol"].includes(t));
+  const hasMobileIssue   = types.some(t => ["mobilebroken", "mobileslow"].includes(t));
+  const subject = hasSecurityIssue && hasMobileIssue
+    ? "Pár fontos észrevétel a weboldalukhoz"
+    : hasSecurityIssue
+    ? "Biztonsági észrevétel a weboldalukhoz"
+    : "Weboldal-észrevétel — mobil felhasználói élmény";
+
+  return { types, message, subject };
 }
 
 // ── Második kör: egyetlen, tényleg ütős AI-lehetőség ─────────────────────────
@@ -212,6 +221,7 @@ function getOpportunity(checks = {}) {
       title: "EU AI Act megfelelés — sürgős, dátumhoz kötött",
       desc: `Már fut chatbot az oldalon${checks.chatbotName ? ` (${checks.chatbotName})` : ""}, de nem találtunk rajta AI-jelzést — 2026. augusztus 2. óta ez EU AI Act átláthatósági kötelezettség alá esik (jelezni kell, hogy a látogató AI-val beszél). A javítás gyakran csak pár perces beállítás a chat-szolgáltató saját felületén. FONTOS: ez csak a betöltéskori HTML alapján készült becslés — a jelzés néha csak a chat MEGNYITÁSA után jelenik meg, ezt kattintással érdemes kézzel is ellenőrizni, mielőtt megkeresed őket.`,
       pitch: "Jó napot kívánok! Látom, van chatbot a weboldalukon — ez remek. Viszont 2026. augusztus 2. óta az EU AI Act miatt kötelező egyértelmű jelzést tenni, hogy a látogató AI-val beszélget. A legtöbb cég erről még nem is hallott, pedig ez most már aktív bírságolási kockázat. Szívesen segítek ezt technikailag rendbe tenni.",
+      subject: "EU AI Act megfelelés — a weboldalukhoz kapcsolódóan",
     };
   }
 
@@ -221,6 +231,7 @@ function getOpportunity(checks = {}) {
       title: "Esti/hétvégi érdeklődők valószínűleg elvesznek",
       desc: `Fizikai helyszínt üzemeltetnek, aktív az online jelenlétük (cégminőség: ${quality}/8), de nincs sem chatbot, sem online foglalás. Az esti/hétvégi megkeresésekre valószínűleg csak másnap érkezik válasz — addigra sokan máshol foglalnak.`,
       pitch: "Jó napot kívánok! Megnéztem a weboldalukat, jónak tűnik. Egyvalamit vettem észre: ha valaki este vagy hétvégén ír Önöknek, gondolom csak másnap tudnak válaszolni — addigra az érdeklődők egy része már máshol foglal. Van egy megoldásom, ami azonnal, bármilyen nyelven válaszol a bejövő érdeklődésekre, Önök csak jóváhagyják. Szívesen megmutatom élőben, 15 perc.",
+      subject: "Bejövő érdeklődések kezelése — egy lehetőség",
     };
   }
 
@@ -338,12 +349,19 @@ function IssueItem({ audit, auditKey, lang }) {
 }
 
 // ── Üzleti lehetőség kártya ──────────────────────────────────────────────────
-function OppCard({ icon, title, desc, pitch }) {
-  const [copied, setCopied] = useState(false);
-  const handleCopy = () => {
+function OppCard({ icon, title, desc, pitch, subject }) {
+  const [copiedSubject, setCopiedSubject] = useState(false);
+  const [copiedPitch, setCopiedPitch] = useState(false);
+  const handleCopySubject = () => {
+    navigator.clipboard.writeText(subject).then(() => {
+      setCopiedSubject(true);
+      setTimeout(() => setCopiedSubject(false), 2500);
+    }).catch(() => {});
+  };
+  const handleCopyPitch = () => {
     navigator.clipboard.writeText(pitch).then(() => {
-      setCopied(true);
-      setTimeout(() => setCopied(false), 2500);
+      setCopiedPitch(true);
+      setTimeout(() => setCopiedPitch(false), 2500);
     }).catch(() => {});
   };
   return (
@@ -356,21 +374,45 @@ function OppCard({ icon, title, desc, pitch }) {
         <p style={{ fontSize: "0.92rem", fontWeight: 700, color: "#1a1a1a", margin: 0 }}>{title}</p>
       </div>
       <p style={{ fontSize: "0.82rem", color: "#555", lineHeight: 1.7, marginBottom: "1rem" }}>{desc}</p>
+      {subject && (
+        <>
+          <p style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+            Tárgy
+          </p>
+          <p style={{ fontSize: "0.88rem", color: "#333", marginBottom: "0.75rem" }}>
+            {subject}
+          </p>
+        </>
+      )}
       <p style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
         Másolható pitch
       </p>
       <p style={{ fontSize: "0.88rem", color: "#333", lineHeight: 1.8, fontStyle: "italic", marginBottom: "1rem" }}>
         "{pitch}"
       </p>
-      <button onClick={handleCopy} style={{
-        padding: "0.5rem 1.25rem",
-        background: copied ? "#0cce6b" : "#6366f1",
-        color: "#fff", border: "none", borderRadius: "4px",
-        fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
-        fontFamily: "inherit", transition: "background 0.2s",
-      }}>
-        {copied ? "✓ Másolva!" : "Másolás"}
-      </button>
+      <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+        {subject && (
+          <button onClick={handleCopySubject} style={{
+            padding: "0.5rem 1.25rem",
+            background: "#fff",
+            color: copiedSubject ? "#0cce6b" : "#6366f1",
+            border: "1px solid #6366f1", borderRadius: "4px",
+            fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+            fontFamily: "inherit", transition: "color 0.2s",
+          }}>
+            {copiedSubject ? "✓ Másolva!" : "Tárgy másolása"}
+          </button>
+        )}
+        <button onClick={handleCopyPitch} style={{
+          padding: "0.5rem 1.25rem",
+          background: copiedPitch ? "#0cce6b" : "#6366f1",
+          color: "#fff", border: "none", borderRadius: "4px",
+          fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+          fontFamily: "inherit", transition: "background 0.2s",
+        }}>
+          {copiedPitch ? "✓ Másolva!" : "Másolás"}
+        </button>
+      </div>
     </div>
   );
 }
@@ -483,6 +525,7 @@ export default function Audit() {
   const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks) : null;
   const opportunity = results && !critical ? getOpportunity(results.checks) : null;
   const outreachMsg = critical?.message || null;
+  const outreachSubject = critical?.subject || null;
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
@@ -552,18 +595,29 @@ export default function Audit() {
                     ? "Ez önmagában is kritikus hiba, és erős ok a megkeresésre — lehet, hogy csak nálad nem töltött be, ellenőrizd az URL-t; de ha valóban nem elérhető az oldal, ez önmagában véve is elég a hideg megkereséshez."
                     : "This alone is a critical issue and a strong reason to reach out — double-check the URL first, but if the site is genuinely unreachable, that's reason enough on its own."}
                 </p>
-                <button onClick={() => handleCopy(hu
-                  ? "Jó napot kívánok! Rá akartam nézni a weboldalukra, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Ez elég komoly probléma, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő."
-                  : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
-                )} style={{
-                  marginTop: "1rem", padding: "0.5rem 1.25rem",
-                  background: copied ? "#0cce6b" : "#1a1a1a",
-                  color: "#fff", border: "none", borderRadius: "4px",
-                  fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
-                  fontFamily: "inherit", transition: "background 0.2s",
-                }}>
-                  {copied ? (hu ? "✓ Másolva!" : "✓ Copied!") : (hu ? "Másolható üzenet másolása" : "Copy outreach message")}
-                </button>
+                <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                  <button onClick={() => handleCopy(hu ? "A weboldal nem töltött be" : "The website didn't load")} style={{
+                    padding: "0.5rem 1.25rem",
+                    background: "transparent",
+                    color: "#555", border: "1px solid #ddd", borderRadius: "4px",
+                    fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                    fontFamily: "inherit", transition: "all 0.2s",
+                  }}>
+                    {hu ? "Tárgy másolása" : "Copy subject"}
+                  </button>
+                  <button onClick={() => handleCopy(hu
+                    ? "Jó napot kívánok! Rá akartam nézni a weboldalukra, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Ez elég komoly probléma, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő."
+                    : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
+                  )} style={{
+                    padding: "0.5rem 1.25rem",
+                    background: copied ? "#0cce6b" : "#1a1a1a",
+                    color: "#fff", border: "none", borderRadius: "4px",
+                    fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                    fontFamily: "inherit", transition: "background 0.2s",
+                  }}>
+                    {copied ? (hu ? "✓ Másolva!" : "✓ Copied!") : (hu ? "Üzenet másolása" : "Copy message")}
+                  </button>
+                </div>
               </div>
             )}
           </form>
@@ -771,6 +825,13 @@ export default function Audit() {
                   label: hu ? `Szerver szoftver-frissessége (PHP ${c.phpVersion})` : `Server software freshness (PHP ${c.phpVersion})`,
                   good: hu ? `Támogatott PHP-verzió (${c.phpVersion}) — kap biztonsági frissítést` : `Supported PHP version (${c.phpVersion}) — receives security updates`,
                   bad:  hu ? `Elavult PHP-verzió (${c.phpVersion}) — nem kap biztonsági frissítést, sebezhető marad` : `Outdated PHP version (${c.phpVersion}) — no security updates, stays vulnerable`,
+                },
+                {
+                  ok: c.isWordPress === true,
+                  skip: c.phpEol !== true || c.isWordPress === null || c.isWordPress === undefined,
+                  label: hu ? "CMS-azonosítás (PHP-frissítés kockázata)" : "CMS detection (PHP-upgrade risk)",
+                  good: hu ? "WordPress-alapú oldal — a mag és a legtöbb bővítmény aktívan követi az új PHP-verziókat, a frissítés vélhetően alacsonyabb kockázatú" : "WordPress-based site — core and most plugins actively track new PHP versions, upgrade risk is likely lower",
+                  bad:  hu ? "Nem azonosítható WordPressként — valószínűleg egyedi fejlesztésű kód, ahol a PHP-frissítés kompatibilitása nem garantált, ezt érdemes beleszámolni az ajánlatba" : "Not identifiable as WordPress — likely custom-built code, where PHP-upgrade compatibility isn't guaranteed, worth factoring into the quote",
                 },
               ];
               return (
@@ -1022,19 +1083,44 @@ export default function Audit() {
                     <p style={{ fontSize: "0.8rem", color: "#aaa", marginBottom: "1rem", lineHeight: 1.5 }}>
                       LinkedIn-en vagy emailben küldheted el — nem hivatkozik eszközre, nem kér semmit:
                     </p>
+                    {outreachSubject && (
+                      <>
+                        <p style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+                          Tárgy
+                        </p>
+                        <p style={{ fontSize: "0.88rem", color: "#333", marginBottom: "1rem" }}>
+                          {outreachSubject}
+                        </p>
+                      </>
+                    )}
                     <p style={{ fontSize: "0.92rem", color: "#333", lineHeight: 1.8, marginBottom: "1.25rem", fontStyle: "italic", whiteSpace: "pre-line" }}>
                       "{outreachMsg}"
                     </p>
-                    <button onClick={() => handleCopy(outreachMsg)}
-                      style={{
-                        padding: "0.55rem 1.25rem",
-                        background: copied ? "#0cce6b" : "#1a1a1a",
-                        color: "#fff", border: "none", borderRadius: "4px",
-                        fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
-                        fontFamily: "inherit", transition: "background 0.2s",
-                      }}>
-                      {copied ? "✓ Másolva!" : "Másolás"}
-                    </button>
+                    <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                      {outreachSubject && (
+                        <button onClick={() => handleCopy(outreachSubject)}
+                          style={{
+                            padding: "0.55rem 1.25rem",
+                            background: "#fff",
+                            color: copied ? "#0cce6b" : "#1a1a1a",
+                            border: "1px solid #1a1a1a", borderRadius: "4px",
+                            fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                            fontFamily: "inherit", transition: "color 0.2s",
+                          }}>
+                          {copied ? "✓ Másolva!" : "Tárgy másolása"}
+                        </button>
+                      )}
+                      <button onClick={() => handleCopy(outreachMsg)}
+                        style={{
+                          padding: "0.55rem 1.25rem",
+                          background: copied ? "#0cce6b" : "#1a1a1a",
+                          color: "#fff", border: "none", borderRadius: "4px",
+                          fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                          fontFamily: "inherit", transition: "background 0.2s",
+                        }}>
+                        {copied ? "✓ Másolva!" : "Üzenet másolása"}
+                      </button>
+                    </div>
                   </motion.div>
                 )}
 
