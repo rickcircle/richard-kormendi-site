@@ -190,6 +190,19 @@ export default async function handler(req, res) {
       // teljesen más keretrendszer, azt ez a minta nem találja meg.
       const isAngularJs = /\bdata-ng-app\b|\bng-app\s*=|\bng-controller\s*=|angular(?:\.min)?\.js["'>]/i.test(html);
 
+      // ── Ősrégi jQuery — proxy a teljes oldal elavultságára ───────────────────
+      // Nem önmagában a jQuery a kockázat (az simán cserélhető) — hanem az,
+      // hogy egy 2010-2012 körüli verziószám erős jele annak, hogy az EGÉSZ
+      // oldal érdemben nem lett frissítve azóta (design, kód, minden).
+      const jqueryVersionMatch = html.match(/jquery[.-](\d+)\.(\d+)(?:\.(\d+))?(?:\.min)?\.js/i);
+      const jqueryVersion = jqueryVersionMatch
+        ? `${jqueryVersionMatch[1]}.${jqueryVersionMatch[2]}${jqueryVersionMatch[3] ? `.${jqueryVersionMatch[3]}` : ""}`
+        : null;
+      // jQuery 1.4 (2010) – 1.8 (2012 augusztus) közötti verziók = kb. 2010-2012.
+      const jqueryVeryOld = jqueryVersionMatch
+        ? (parseInt(jqueryVersionMatch[1], 10) === 1 && parseInt(jqueryVersionMatch[2], 10) <= 8)
+        : null;
+
       // ── Foglalási rendszer detektálás ──────────────────────────────────────
       const BOOKING_PATTERNS = [
         { label: "Calendly",   pattern: /calendly/i },
@@ -229,13 +242,13 @@ export default async function handler(req, res) {
       const hasBooking   = !!bookingMatch;
       const bookingName  = bookingMatch?.label || null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, pageReachable: true };
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, pageReachable: true };
     } catch {
       // FONTOS: ez akkor is lefut, ha a saját közvetlen fetch-ünk sikertelen
       // (a szerver tényleg nem válaszol), tehát a pageReachable:false az
       // egyetlen megbízható jelzésünk arra, hogy az oldal valóban nem érhető
       // el — ezt használja a fő handler, amikor a Lighthouse is elhasal.
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, pageReachable: false };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, pageReachable: false };
     }
   };
 
@@ -317,6 +330,8 @@ export default async function handler(req, res) {
       isAngularJs:     page.isAngularJs,
       wpVersion:       page.wpVersion,
       wpCoreEol:       page.wpCoreEol,
+      jqueryVersion:   page.jqueryVersion,
+      jqueryVeryOld:   page.jqueryVeryOld,
       // Cégminőség
       businessQuality: businessQuality,
     };

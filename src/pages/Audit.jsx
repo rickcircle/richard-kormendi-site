@@ -57,13 +57,18 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const phpEol          = checks.phpEol === true;
   const angularEol      = checks.isAngularJs === true;
   const wpCoreEol       = checks.wpCoreEol === true;
+  const jqueryVeryOld   = checks.jqueryVeryOld === true;
   // PHP 7.x-ről 8-ra váltani jellemzően csak szerverbeállítás + apró javítás —
   // valódi frissítési út van. PHP 5.x-nél viszont a kód szinte biztos, hogy a
   // rég megszűnt mysql_* függvényeket használja, ami PHP 7+ alatt egyáltalán
   // nem fut le — ott a "javítás" a gyakorlatban ugyanaz, mint egy új oldal.
   const phpMajor        = checks.phpVersion ? parseInt(checks.phpVersion, 10) : null;
   const phpVeryOld      = phpEol && phpMajor !== null && phpMajor < 7;
-  const needsRebuild    = angularEol || phpVeryOld;
+  // A jQuery-verzió önmagában cserélhető lenne, de itt nem erről van szó: egy
+  // 2010-2012-es verziószám azt jelzi, hogy a TELJES oldal (design, kód,
+  // minden) évtizede érintetlen — ez ugyanolyan "cseréljük le" jel, mint az
+  // AngularJS vagy a nagyon régi PHP.
+  const needsRebuild    = angularEol || phpVeryOld || jqueryVeryOld;
   const mobileBroken    = bigGap && mobileScore < 55;
   // Ha mobileBroken is fennáll, azt mutatjuk — a kettő ugyanazt a tünetet írja
   // le más szögből, kettő együtt redundáns lenne.
@@ -92,6 +97,10 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     types.push("wpcoreeol");
     bullets.push(`a weboldal egy régóta nem frissített WordPress-alapváltozatot (${checks.wpVersion}) futtat — a WordPress alapból automatikusan frissítene, tehát ez évek óta nem történt meg, ami azt jelenti, hogy évek óta ismert biztonsági résekkel fut, amiket pont az ilyen elhanyagolt oldalak ellen szoktak célzottan kihasználni`);
   }
+  if (jqueryVeryOld) {
+    types.push("jqueryold");
+    bullets.push(`a weboldal egy 2010-es évek eleji JavaScript-könyvtárat (jQuery ${checks.jqueryVersion}) használ — ez önmagában is jelzi, hogy a teljes oldal jó eséllyel egy évtizede nem lett érdemben frissítve, sem technikailag, sem dizájnban`);
+  }
   if (mobileBroken) {
     types.push("mobilebroken");
     bullets.push("asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata — ma már az érdeklődők nagy része telefonon keres, és ez sok látogatót eltérít, mielőtt még kapcsolatba lépnének");
@@ -113,7 +122,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const message = `${body} ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
-  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol"].includes(t));
+  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold"].includes(t));
   const hasMobileIssue   = types.some(t => ["mobilebroken", "mobileslow"].includes(t));
   const subject = hasSecurityIssue && hasMobileIssue
     ? "Pár fontos észrevétel a weboldalukhoz"
