@@ -47,6 +47,13 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const httpNotEnforced = checks.httpNotEnforced === true;
   const phpEol          = checks.phpEol === true;
   const angularEol      = checks.isAngularJs === true;
+  // PHP 7.x-ről 8-ra váltani jellemzően csak szerverbeállítás + apró javítás —
+  // valódi frissítési út van. PHP 5.x-nél viszont a kód szinte biztos, hogy a
+  // rég megszűnt mysql_* függvényeket használja, ami PHP 7+ alatt egyáltalán
+  // nem fut le — ott a "javítás" a gyakorlatban ugyanaz, mint egy új oldal.
+  const phpMajor        = checks.phpVersion ? parseInt(checks.phpVersion, 10) : null;
+  const phpVeryOld      = phpEol && phpMajor !== null && phpMajor < 7;
+  const needsRebuild    = angularEol || phpVeryOld;
   const mobileBroken    = bigGap && mobileScore < 55;
   // Ha mobileBroken is fennáll, azt mutatjuk — a kettő ugyanazt a tünetet írja
   // le más szögből, kettő együtt redundáns lenne.
@@ -82,9 +89,12 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   if (bullets.length === 0) return null;
 
   const siteRef = domain ? ` (${domain})` : "";
+  const closing = bullets.length === 1
+    ? (needsRebuild ? "Szívesen segítek ezt modern, biztonságos felületre cserélni." : "Szívesen segítek rendbe tenni ezt.")
+    : (needsRebuild ? "Szívesen segítek ezeket modern, biztonságos felületre cserélni." : "Szívesen segítek rendbe tenni ezeket.");
   const body = bullets.length === 1
-    ? `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. Szívesen segítek rendbe tenni ezt.`
-    : `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. Szívesen segítek rendbe tenni ezeket.`;
+    ? `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. ${closing}`
+    : `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. ${closing}`;
 
   const message = `${body}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
