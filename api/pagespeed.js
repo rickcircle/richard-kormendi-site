@@ -168,6 +168,13 @@ export default async function handler(req, res) {
       // Egyedi/nem azonosítható kódnál nagyobb a bizonytalanság.
       const isWordPress = /wp-content|wp-includes|wp-json|content=["']WordPress/i.test(html);
 
+      // ── AngularJS (1.x) detektálás — kritikus, EOL keretrendszer ─────────────
+      // Az AngularJS (ng-app/ng-controller attribútumos, 1.x-es vonal) 2022
+      // januárja óta hivatalosan EOL — a Google nem ad ki rá több biztonsági
+      // frissítést. FONTOS: ez a modern Angular (2+, app-root komponensekkel)
+      // teljesen más keretrendszer, azt ez a minta nem találja meg.
+      const isAngularJs = /\bdata-ng-app\b|\bng-app\s*=|\bng-controller\s*=|angular(?:\.min)?\.js["'>]/i.test(html);
+
       // ── Foglalási rendszer detektálás ──────────────────────────────────────
       const BOOKING_PATTERNS = [
         { label: "Calendly",   pattern: /calendly/i },
@@ -207,9 +214,9 @@ export default async function handler(req, res) {
       const hasBooking   = !!bookingMatch;
       const bookingName  = bookingMatch?.label || null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress };
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs };
     } catch {
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null };
     }
   };
 
@@ -265,6 +272,8 @@ export default async function handler(req, res) {
       phpVersion:      page.phpVersion,
       phpEol:          page.phpEol,
       isWordPress:     page.isWordPress,
+      // Frontend-oldali elavultság
+      isAngularJs:     page.isAngularJs,
       // Cégminőség
       businessQuality: businessQuality,
     };

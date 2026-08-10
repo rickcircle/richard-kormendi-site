@@ -46,6 +46,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const noHttps         = checks.https === false;
   const httpNotEnforced = checks.httpNotEnforced === true;
   const phpEol          = checks.phpEol === true;
+  const angularEol      = checks.isAngularJs === true;
   const mobileBroken    = bigGap && mobileScore < 55;
   // Ha mobileBroken is fennáll, azt mutatjuk — a kettő ugyanazt a tünetet írja
   // le más szögből, kettő együtt redundáns lenne.
@@ -66,6 +67,10 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     types.push("phpeol");
     bullets.push(`a szerver elavult PHP-verziót (${checks.phpVersion}) futtat, amihez már nem érkezik biztonsági frissítés — ha ma találnak benne egy rést, az sosem lesz javítva, és pont az ilyen oldalakat keresik célzottan a feltörésre szakosodott automatizált eszközök`);
   }
+  if (angularEol) {
+    types.push("angulareol");
+    bullets.push("a weboldal felülete egy elavult keretrendszert (AngularJS) használ, amit 2022 januárja óta nem támogat és nem javít a gyártó — ha ma találnak benne egy rést, az sosem lesz javítva, és pont az ilyen elavult keretrendszereket keresik célzottan a feltörésre szakosodott automatizált eszközök");
+  }
   if (mobileBroken) {
     types.push("mobilebroken");
     bullets.push("asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata — ma már az érdeklődők nagy része telefonon keres, és ez sok látogatót eltérít, mielőtt még kapcsolatba lépnének");
@@ -84,7 +89,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const message = `${body}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
-  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol"].includes(t));
+  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol"].includes(t));
   const hasMobileIssue   = types.some(t => ["mobilebroken", "mobileslow"].includes(t));
   const subject = hasSecurityIssue && hasMobileIssue
     ? "Pár fontos észrevétel a weboldalukhoz"
