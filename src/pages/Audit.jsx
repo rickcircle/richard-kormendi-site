@@ -41,7 +41,7 @@ const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne
 // egyáltalán mit írni.
 // FONTOS: ha TÖBB kritikus hiba is fennáll egyszerre, mindegyik bekerül az
 // üzenetbe — nem csak az első találat (korábban ez volt a hiba).
-function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
+function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const bigGap          = (desktopScore - mobileScore) > 30;
   const noHttps         = checks.https === false;
   const httpNotEnforced = checks.httpNotEnforced === true;
@@ -76,9 +76,10 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
 
   if (bullets.length === 0) return null;
 
+  const siteRef = domain ? ` (${domain})` : "";
   const body = bullets.length === 1
-    ? `Jó napot kívánok! Megnéztem a weboldalukat, és azt látom, hogy ${bullets[0]}. Ha érdekli, szívesen segítek benne.`
-    : `Jó napot kívánok! Megnéztem a weboldalukat, és pár dolgot találtam, amit érdemes tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nValós kockázatot jelentenek — szívesen segítek rendbe tenni ezeket.`;
+    ? `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. Szívesen segítek rendbe tenni ezt.`
+    : `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. Szívesen segítek rendbe tenni ezeket.`;
 
   const message = `${body}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
@@ -194,7 +195,8 @@ export default function Audit() {
     }
   };
 
-  const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks) : null;
+  const resultDomain = results ? (() => { try { return new URL(results.url).hostname; } catch { return ""; } })() : "";
+  const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks, resultDomain) : null;
   const outreachMsg = critical?.message || null;
   const outreachSubject = critical?.subject || null;
 
@@ -262,7 +264,7 @@ export default function Audit() {
                     {hu ? "Tárgy másolása" : "Copy subject"}
                   </button>
                   <button onClick={() => handleCopy(hu
-                    ? `Jó napot kívánok! Rá akartam nézni a weboldalukra, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Ez elég komoly probléma, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
+                    ? `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${url.trim() ? ` (${url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "")})` : ""}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
                     : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
                   )} style={{
                     padding: "0.5rem 1.25rem",
