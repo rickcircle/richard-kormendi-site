@@ -34,6 +34,10 @@ const SIGNATURE = "Üdvözlettel:\nKörmendi Richárd\nWebfejlesztő\n+363014809
 // minden kimenő üzenet végén ott van, P.s.-ként, nem a fő szövegben.
 const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne a javítás helyett, azt is szívesen vállalom: richardkormendi.com/hire?lang=hu";
 
+// Konkrét, alacsony-elköteleződésű CTA — könnyebb rá válaszolni, mint egy
+// homályos "keressenek bizalommal"-ra.
+const CTA_CALL = "Mikor lenne alkalmas egy rövid, 5 perces telefonhívás a héten, hogy átbeszéljük a részleteket?";
+
 // ── Kritikus hiba detektálás ─────────────────────────────────────────────────
 // Csak ezek a dolgok számítanak "kritikusnak" — ezek indokolják önmagukban a
 // hideg megkeresést. Minden más (meta leírás, schema, analytics stb.) mostantól
@@ -101,7 +105,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     ? `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. ${closing}`
     : `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. ${closing}`;
 
-  const message = `${body}\n\nKeressenek bizalommal!\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
+  const message = `${body}\n\n${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
   const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol"].includes(t));
@@ -121,7 +125,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
 // új weboldal a pitch, szóval nincs benne PS_NEW_SITE (az redundáns lenne).
 function getNoWebsitePitch(businessName = "") {
   const nameRef = businessName.trim() ? ` (${businessName.trim()})` : "";
-  const message = `Tisztelt Hölgyem/Uram!\n\nMegnéztem a Facebook oldalukat${nameRef}, és azt látom, hogy jelenleg nincs önálló weboldaluk. Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek ebben — Keressenek bizalommal!\n\n${SIGNATURE}`;
+  const message = `Tisztelt Hölgyem/Uram!\n\nMegnéztem a Facebook oldalukat${nameRef}, és azt látom, hogy jelenleg nincs önálló weboldaluk. Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek felépíteni egy modern, gyors és ügyfélszerzésre optimalizált weboldalt. Ha nyitottak rá, szívesen átbeszélek Önökkel pár ötletet egy rövid, 5-10 perces kötetlen telefonhívás során — mikor lenne erre alkalmas időpont a héten?\n\n${SIGNATURE}`;
   const subject = "Weboldal-lehetőség — jelenleg csak Facebook oldaluk van";
   return { message, subject };
 }
@@ -305,7 +309,7 @@ export default function Audit() {
                     {hu ? "Tárgy másolása" : "Copy subject"}
                   </button>
                   <button onClick={() => handleCopy(hu
-                    ? `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${url.trim() ? ` (${url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "")})` : ""}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\nKeressenek bizalommal!\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
+                    ? `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${url.trim() ? ` (${url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "")})` : ""}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\n${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
                     : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
                   )} style={{
                     padding: "0.5rem 1.25rem",
