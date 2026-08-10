@@ -30,6 +30,10 @@ const OPPORTUNITY_KEYS = [
 
 const SIGNATURE = "Üdvözlettel:\nKörmendi Richárd\nWebfejlesztő\n+36301480917\nrichardkormendi.com";
 
+// Halk, nem direktbe tolakodó utalás arra, hogy vadonatúj oldalt is vállalok —
+// minden kimenő üzenet végén ott van, P.s.-ként, nem a fő szövegben.
+const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne a javítás helyett, azt is szívesen vállalom: richardkormendi.com/hire?lang=hu";
+
 // ── Kritikus hiba detektálás ─────────────────────────────────────────────────
 // Csak ezek a dolgok számítanak "kritikusnak" — ezek indokolják önmagukban a
 // hideg megkeresést. Minden más (meta leírás, schema, analytics stb.) mostantól
@@ -76,7 +80,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}) {
     ? `Jó napot kívánok! Megnéztem a weboldalukat, és azt látom, hogy ${bullets[0]}. Ha érdekli, szívesen segítek benne.`
     : `Jó napot kívánok! Megnéztem a weboldalukat, és pár dolgot találtam, amit érdemes tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nValós kockázatot jelentenek — szívesen segítek rendbe tenni ezeket.`;
 
-  const message = `${body}\n\n${SIGNATURE}`;
+  const message = `${body}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
   const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol"].includes(t));
@@ -258,7 +262,7 @@ export default function Audit() {
                     {hu ? "Tárgy másolása" : "Copy subject"}
                   </button>
                   <button onClick={() => handleCopy(hu
-                    ? `Jó napot kívánok! Rá akartam nézni a weboldalukra, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Ez elég komoly probléma, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\n${SIGNATURE}`
+                    ? `Jó napot kívánok! Rá akartam nézni a weboldalukra, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Ez elég komoly probléma, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
                     : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
                   )} style={{
                     padding: "0.5rem 1.25rem",
