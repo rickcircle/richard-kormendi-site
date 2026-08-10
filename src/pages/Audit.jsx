@@ -47,6 +47,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const httpNotEnforced = checks.httpNotEnforced === true;
   const phpEol          = checks.phpEol === true;
   const angularEol      = checks.isAngularJs === true;
+  const wpCoreEol       = checks.wpCoreEol === true;
   // PHP 7.x-ről 8-ra váltani jellemzően csak szerverbeállítás + apró javítás —
   // valódi frissítési út van. PHP 5.x-nél viszont a kód szinte biztos, hogy a
   // rég megszűnt mysql_* függvényeket használja, ami PHP 7+ alatt egyáltalán
@@ -78,6 +79,10 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     types.push("angulareol");
     bullets.push("a weboldal felülete egy elavult keretrendszert (AngularJS) használ, amit 2022 januárja óta nem támogat és nem javít a gyártó — ha ma találnak benne egy rést, az sosem lesz javítva, és pont az ilyen elavult keretrendszereket keresik célzottan a feltörésre szakosodott automatizált eszközök");
   }
+  if (wpCoreEol) {
+    types.push("wpcoreeol");
+    bullets.push(`a weboldal egy régóta nem frissített WordPress-alapváltozatot (${checks.wpVersion}) futtat — a WordPress alapból automatikusan frissítene, tehát ez évek óta nem történt meg, ami azt jelenti, hogy évek óta ismert biztonsági résekkel fut, amiket pont az ilyen elhanyagolt oldalak ellen szoktak célzottan kihasználni`);
+  }
   if (mobileBroken) {
     types.push("mobilebroken");
     bullets.push("asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata — ma már az érdeklődők nagy része telefonon keres, és ez sok látogatót eltérít, mielőtt még kapcsolatba lépnének");
@@ -99,7 +104,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const message = `${body}\n\nKeressenek bizalommal!\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
-  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol"].includes(t));
+  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol"].includes(t));
   const hasMobileIssue   = types.some(t => ["mobilebroken", "mobileslow"].includes(t));
   const subject = hasSecurityIssue && hasMobileIssue
     ? "Pár fontos észrevétel a weboldalukhoz"
@@ -108,6 +113,17 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     : "Weboldal-észrevétel — mobil felhasználói élmény";
 
   return { types, message, subject };
+}
+
+// ── Csak Facebook-oldal, nincs önálló weboldal ───────────────────────────────
+// Ez nem az URL-auditból jön (nincs mit auditálni) — kézzel talált lead-ekhez,
+// ahol a cégnek csak Facebook-jelenléte van. Nem "javítás", hanem egyértelműen
+// új weboldal a pitch, szóval nincs benne PS_NEW_SITE (az redundáns lenne).
+function getNoWebsitePitch(businessName = "") {
+  const nameRef = businessName.trim() ? ` (${businessName.trim()})` : "";
+  const message = `Tisztelt Hölgyem/Uram!\n\nMegnéztem a Facebook oldalukat${nameRef}, és azt látom, hogy jelenleg nincs önálló weboldaluk. Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek ebben — Keressenek bizalommal!\n\n${SIGNATURE}`;
+  const subject = "Weboldal-lehetőség — jelenleg csak Facebook oldaluk van";
+  return { message, subject };
 }
 
 // ── Főkomponens ──────────────────────────────────────────────────────────────
@@ -123,6 +139,15 @@ export default function Audit() {
   const [proposalStatus, setProposalStatus] = useState("idle"); // idle | loading | done | error
   const [proposalLink, setProposalLink]     = useState(null);
   const [proposalCopied, setProposalCopied] = useState(false);
+  const [fbBusinessName, setFbBusinessName] = useState("");
+  const [fbCopied, setFbCopied] = useState(false);
+
+  const handleCopyFb = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setFbCopied(true);
+      setTimeout(() => setFbCopied(false), 2500);
+    }).catch(() => {});
+  };
 
   const handleCopy = (text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -214,6 +239,7 @@ export default function Audit() {
   const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks, resultDomain) : null;
   const outreachMsg = critical?.message || null;
   const outreachSubject = critical?.subject || null;
+  const fbPitch = getNoWebsitePitch(fbBusinessName);
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
@@ -295,6 +321,61 @@ export default function Audit() {
             )}
           </form>
         </motion.div>
+      </section>
+
+      {/* ── Csak Facebook oldal, nincs weboldal ── */}
+      <section style={{ padding: "3rem 2rem", background: "#fafafa", borderBottom: "1px solid #e8e8e8" }}>
+        <div style={{ maxWidth: "640px", margin: "0 auto" }}>
+          <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.5rem" }}>
+            📘 Csak Facebook oldaluk van?
+          </p>
+          <p style={{ fontSize: "0.85rem", color: "#999", lineHeight: 1.6, marginBottom: "1.25rem" }}>
+            Ha kézzel találtál egy céget, akinek nincs önálló weboldala, csak Facebook-jelenléte — itt generálhatsz nekik egy kész üzenetet, URL nélkül.
+          </p>
+          <input
+            type="text" value={fbBusinessName} onChange={e => setFbBusinessName(e.target.value)}
+            placeholder="Cégnév (opcionális, csak a személyre szabáshoz)"
+            style={{
+              width: "100%", padding: "0.75rem 1rem", marginBottom: "1.25rem",
+              background: "#fff", border: "1px solid #ddd", borderRadius: "4px",
+              color: "#1a1a1a", fontSize: "0.9rem", fontFamily: "inherit", outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+          <div style={{ padding: "1.5rem", background: "#fff", borderRadius: "8px", border: "1px solid #e8e8e8", borderLeft: "4px solid #1a1a1a" }}>
+            <p style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+              Tárgy
+            </p>
+            <p style={{ fontSize: "0.88rem", color: "#333", marginBottom: "1rem" }}>
+              {fbPitch.subject}
+            </p>
+            <p style={{ fontSize: "0.9rem", color: "#333", lineHeight: 1.8, marginBottom: "1.25rem", fontStyle: "italic", whiteSpace: "pre-line" }}>
+              "{fbPitch.message}"
+            </p>
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+              <button onClick={() => handleCopyFb(fbPitch.subject)}
+                style={{
+                  padding: "0.55rem 1.25rem", background: "#fff",
+                  color: fbCopied ? "#0cce6b" : "#1a1a1a",
+                  border: "1px solid #1a1a1a", borderRadius: "4px",
+                  fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                  fontFamily: "inherit", transition: "color 0.2s",
+                }}>
+                {fbCopied ? "✓ Másolva!" : "Tárgy másolása"}
+              </button>
+              <button onClick={() => handleCopyFb(fbPitch.message)}
+                style={{
+                  padding: "0.55rem 1.25rem",
+                  background: fbCopied ? "#0cce6b" : "#1a1a1a",
+                  color: "#fff", border: "none", borderRadius: "4px",
+                  fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                  fontFamily: "inherit", transition: "background 0.2s",
+                }}>
+                {fbCopied ? "✓ Másolva!" : "Üzenet másolása"}
+              </button>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── Töltés ── */}
