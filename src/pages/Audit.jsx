@@ -36,7 +36,7 @@ const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne
 
 // Konkrét, alacsony-elköteleződésű CTA — könnyebb rá válaszolni, mint egy
 // homályos "keressenek bizalommal"-ra.
-const CTA_CALL = "Mikor lenne alkalmas egy rövid, 5 perces telefonhívás a héten, hogy átbeszéljük a részleteket?";
+const CTA_CALL = "Ha nyitottak rá, megbeszélhetjük a részleteket egy rövid, 5 perces telefonhívás során — mikor lenne erre alkalmas időpont a héten?";
 
 // ── Kritikus hiba detektálás ─────────────────────────────────────────────────
 // Csak ezek a dolgok számítanak "kritikusnak" — ezek indokolják önmagukban a
@@ -46,7 +46,12 @@ const CTA_CALL = "Mikor lenne alkalmas egy rövid, 5 perces telefonhívás a hé
 // FONTOS: ha TÖBB kritikus hiba is fennáll egyszerre, mindegyik bekerül az
 // üzenetbe — nem csak az első találat (korábban ez volt a hiba).
 function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
-  const bigGap          = (desktopScore - mobileScore) > 30;
+  // Ha a Lighthouse elhasalt (lásd lighthouseFailed az API válaszban), a
+  // pontszámok null-ok lehetnek — null < 40 JS-ben igazra értékelődne ki
+  // (0-ra kényszerülne), ezért csak akkor nézzük a mobil-alapú találatokat,
+  // ha tényleg van valós szám.
+  const scoresAvailable = typeof mobileScore === "number" && typeof desktopScore === "number";
+  const bigGap          = scoresAvailable && (desktopScore - mobileScore) > 30;
   const noHttps         = checks.https === false;
   const httpNotEnforced = checks.httpNotEnforced === true;
   const phpEol          = checks.phpEol === true;
@@ -62,7 +67,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const mobileBroken    = bigGap && mobileScore < 55;
   // Ha mobileBroken is fennáll, azt mutatjuk — a kettő ugyanazt a tünetet írja
   // le más szögből, kettő együtt redundáns lenne.
-  const mobileTrulySlow = !mobileBroken && mobileScore < 40;
+  const mobileTrulySlow = scoresAvailable && !mobileBroken && mobileScore < 40;
 
   const types = [];
   const bullets = [];
@@ -105,7 +110,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     ? `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. ${closing}`
     : `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. ${closing}`;
 
-  const message = `${body}\n\n${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
+  const message = `${body} ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
   const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol"].includes(t));
@@ -205,7 +210,11 @@ export default function Audit() {
       const json = await res.json().catch(() => null);
       if (!res.ok) throw new Error(json?.detail || json?.error || `HTTP ${res.status}`);
       const { mobile, desktop } = json;
+      // A Lighthouse néha elhasal (pl. bot-védelem blokkolja), miközben a
+      // saját közvetlen fetch-ünk (checks) sikeres — ilyenkor mobile/desktop
+      // null-ok lehetnek, de a HTML-alapú kritikus hibák még mindig érvényesek.
       const parse = (data) => {
+        if (!data) return { score: null, issues: [] };
         const audits = data.lighthouseResult?.audits || {};
         const score = Math.round((data.lighthouseResult?.categories?.performance?.score || 0) * 100);
         const issues = OPPORTUNITY_KEYS
@@ -218,7 +227,7 @@ export default function Audit() {
 
       const mobileData  = parse(mobile);
       const desktopData = parse(desktop);
-      setResults({ mobile: mobileData, desktop: desktopData, url: cleanUrl, checks: json.checks || {} });
+      setResults({ mobile: mobileData, desktop: desktopData, url: cleanUrl, checks: json.checks || {}, lighthouseFailed: !!json.lighthouseFailed });
       setStatus("done");
 
       // Értesítés + audit log mentése — fire-and-forget, nem blokkolja az UI-t
@@ -309,7 +318,7 @@ export default function Audit() {
                     {hu ? "Tárgy másolása" : "Copy subject"}
                   </button>
                   <button onClick={() => handleCopy(hu
-                    ? `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${url.trim() ? ` (${url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "")})` : ""}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\n${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
+                    ? `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${url.trim() ? ` (${url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "")})` : ""}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
                     : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
                   )} style={{
                     padding: "0.5rem 1.25rem",
@@ -410,9 +419,14 @@ export default function Audit() {
               <section style={{ padding: "5rem 2rem", background: "#f7f6f3" }}>
                 <div style={{ maxWidth: "640px", margin: "0 auto" }}>
                   <motion.div variants={fadeUp} initial="hidden" animate="visible">
-                    <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: "2rem" }}>
+                    <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: results.lighthouseFailed ? "0.5rem" : "2rem" }}>
                       {results.url}
                     </p>
+                    {results.lighthouseFailed && (
+                      <p style={{ fontSize: "0.78rem", color: "#c98a00", background: "#fff8ea", border: "1px solid #f0dfb0", borderRadius: "4px", padding: "0.6rem 0.9rem", marginBottom: "1.5rem", lineHeight: 1.5 }}>
+                        ⚠️ A Google Lighthouse-elemzés nem sikerült ezúttal (a szerver válaszolt, csak az elemzés hasalt el — pl. bot-védelem miatt) — ezért a mobil-teljesítmény alapú találatok most nem futottak, csak a HTTPS/PHP/WordPress/AngularJS-alapú ellenőrzések.
+                      </p>
+                    )}
 
                     {/* ── Másolható üzenet ── */}
                     <div style={{ padding: "2rem", background: "#fff", borderRadius: "8px", border: "1px solid #e8e8e8", borderLeft: "4px solid #1a1a1a" }}>
@@ -529,6 +543,11 @@ export default function Audit() {
                         ? "Ezen az oldalon nincs elég erős, önmagában is megálló ok a megkeresésre."
                         : "There's no issue on this site strong enough on its own to justify reaching out."}
                     </p>
+                    {results.lighthouseFailed && (
+                      <p style={{ fontSize: "0.78rem", color: "#c98a00", background: "#fff8ea", border: "1px solid #f0dfb0", borderRadius: "4px", padding: "0.6rem 0.9rem", marginTop: "1.25rem", lineHeight: 1.5, textAlign: "left" }}>
+                        ⚠️ A Google Lighthouse-elemzés nem sikerült ezúttal — a mobil-teljesítmény alapú találatok nem futottak le, csak a HTTPS/PHP/WordPress/AngularJS-alapú ellenőrzések. Ha bizonytalan vagy, próbáld újra később.
+                      </p>
+                    )}
                   </motion.div>
                 </div>
               </section>

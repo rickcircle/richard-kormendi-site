@@ -229,23 +229,49 @@ export default async function handler(req, res) {
       const hasBooking   = !!bookingMatch;
       const bookingName  = bookingMatch?.label || null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol };
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, pageReachable: true };
     } catch {
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null };
+      // FONTOS: ez akkor is lefut, ha a saját közvetlen fetch-ünk sikertelen
+      // (a szerver tényleg nem válaszol), tehát a pageReachable:false az
+      // egyetlen megbízható jelzésünk arra, hogy az oldal valóban nem érhető
+      // el — ezt használja a fő handler, amikor a Lighthouse is elhasal.
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, pageReachable: false };
     }
   };
 
   try {
-    const [mobile, desktop, page, httpNotEnforced] = await Promise.all([
+    // allSettled: egy Lighthouse-hiba (gyakori, pl. bot-védelem blokkolja a
+    // Google elemzőjét) nem szabad hogy elvigye az egész választ — a saját
+    // közvetlen fetch-ünk (checkPage) attól függetlenül lefuthat, és
+    // megbízhatóbban megmondja, hogy az oldal ténylegesen elérhető-e.
+    const [mobileSettled, desktopSettled, pageSettled, httpSettled] = await Promise.allSettled([
       fetchStrategy("mobile"),
       fetchStrategy("desktop"),
       checkPage(),
       checkHttpEnforced(),
     ]);
 
+    const mobile  = mobileSettled.status  === "fulfilled" ? mobileSettled.value  : null;
+    const desktop = desktopSettled.status === "fulfilled" ? desktopSettled.value : null;
+    const page = pageSettled.value; // checkPage() saját try/catch-csel sosem dob kifelé
+    const httpNotEnforced = httpSettled.value; // checkHttpEnforced() ugyanígy
+
+    const lighthouseFailed = !mobile || !desktop;
+
+    if (lighthouseFailed && !page.pageReachable) {
+      // Se a Lighthouse, se a saját közvetlen kérésünk nem járt sikerrel —
+      // ez tényleg arra utal, hogy az oldal valóban nem érhető el.
+      const reason = (mobileSettled.reason || desktopSettled.reason)?.message || "unknown";
+      console.error("PageSpeed proxy error (site unreachable):", reason);
+      return res.status(502).json({ error: "Site unreachable", detail: reason });
+    }
+
     // ── Extra ellenőrzések kinyerése a Lighthouse auditokból ──────────────────
-    const audits = mobile.lighthouseResult?.audits || {};
-    const desktopPerf = Math.round((desktop.lighthouseResult?.categories?.performance?.score || 0) * 100);
+    // Ha csak a Lighthouse hasalt el (de a saját fetch-ünk szerint az oldal
+    // válaszol), audits/desktopPerf üresen/0-val marad — a HTML-alapú
+    // ellenőrzések (HTTPS, PHP, WordPress stb.) attól még érvényesek.
+    const audits = mobile?.lighthouseResult?.audits || {};
+    const desktopPerf = desktop ? Math.round((desktop.lighthouseResult?.categories?.performance?.score || 0) * 100) : 0;
 
     // ── Cégminőség-pontszám (0–8) — mennyire befektető / jómódú a vállalkozás ──
     let businessQuality = 0;
@@ -296,7 +322,7 @@ export default async function handler(req, res) {
     };
 
     res.setHeader("Cache-Control", "s-maxage=300");
-    return res.status(200).json({ mobile, desktop, checks });
+    return res.status(200).json({ mobile, desktop, checks, lighthouseFailed });
   } catch (err) {
     console.error("PageSpeed proxy error:", err.message);
     return res.status(500).json({ error: "Server error", detail: err.message });
