@@ -137,10 +137,19 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
 // Ez nem az URL-auditból jön (nincs mit auditálni) — kézzel talált lead-ekhez,
 // ahol a cégnek csak Facebook-jelenléte van. Nem "javítás", hanem egyértelműen
 // új weboldal a pitch, szóval nincs benne PS_NEW_SITE (az redundáns lenne).
-function getNoWebsitePitch(businessName = "") {
+function getNoWebsitePitch(businessName = "", deadDomain = "") {
   const nameRef = businessName.trim() ? ` (${businessName.trim()})` : "";
-  const message = `Tisztelt Hölgyem/Uram!\n\nMegnéztem a Facebook oldalukat${nameRef}, és azt látom, hogy jelenleg nincs önálló weboldaluk. Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek felépíteni egy modern, gyors és ügyfélszerzésre optimalizált weboldalt. Ha nyitottak rá, szívesen átbeszélek Önökkel pár ötletet egy rövid, 5-10 perces kötetlen telefonhívás során — mikor lenne erre alkalmas időpont a héten?\n\n${SIGNATURE}`;
-  const subject = "Weboldal-lehetőség — jelenleg csak Facebook oldaluk van";
+  const domain = deadDomain.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
+  // Ha van egy halott domain, amit a Facebook oldaluk linkel, ez sokkal
+  // konkrétabb, kínosabb (tehát erősebb) nyitás, mint az általános "nincs
+  // önálló weboldaluk" — mutatja, hogy tényleg alaposan megnézted őket.
+  const opener = domain
+    ? `Megnéztem a Facebook oldalukat${nameRef}, és észrevettem, hogy van rajta egy link a weboldalukra (${domain}), de az jelenleg egyáltalán nem érhető el — aki megpróbál rákattintani, nem talál semmit.`
+    : `Megnéztem a Facebook oldalukat${nameRef}, és azt látom, hogy jelenleg nincs önálló weboldaluk.`;
+  const message = `Tisztelt Hölgyem/Uram!\n\n${opener} Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek felépíteni egy modern, gyors és ügyfélszerzésre optimalizált weboldalt. Ha nyitottak rá, szívesen átbeszélek Önökkel pár ötletet egy rövid, 5-10 perces kötetlen telefonhívás során — mikor lenne erre alkalmas időpont a héten?\n\n${SIGNATURE}`;
+  const subject = domain
+    ? "Weboldal-lehetőség — a Facebook oldalukon lévő link nem működik"
+    : "Weboldal-lehetőség — jelenleg csak Facebook oldaluk van";
   return { message, subject };
 }
 
@@ -158,6 +167,7 @@ export default function Audit() {
   const [proposalLink, setProposalLink]     = useState(null);
   const [proposalCopied, setProposalCopied] = useState(false);
   const [fbBusinessName, setFbBusinessName] = useState("");
+  const [fbDeadDomain, setFbDeadDomain] = useState("");
   const [fbCopied, setFbCopied] = useState(false);
 
   const handleCopyFb = (text) => {
@@ -261,7 +271,7 @@ export default function Audit() {
   const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks, resultDomain) : null;
   const outreachMsg = critical?.message || null;
   const outreachSubject = critical?.subject || null;
-  const fbPitch = getNoWebsitePitch(fbBusinessName);
+  const fbPitch = getNoWebsitePitch(fbBusinessName, fbDeadDomain);
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
@@ -357,6 +367,16 @@ export default function Audit() {
           <input
             type="text" value={fbBusinessName} onChange={e => setFbBusinessName(e.target.value)}
             placeholder="Cégnév (opcionális, csak a személyre szabáshoz)"
+            style={{
+              width: "100%", padding: "0.75rem 1rem", marginBottom: "0.75rem",
+              background: "#fff", border: "1px solid #ddd", borderRadius: "4px",
+              color: "#1a1a1a", fontSize: "0.9rem", fontFamily: "inherit", outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+          <input
+            type="text" value={fbDeadDomain} onChange={e => setFbDeadDomain(e.target.value)}
+            placeholder="Halott domain, ha a Facebook oldalukon linkelnek egy nem működő weboldalt (opcionális)"
             style={{
               width: "100%", padding: "0.75rem 1rem", marginBottom: "1.25rem",
               background: "#fff", border: "1px solid #ddd", borderRadius: "4px",
