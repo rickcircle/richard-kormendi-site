@@ -96,7 +96,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     ? `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. ${closing}`
     : `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. ${closing}`;
 
-  const message = `${body}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
+  const message = `${body}\n\nKeressenek bizalommal!\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
   const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol"].includes(t));
@@ -279,7 +279,7 @@ export default function Audit() {
                     {hu ? "Tárgy másolása" : "Copy subject"}
                   </button>
                   <button onClick={() => handleCopy(hu
-                    ? `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${url.trim() ? ` (${url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "")})` : ""}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
+                    ? `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${url.trim() ? ` (${url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "")})` : ""}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő.\n\nKeressenek bizalommal!\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
                     : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
                   )} style={{
                     padding: "0.5rem 1.25rem",
