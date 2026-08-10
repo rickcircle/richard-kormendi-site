@@ -1,0 +1,60 @@
+{
+  "id": "2026-08-10-1201-www-bszkft-hu",
+  "url": "http://www.bszkft.hu",
+  "mobileScore": 100,
+  "desktopScore": 100,
+  "checks": {
+    "https": false,
+    "httpNotEnforced": false,
+    "metaDescription": false,
+    "tapTargets": false,
+    "fontSizeOk": false,
+    "hasPhoneLink": false,
+    "hasAnyPhone": false,
+    "hasSchemaOrg": false,
+    "hasLocalBizSchema": false,
+    "hasMapsEmbed": false,
+    "hasFacebook": false,
+    "hasInstagram": false,
+    "copyrightYear": 6243,
+    "siteIsRecent": true,
+    "hasAnalytics": true,
+    "pageTitle": "Hiteles�t�s / Verification",
+    "hasChatbot": false,
+    "chatbotName": null,
+    "hasAiDisclosure": null,
+    "hasBooking": false,
+    "bookingName": null,
+    "phpVersion": "5.4.45",
+    "phpEol": true,
+    "isWordPress": false,
+    "businessQuality": 3
+  },
+  "pageTitle": "Hiteles�t�s / Verification",
+  "date": "2026-08-10T12:01:15.434Z",
+  "services": [
+    {
+      "key": "https",
+      "title": "HTTPS — Biztonságos kapcsolat",
+      "desc": "SSL tanúsítvány telepítése és beállítása. Megszűnik a \"Nem biztonságos\" figyelmeztetés minden böngészőben.",
+      "price": 35000,
+      "optional": false
+    },
+    {
+      "key": "maintenance",
+      "title": "Havi karbantartás + teljesítményriport",
+      "desc": "Havonta egyoldalas összefoglaló: forgalom, sebesség, Google helyezés. Bármikor lemondható.",
+      "price": 15000,
+      "monthly": true,
+      "optional": true
+    }
+  ],
+  "total": 35000,
+  "contact": {
+    "phone": "+36 30 148 0917",
+    "phoneRaw": "+36301480917",
+    "email": "richard.kormendi@gmail.com",
+    "web": "richardkormendi.com",
+    "instagram": "https://www.instagram.com/rickormendi/"
+  }
+}
