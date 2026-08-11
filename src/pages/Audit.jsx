@@ -103,7 +103,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   }
   if (jqueryVeryOld) {
     types.push("jqueryold");
-    bullets.push(`a weboldal egy 2010-es évek eleji JavaScript-könyvtárat (jQuery ${checks.jqueryVersion}) használ — ez önmagában is jelzi, hogy a teljes oldal jó eséllyel egy évtizede nem lett érdemben frissítve, sem technikailag, sem dizájnban`);
+    bullets.push(`a weboldal egy elavult JavaScript-könyvtárat (jQuery ${checks.jqueryVersion}) használ, aminek már 2016 óta nincs érdemi fejlesztése — ez önmagában is jelzi, hogy a teljes oldal jó eséllyel egy évtizede nem lett érdemben frissítve, sem technikailag, sem dizájnban`);
   }
   if (phpErrorsExposed) {
     types.push("phperrors");

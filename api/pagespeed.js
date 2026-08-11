@@ -192,15 +192,19 @@ export default async function handler(req, res) {
 
       // ── Ősrégi jQuery — proxy a teljes oldal elavultságára ───────────────────
       // Nem önmagában a jQuery a kockázat (az simán cserélhető) — hanem az,
-      // hogy egy 2010-2012 körüli verziószám erős jele annak, hogy az EGÉSZ
-      // oldal érdemben nem lett frissítve azóta (design, kód, minden).
-      const jqueryVersionMatch = html.match(/jquery[.-](\d+)\.(\d+)(?:\.(\d+))?(?:\.min)?\.js/i);
+      // hogy egy 1.x/2.x-es verziószám erős jele annak, hogy az EGÉSZ oldal
+      // évek/évtizede nem lett érdemben frissítve (design, kód, minden).
+      // FONTOS: a verzió gyakran nem a fájlnévben van (jquery-1.7.js), hanem
+      // egy CDN-es útvonal-szegmensben (.../jquery/1.11.1/jquery.min.js) — a
+      // mintának mindkettőt el kell kapnia, ezért a "/" is elfogadott elválasztó.
+      const jqueryVersionMatch = html.match(/jquery[./-](\d+)\.(\d+)(?:\.(\d+))?/i);
       const jqueryVersion = jqueryVersionMatch
         ? `${jqueryVersionMatch[1]}.${jqueryVersionMatch[2]}${jqueryVersionMatch[3] ? `.${jqueryVersionMatch[3]}` : ""}`
         : null;
-      // jQuery 1.4 (2010) – 1.8 (2012 augusztus) közötti verziók = kb. 2010-2012.
+      // jQuery 3.0 (2016 június) óta van csak aktív fejlesztés — minden 1.x/2.x
+      // verzió (utolsó ilyen kiadás: 1.12.4, 2016 május) mára 10+ éves.
       const jqueryVeryOld = jqueryVersionMatch
-        ? (parseInt(jqueryVersionMatch[1], 10) === 1 && parseInt(jqueryVersionMatch[2], 10) <= 8)
+        ? parseInt(jqueryVersionMatch[1], 10) < 3
         : null;
 
       // ── PHP hibaüzenet nyilvánosan látszik ────────────────────────────────────
