@@ -203,6 +203,27 @@ export default async function handler(req, res) {
         ? (parseInt(jqueryVersionMatch[1], 10) === 1 && parseInt(jqueryVersionMatch[2], 10) <= 8)
         : null;
 
+      // ── PHP hibaüzenet nyilvánosan látszik ────────────────────────────────────
+      // A PHP alapértelmezett HTML-es hibaformátuma (display_errors=on éles
+      // környezetben) — ez file-elérési utat is elárul, valódi info-szivárgás.
+      const phpErrorsExposed = /<b>(Notice|Warning|Fatal error|Deprecated|Parse error)<\/b>:/i.test(html);
+
+      // ── Halott, klasszikus Google Analytics (ga.js/_gaq) ─────────────────────
+      // A Google 2023. július 1-én véglegesen leállította a Universal Analytics-
+      // ot (aminek a ga.js/_gaq az elődje/társa) — ha ez fut, évek óta nem
+      // gyűlik adat, a cég azt hiheti, méri a forgalmát, valójában nem.
+      const deadGoogleAnalytics = /_gaq\.push|google-analytics\.com\/ga\.js/i.test(html);
+
+      // ── Flash/SWF tartalom ────────────────────────────────────────────────────
+      // A Flash Playert minden böngésző 2020 végén véglegesen kivezette — egy
+      // ilyen tartalom ma senkinek nem jelenik meg, nincs "csak javítjuk" út.
+      const hasFlash = /\.swf["')]|shockwave-flash|swfobject/i.test(html);
+
+      // ── Hiányzó viewport meta tag ─────────────────────────────────────────────
+      // Ha ez nincs a HTML-ben, az oldal garantáltan nem reszponzív — erős jel
+      // a mobil-first kor (kb. 2012) előtti buildekre.
+      const missingViewport = !/<meta[^>]+name=["']viewport["']/i.test(html);
+
       // ── Foglalási rendszer detektálás ──────────────────────────────────────
       const BOOKING_PATTERNS = [
         { label: "Calendly",   pattern: /calendly/i },
@@ -242,13 +263,13 @@ export default async function handler(req, res) {
       const hasBooking   = !!bookingMatch;
       const bookingName  = bookingMatch?.label || null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, pageReachable: true };
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, pageReachable: true };
     } catch {
       // FONTOS: ez akkor is lefut, ha a saját közvetlen fetch-ünk sikertelen
       // (a szerver tényleg nem válaszol), tehát a pageReachable:false az
       // egyetlen megbízható jelzésünk arra, hogy az oldal valóban nem érhető
       // el — ezt használja a fő handler, amikor a Lighthouse is elhasal.
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, pageReachable: false };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, pageReachable: false };
     }
   };
 
@@ -332,6 +353,10 @@ export default async function handler(req, res) {
       wpCoreEol:       page.wpCoreEol,
       jqueryVersion:   page.jqueryVersion,
       jqueryVeryOld:   page.jqueryVeryOld,
+      phpErrorsExposed: page.phpErrorsExposed,
+      deadGoogleAnalytics: page.deadGoogleAnalytics,
+      hasFlash:        page.hasFlash,
+      missingViewport: page.missingViewport,
       // Cégminőség
       businessQuality: businessQuality,
     };

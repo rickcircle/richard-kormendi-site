@@ -58,6 +58,10 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const angularEol      = checks.isAngularJs === true;
   const wpCoreEol       = checks.wpCoreEol === true;
   const jqueryVeryOld   = checks.jqueryVeryOld === true;
+  const phpErrorsExposed = checks.phpErrorsExposed === true;
+  const deadGoogleAnalytics = checks.deadGoogleAnalytics === true;
+  const hasFlash        = checks.hasFlash === true;
+  const missingViewport = checks.missingViewport === true;
   // PHP 7.x-ről 8-ra váltani jellemzően csak szerverbeállítás + apró javítás —
   // valódi frissítési út van. PHP 5.x-nél viszont a kód szinte biztos, hogy a
   // rég megszűnt mysql_* függvényeket használja, ami PHP 7+ alatt egyáltalán
@@ -68,7 +72,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   // 2010-2012-es verziószám azt jelzi, hogy a TELJES oldal (design, kód,
   // minden) évtizede érintetlen — ez ugyanolyan "cseréljük le" jel, mint az
   // AngularJS vagy a nagyon régi PHP.
-  const needsRebuild    = angularEol || phpVeryOld || jqueryVeryOld;
+  const needsRebuild    = angularEol || phpVeryOld || jqueryVeryOld || hasFlash || missingViewport;
   const mobileBroken    = bigGap && mobileScore < 55;
   // Ha mobileBroken is fennáll, azt mutatjuk — a kettő ugyanazt a tünetet írja
   // le más szögből, kettő együtt redundáns lenne.
@@ -101,6 +105,22 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     types.push("jqueryold");
     bullets.push(`a weboldal egy 2010-es évek eleji JavaScript-könyvtárat (jQuery ${checks.jqueryVersion}) használ — ez önmagában is jelzi, hogy a teljes oldal jó eséllyel egy évtizede nem lett érdemben frissítve, sem technikailag, sem dizájnban`);
   }
+  if (phpErrorsExposed) {
+    types.push("phperrors");
+    bullets.push("nyilvánosan látszik rajta egy PHP-hibaüzenet, ami a szerver belső fájlrendszerének elérési útját is elárulja — ez tényleges információszivárgás, amit egy támadó felhasználhat a rendszer feltérképezésére, és emellett is nagyon nem professzionális benyomást kelt a látogatóknak");
+  }
+  if (deadGoogleAnalytics) {
+    types.push("deadga");
+    bullets.push("a régi, klasszikus Google Analytics-kódot (ga.js) használják, amit a Google 2023. július 1-én véglegesen leállított — vagyis évek óta nem gyűlik semmilyen valós látogatottsági adat, holott azt hihetik, hogy mérik a forgalmukat");
+  }
+  if (hasFlash) {
+    types.push("flash");
+    bullets.push("van rajta Flash-alapú tartalom, amit minden böngésző 2020 vége óta véglegesen kivezetett — ez a tartalom ma senkinek nem jelenik meg, garantáltan");
+  }
+  if (missingViewport) {
+    types.push("noviewport");
+    bullets.push("hiányzik róla a mobil-nézetért felelős alapbeállítás (viewport), ami azt jelenti, hogy az oldal garantáltan nem reszponzív — ez erős jele annak, hogy a teljes oldal a mobil-first kor (kb. 2012) előtt készült");
+  }
   if (mobileBroken) {
     types.push("mobilebroken");
     bullets.push("asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata — ma már az érdeklődők nagy része telefonon keres, és ez sok látogatót eltérít, mielőtt még kapcsolatba lépnének");
@@ -121,14 +141,17 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
 
   const message = `${body} ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
-  // Tárgy: biztonsági jellegű, ha https/php érintett, különben teljesítmény-jellegű.
-  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold"].includes(t));
-  const hasMobileIssue   = types.some(t => ["mobilebroken", "mobileslow"].includes(t));
+  // Tárgy: biztonsági jellegű, ha https/php/info-szivárgás érintett, mobil-jellegű,
+  // ha a reszponzivitás/teljesítmény érintett, egyébként egy semleges tárgy.
+  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold", "phperrors"].includes(t));
+  const hasMobileIssue   = types.some(t => ["mobilebroken", "mobileslow", "noviewport", "flash"].includes(t));
   const subject = hasSecurityIssue && hasMobileIssue
     ? "Pár fontos észrevétel a weboldalukhoz"
     : hasSecurityIssue
     ? "Biztonsági észrevétel a weboldalukhoz"
-    : "Weboldal-észrevétel — mobil felhasználói élmény";
+    : hasMobileIssue
+    ? "Weboldal-észrevétel — mobil felhasználói élmény"
+    : "Weboldal-észrevétel — érdemes ránézni";
 
   return { types, message, subject };
 }
