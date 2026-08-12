@@ -33,6 +33,22 @@ async function checkAlreadySearched(hostname) {
   }
 }
 
+// Ha egy https:// fetch elhasal, gyakran nem "az oldal nem elérhető" a valódi
+// ok, hanem hogy az SSL-tanúsítvány rossz domainre van kiállítva (megosztott
+// tárhely, sosem cserélt default cert stb.) — ez egy sokkal konkrétabb,
+// erősebb találat, mint az általános "nem töltött be" üzenet, úgyhogy
+// külön felismerjük a Node/undici TLS-hibakódjaiból.
+function classifyTlsError(err) {
+  const code = err?.cause?.code || err?.code || "";
+  const msg  = err?.cause?.message || err?.message || "";
+  const combined = `${code} ${msg}`;
+  if (/ERR_TLS_CERT_ALTNAME_INVALID|altnames|does not match/i.test(combined)) return "hostname_mismatch";
+  if (/CERT_HAS_EXPIRED/i.test(combined)) return "expired";
+  if (/SELF_SIGNED|UNABLE_TO_VERIFY_LEAF_SIGNATURE|DEPTH_ZERO/i.test(combined)) return "untrusted";
+  if (/CERT|TLS|SSL/i.test(combined)) return "other";
+  return null;
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -299,13 +315,15 @@ export default async function handler(req, res) {
       const hasBooking   = !!bookingMatch;
       const bookingName  = bookingMatch?.label || null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, pageReachable: true };
-    } catch {
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, pageReachable: true, tlsError: null };
+    } catch (err) {
       // FONTOS: ez akkor is lefut, ha a saját közvetlen fetch-ünk sikertelen
       // (a szerver tényleg nem válaszol), tehát a pageReachable:false az
       // egyetlen megbízható jelzésünk arra, hogy az oldal valóban nem érhető
       // el — ezt használja a fő handler, amikor a Lighthouse is elhasal.
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, pageReachable: false };
+      // A tlsError plusz információ: gyakran nem is elérhetetlen az oldal,
+      // csak a tanúsítványa rossz domainre van kiállítva.
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, pageReachable: false, tlsError: classifyTlsError(err) };
     }
   };
 
@@ -337,8 +355,8 @@ export default async function handler(req, res) {
       // Se a Lighthouse, se a saját közvetlen kérésünk nem járt sikerrel —
       // ez tényleg arra utal, hogy az oldal valóban nem érhető el.
       const reason = (mobileSettled.reason || desktopSettled.reason)?.message || "unknown";
-      console.error("PageSpeed proxy error (site unreachable):", reason);
-      return res.status(502).json({ error: "Site unreachable", detail: reason });
+      console.error("PageSpeed proxy error (site unreachable):", reason, "tlsError:", page.tlsError);
+      return res.status(502).json({ error: "Site unreachable", detail: reason, tlsError: page.tlsError });
     }
 
     // ── Extra ellenőrzések kinyerése a Lighthouse auditokból ──────────────────

@@ -176,6 +176,28 @@ function getNoWebsitePitch(businessName = "", deadDomain = "") {
   return { message, subject };
 }
 
+// ── Oldal nem érhető el ──────────────────────────────────────────────────────
+// FONTOS: "nem érhető el" gyakran nem azt jelenti, hogy az oldal tényleg le
+// van állva — sokszor a https-tanúsítvány van rossz domainre kiállítva
+// (megosztott tárhely, sosem cserélt default cert), és emiatt blokkolja
+// minden böngésző a kapcsolatot. Ez egy sokkal konkrétabb, erősebb találat,
+// mint az általános "nem töltött be" — külön szöveget kap.
+function getUnreachableMessage(domain, tlsError) {
+  const domainRef = domain ? ` (${domain})` : "";
+  if (tlsError) {
+    return {
+      explanation: "Ez nem feltétlenül azt jelenti, hogy az oldal teljesen üzemen kívül van — a biztonságos (https) kapcsolatuk tanúsítványával van probléma, emiatt minden böngésző blokkolja a hozzáférést. Ez önmagában is elég erős, konkrét ok a megkeresésre.",
+      subject: "SSL-tanúsítvány hiba a weboldalukon",
+      message: `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${domainRef}, és azt találtam, hogy a biztonságos (https) verziójuk el van rontva${tlsError === "hostname_mismatch" ? " — a tanúsítvány egy másik domainre van kiállítva, nem az Önökére" : ""}. Emiatt aki a böngészőjében rákattint vagy beírja a https-es címüket, egy ijesztő "Nem biztonságos kapcsolat" hibaüzenetet kap, amit a legtöbb látogató be sem enged. Úgy gondolom, hogy ez valós kockázatot jelent, mert sok érdeklődő pont emiatt fordulhat el Önöktől anélkül, hogy egyáltalán látnák az oldalt. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
+    };
+  }
+  return {
+    explanation: "Ez önmagában is kritikus hiba, és erős ok a megkeresésre — lehet, hogy csak nálad nem töltött be, ellenőrizd az URL-t; de ha valóban nem elérhető az oldal, ez önmagában véve is elég a hideg megkereséshez.",
+    subject: "A weboldal nem töltött be",
+    message: `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${domainRef}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
+  };
+}
+
 // ── Főkomponens ──────────────────────────────────────────────────────────────
 export default function Audit() {
   const { lang } = useLang();
@@ -184,6 +206,7 @@ export default function Audit() {
   const [url, setUrl] = useState("");
   const [status, setStatus] = useState("idle");
   const [errorDetail, setErrorDetail] = useState("");
+  const [errorTlsError, setErrorTlsError] = useState(null);
   const [results, setResults] = useState(null);
   const [copied, setCopied] = useState(false);
   const [proposalStatus, setProposalStatus] = useState("idle"); // idle | loading | done | error
@@ -247,10 +270,14 @@ export default function Audit() {
     if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = "https://" + cleanUrl;
     setStatus("loading");
     setResults(null);
+    setErrorTlsError(null);
     try {
       const res = await fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}`);
       const json = await res.json().catch(() => null);
-      if (!res.ok) throw new Error(json?.detail || json?.error || `HTTP ${res.status}`);
+      if (!res.ok) {
+        setErrorTlsError(json?.tlsError || null);
+        throw new Error(json?.detail || json?.error || `HTTP ${res.status}`);
+      }
       const { mobile, desktop } = json;
       // A Lighthouse néha elhasal (pl. bot-védelem blokkolja), miközben a
       // saját közvetlen fetch-ünk (checks) sikeres — ilyenkor mobile/desktop
@@ -295,6 +322,8 @@ export default function Audit() {
   const outreachMsg = critical?.message || null;
   const outreachSubject = critical?.subject || null;
   const fbPitch = getNoWebsitePitch(fbBusinessName, fbDeadDomain);
+  const unreachableDomain = url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
+  const unreachablePitch = getUnreachableMessage(unreachableDomain, errorTlsError);
 
   return (
     <div style={{ fontFamily: "'Inter', sans-serif", color: "#1a1a1a", background: "#fff", minHeight: "100vh" }}>
@@ -341,16 +370,18 @@ export default function Audit() {
             {status === "error" && (
               <div style={{ marginTop: "1.5rem", textAlign: "left", maxWidth: "480px", marginLeft: "auto", marginRight: "auto" }}>
                 <p style={{ fontSize: "0.85rem", color: "#e74c3c", fontWeight: 600 }}>
-                  {hu ? "Az oldal nem töltött be / nem elérhető." : "The page didn't load / isn't reachable."}
+                  {hu
+                    ? (errorTlsError ? "SSL-tanúsítvány hiba — a https verzió el van rontva." : "Az oldal nem töltött be / nem elérhető.")
+                    : "The page didn't load / isn't reachable."}
                   {errorDetail ? <span style={{ display: "block", fontSize: "0.75rem", color: "#aaa", marginTop: "0.25rem", fontWeight: 400 }}>{errorDetail}</span> : null}
                 </p>
                 <p style={{ fontSize: "0.8rem", color: "#999", lineHeight: 1.6, marginTop: "0.6rem" }}>
                   {hu
-                    ? "Ez önmagában is kritikus hiba, és erős ok a megkeresésre — lehet, hogy csak nálad nem töltött be, ellenőrizd az URL-t; de ha valóban nem elérhető az oldal, ez önmagában véve is elég a hideg megkereséshez."
+                    ? unreachablePitch.explanation
                     : "This alone is a critical issue and a strong reason to reach out — double-check the URL first, but if the site is genuinely unreachable, that's reason enough on its own."}
                 </p>
                 <div style={{ marginTop: "1rem", display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                  <button onClick={() => handleCopy(hu ? "A weboldal nem töltött be" : "The website didn't load")} style={{
+                  <button onClick={() => handleCopy(hu ? unreachablePitch.subject : "The website didn't load")} style={{
                     padding: "0.5rem 1.25rem",
                     background: "transparent",
                     color: "#555", border: "1px solid #ddd", borderRadius: "4px",
@@ -360,7 +391,7 @@ export default function Audit() {
                     {hu ? "Tárgy másolása" : "Copy subject"}
                   </button>
                   <button onClick={() => handleCopy(hu
-                    ? `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${url.trim() ? ` (${url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "")})` : ""}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`
+                    ? unreachablePitch.message
                     : "Hi! I tried to look at your website, but it didn't load — either very slow or currently unreachable. That's a real problem, since anyone searching for you right now is likely hitting the same issue. Happy to help make sure that doesn't happen."
                   )} style={{
                     padding: "0.5rem 1.25rem",
