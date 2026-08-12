@@ -1,6 +1,38 @@
 // Vercel serverless proxy — Google PageSpeed Insights API
 // maxDuration: 60s (vercel.json-ban konfigurálva)
 
+import { createClient } from "redis";
+
+const SEEN_KEY = "rk:audits:seen"; // hostname -> ISO dátum, amikor ELŐSZÖR auditáltuk
+
+let clientPromise;
+function getRedis() {
+  if (!clientPromise) {
+    const client = createClient({ url: process.env.REDIS_URL });
+    client.on("error", err => console.error("Redis kliens hiba:", err.message));
+    clientPromise = client.connect().then(() => client);
+  }
+  return clientPromise;
+}
+
+// Ha ezt a domaint már auditáltuk korábban, visszaadja MIKOR (első alkalom) —
+// ha ez az első alkalom, elmenti a mostani időpontot, és null-t ad vissza.
+// Sosem dob hibát kifelé — ha a Redis nem elérhető, egyszerűen nincs "már
+// megkerested" jelzés, de az audit maga attól még lefut.
+async function checkAlreadySearched(hostname) {
+  if (!hostname) return null;
+  try {
+    const client = await getRedis();
+    const existing = await client.hGet(SEEN_KEY, hostname);
+    if (existing) return existing;
+    await client.hSet(SEEN_KEY, hostname, new Date().toISOString());
+    return null;
+  } catch (err) {
+    console.error("checkAlreadySearched hiba:", err.message);
+    return null;
+  }
+}
+
 export default async function handler(req, res) {
   res.setHeader("Access-Control-Allow-Origin", "*");
   res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
@@ -282,17 +314,22 @@ export default async function handler(req, res) {
     // Google elemzőjét) nem szabad hogy elvigye az egész választ — a saját
     // közvetlen fetch-ünk (checkPage) attól függetlenül lefuthat, és
     // megbízhatóbban megmondja, hogy az oldal ténylegesen elérhető-e.
-    const [mobileSettled, desktopSettled, pageSettled, httpSettled] = await Promise.allSettled([
+    let hostname = null;
+    try { hostname = new URL(url).hostname; } catch { /* marad null */ }
+
+    const [mobileSettled, desktopSettled, pageSettled, httpSettled, seenSettled] = await Promise.allSettled([
       fetchStrategy("mobile"),
       fetchStrategy("desktop"),
       checkPage(),
       checkHttpEnforced(),
+      checkAlreadySearched(hostname),
     ]);
 
     const mobile  = mobileSettled.status  === "fulfilled" ? mobileSettled.value  : null;
     const desktop = desktopSettled.status === "fulfilled" ? desktopSettled.value : null;
     const page = pageSettled.value; // checkPage() saját try/catch-csel sosem dob kifelé
     const httpNotEnforced = httpSettled.value; // checkHttpEnforced() ugyanígy
+    const previousAuditAt = seenSettled.status === "fulfilled" ? seenSettled.value : null;
 
     const lighthouseFailed = !mobile || !desktop;
 
@@ -366,7 +403,7 @@ export default async function handler(req, res) {
     };
 
     res.setHeader("Cache-Control", "s-maxage=300");
-    return res.status(200).json({ mobile, desktop, checks, lighthouseFailed });
+    return res.status(200).json({ mobile, desktop, checks, lighthouseFailed, previousAuditAt });
   } catch (err) {
     console.error("PageSpeed proxy error:", err.message);
     return res.status(500).json({ error: "Server error", detail: err.message });

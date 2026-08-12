@@ -269,7 +269,7 @@ export default function Audit() {
 
       const mobileData  = parse(mobile);
       const desktopData = parse(desktop);
-      setResults({ mobile: mobileData, desktop: desktopData, url: cleanUrl, checks: json.checks || {}, lighthouseFailed: !!json.lighthouseFailed });
+      setResults({ mobile: mobileData, desktop: desktopData, url: cleanUrl, checks: json.checks || {}, lighthouseFailed: !!json.lighthouseFailed, previousAuditAt: json.previousAuditAt || null });
       setStatus("done");
 
       // Értesítés + audit log mentése — fire-and-forget, nem blokkolja az UI-t
@@ -471,9 +471,14 @@ export default function Audit() {
               <section style={{ padding: "5rem 2rem", background: "#f7f6f3" }}>
                 <div style={{ maxWidth: "640px", margin: "0 auto" }}>
                   <motion.div variants={fadeUp} initial="hidden" animate="visible">
-                    <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: results.lighthouseFailed ? "0.5rem" : "2rem" }}>
+                    <p style={{ fontSize: "0.75rem", letterSpacing: "0.15em", color: "#999", textTransform: "uppercase", marginBottom: results.lighthouseFailed || results.previousAuditAt ? "0.5rem" : "2rem" }}>
                       {results.url}
                     </p>
+                    {results.previousAuditAt && (
+                      <p style={{ fontSize: "1.05rem", fontWeight: 700, color: "#b3261e", background: "#fdecea", border: "2px solid #f5b7b1", borderRadius: "6px", padding: "0.9rem 1.25rem", marginBottom: "1.5rem" }}>
+                        ⚠️ Ezt a domaint már megkerested korábban — {new Date(results.previousAuditAt).toLocaleString("hu-HU", { timeZone: "Europe/Budapest", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    )}
                     {results.lighthouseFailed && (
                       <p style={{ fontSize: "0.78rem", color: "#c98a00", background: "#fff8ea", border: "1px solid #f0dfb0", borderRadius: "4px", padding: "0.6rem 0.9rem", marginBottom: "1.5rem", lineHeight: 1.5 }}>
                         ⚠️ A Google Lighthouse-elemzés nem sikerült ezúttal (a szerver válaszolt, csak az elemzés hasalt el — pl. bot-védelem miatt) — ezért a mobil-teljesítmény alapú találatok most nem futottak, csak a HTTPS/PHP/WordPress/AngularJS-alapú ellenőrzések.
@@ -595,6 +600,11 @@ export default function Audit() {
                         ? "Ezen az oldalon nincs elég erős, önmagában is megálló ok a megkeresésre."
                         : "There's no issue on this site strong enough on its own to justify reaching out."}
                     </p>
+                    {results.previousAuditAt && (
+                      <p style={{ fontSize: "1.05rem", fontWeight: 700, color: "#b3261e", background: "#fdecea", border: "2px solid #f5b7b1", borderRadius: "6px", padding: "0.9rem 1.25rem", marginTop: "1.25rem", textAlign: "left" }}>
+                        ⚠️ Ezt a domaint már megkerested korábban — {new Date(results.previousAuditAt).toLocaleString("hu-HU", { timeZone: "Europe/Budapest", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" })}
+                      </p>
+                    )}
                     {results.lighthouseFailed && (
                       <p style={{ fontSize: "0.78rem", color: "#c98a00", background: "#fff8ea", border: "1px solid #f0dfb0", borderRadius: "4px", padding: "0.6rem 0.9rem", marginTop: "1.25rem", lineHeight: 1.5, textAlign: "left" }}>
                         ⚠️ A Google Lighthouse-elemzés nem sikerült ezúttal — a mobil-teljesítmény alapú találatok nem futottak le, csak a HTTPS/PHP/WordPress/AngularJS-alapú ellenőrzések. Ha bizonytalan vagy, próbáld újra később.
