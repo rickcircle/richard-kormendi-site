@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { fadeUp, staggerContainer, staggerItem } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
+import { track } from "../utils/track";
 
 const ACCENT = "#d16b63";
 // Erősebb, telítettebb piros — kizárólag a kiemelt (legfontosabb) elemekhez, hogy
@@ -121,7 +122,7 @@ export default function Press() {
             const Tag = item.href ? motion.a : motion.div;
             return (
               <Tag key={i} variants={staggerItem}
-                {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer" } : {})}
+                {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer", onClick: () => track("click", { label: `press: ${item.outlet}` }) } : {})}
                 style={{
                   position: "relative",
                   display: "flex", flexDirection: "column", gap: "1rem",
@@ -176,7 +177,7 @@ export default function Press() {
               const Tag = item.href ? motion.a : motion.div;
               return (
                 <Tag key={i} variants={staggerItem}
-                  {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer" } : {})}
+                  {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer", onClick: () => track("click", { label: `press: ${item.outlet}` }) } : {})}
                   className="press-card"
                   style={{
                     display: "flex", flexDirection: "column", gap: "0.85rem",

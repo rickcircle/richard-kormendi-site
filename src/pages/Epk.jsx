@@ -3,6 +3,7 @@ import { fadeUp, staggerContainer, staggerItem } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { track } from "../utils/track";
 
 // Ez az oldal NEM jelenik meg a navigációban — bookereknek / sajtónak szól
 // Direct URL: /epk
@@ -146,11 +147,12 @@ export default function Epk() {
           </p>
           <div style={{ display: "flex", justifyContent: "center", gap: "1rem", flexWrap: "wrap" }}>
             <button
-              onClick={() => window.print()}
+              onClick={() => { track("click", { label: "epk_pdf_download" }); window.print(); }}
               style={{ padding: "0.9rem 2rem", background: ACCENT, color: "#fff", border: "none", borderRadius: "4px", fontSize: "0.9rem", fontWeight: 600, letterSpacing: "0.05em", cursor: "pointer", boxShadow: "0 0 24px rgba(209, 107, 99,0.3)" }}>
               {hu ? "Letöltés PDF-ként" : "Download as PDF"}
             </button>
             <a href="mailto:richard.kormendi@gmail.com"
+              onClick={() => track("click", { label: "epk_booking_contact" })}
               style={{ padding: "0.9rem 2rem", background: "transparent", color: TEXT, border: `1px solid ${BORDER}`, borderRadius: "4px", fontSize: "0.9rem", fontWeight: 500, letterSpacing: "0.05em", textDecoration: "none" }}>
               {hu ? "Booking kapcsolat" : "Booking contact"}
             </a>
@@ -233,6 +235,7 @@ export default function Epk() {
                 </p>
                 {item.url && (
                   <a href={item.url} target="_blank" rel="noopener noreferrer"
+                    onClick={() => track("click", { label: `epk_press: ${item.outlet}` })}
                     style={{ fontSize: "0.78rem", color: "rgba(245,241,234,0.5)", letterSpacing: "0.05em", textDecoration: "none", marginTop: "auto", paddingTop: "0.25rem" }}>
                     {hu ? "Cikk megtekintése →" : "View article →"}
                   </a>
@@ -262,6 +265,7 @@ export default function Epk() {
                 <img src={photo.src} alt={hu ? photo.label.hu : photo.label.en}
                   style={{ width: "100%", aspectRatio: "3/4", objectFit: "cover", display: "block" }} />
                 <a href={photo.src} download={photo.name}
+                  onClick={() => track("click", { label: `epk_photo_download: ${photo.name}` })}
                   style={{ display: "block", padding: "0.6rem", fontSize: "0.75rem", color: "rgba(245,241,234,0.6)", letterSpacing: "0.05em", textDecoration: "none", textAlign: "center", background: CARD_BG }}>
                   ↓ {hu ? photo.label.hu : photo.label.en}
                 </a>
@@ -283,6 +287,7 @@ export default function Epk() {
                 const primary = link.name === "Spotify";
                 return (
                   <a key={link.name} href={link.url} target="_blank" rel="noopener noreferrer"
+                    onClick={() => track("click", { label: `epk_stream: ${link.name}` })}
                     style={{
                       padding: "0.75rem 1.5rem",
                       border: `1px solid ${primary ? ACCENT : BORDER}`,
@@ -351,13 +356,13 @@ export default function Epk() {
             <div style={{ display: "inline-flex", flexDirection: "column", gap: "1rem", textAlign: "left" }}>
               <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
                 <span style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", width: "90px", flexShrink: 0 }}>Email</span>
-                <a href="mailto:richard.kormendi@gmail.com" style={{ color: TEXT, fontSize: "0.95rem", textDecoration: "none", borderBottom: `1px solid ${BORDER}` }}>
+                <a href="mailto:richard.kormendi@gmail.com" onClick={() => track("click", { label: "epk_booking_contact" })} style={{ color: TEXT, fontSize: "0.95rem", textDecoration: "none", borderBottom: `1px solid ${BORDER}` }}>
                   richard.kormendi@gmail.com
                 </a>
               </div>
               <div style={{ display: "flex", gap: "1rem", alignItems: "center" }}>
                 <span style={{ fontSize: "0.75rem", letterSpacing: "0.1em", color: "rgba(245,241,234,0.4)", textTransform: "uppercase", width: "90px", flexShrink: 0 }}>Instagram</span>
-                <a href="https://www.instagram.com/rickormendi/" target="_blank" rel="noopener noreferrer" style={{ color: TEXT, fontSize: "0.95rem", textDecoration: "none", borderBottom: `1px solid ${BORDER}` }}>
+                <a href="https://www.instagram.com/rickormendi/" target="_blank" rel="noopener noreferrer" onClick={() => track("click", { label: "epk_instagram" })} style={{ color: TEXT, fontSize: "0.95rem", textDecoration: "none", borderBottom: `1px solid ${BORDER}` }}>
                   @rickormendi
                 </a>
               </div>
