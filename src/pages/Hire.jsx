@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import { track } from "../utils/track";
 import {
   Globe, Search, BarChart2, ClipboardList,
   Bot, Wrench, Check, Phone, Mail, MapPin,
@@ -227,6 +228,7 @@ export default function Hire() {
         body: JSON.stringify({ ...form, _subject: `Hire inquiry from ${form.name}` }),
       });
       setStatus(res.ok ? "success" : "error");
+      if (res.ok) track("click", { label: "hire_form_success" });
     } catch { setStatus("error"); }
   };
 

@@ -107,7 +107,7 @@ function renderVisitsTable(visits) {
 
 function buildEmailHtml({
   sessionCount, pageviewCount, avgDurationMs, newCount, returningCount,
-  sourceRows, locationRows, deviceRows, langRows, sectionRows, pageRows, clickRows, visits, periodLabel,
+  sourceRows, utmRows, locationRows, deviceRows, langRows, sectionRows, pageRows, clickRows, visits, periodLabel,
   totalVisitorsAllTime, totalPageviewsAllTime,
 }) {
   return `
@@ -146,6 +146,9 @@ function buildEmailHtml({
 
       <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Honnan jöttek (csatorna)</h2>
       <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(sourceRows)}</table>
+
+      <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Kampányforrás (UTM)</h2>
+      <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(utmRows)}</table>
 
       <h2 style="color:#f5f1ea;font-size:1rem;margin:1.5rem 0 0.5rem;">Honnan jöttek (ország/város)</h2>
       <table style="width:100%;border-collapse:collapse;background:#141210;border-radius:6px;overflow:hidden;">${renderTable(locationRows)}</table>
@@ -236,6 +239,7 @@ export default async function handler(req, res) {
       s.maxTs = Math.max(s.maxTs, ev.ts);
       // Ezeket bármelyik eseményből felvesszük, amelyikben szerepelnek — így nem csak a pageview-tól függ
       if (ev.source) s.source = ev.source;
+      if (ev.utmSource) s.utmSource = ev.utmSource;
       if (ev.country || ev.city) s.location = [ev.city, countryName(ev.country)].filter(Boolean).join(", ") || null;
       if (ev.device) s.device = ev.device;
       if (ev.lang) s.lang = ev.lang;
@@ -257,11 +261,13 @@ export default async function handler(req, res) {
     const locationCounts = new Map();
     const deviceCounts = new Map();
     const langCounts = new Map();
+    const utmCounts = new Map();
     let newCount = 0;
     let returningCount = 0;
 
     for (const s of sessions.values()) {
       if (s.source) sourceCounts.set(s.source, (sourceCounts.get(s.source) || 0) + 1);
+      if (s.utmSource) utmCounts.set(s.utmSource, (utmCounts.get(s.utmSource) || 0) + 1);
       const loc = s.location || "Ismeretlen";
       locationCounts.set(loc, (locationCounts.get(loc) || 0) + 1);
       if (s.device) deviceCounts.set(s.device, (deviceCounts.get(s.device) || 0) + 1);
@@ -291,6 +297,7 @@ export default async function handler(req, res) {
       newCount,
       returningCount,
       sourceRows: topRows(sourceCounts),
+      utmRows: topRows(utmCounts),
       locationRows: topRows(locationCounts),
       deviceRows: topRows(deviceCounts),
       langRows: topRows(langCounts),

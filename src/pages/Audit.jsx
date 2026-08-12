@@ -32,7 +32,7 @@ const SIGNATURE = "Üdvözlettel:\nKörmendi Richárd\nWebfejlesztő\n+363014809
 
 // Halk, nem direktbe tolakodó utalás arra, hogy vadonatúj oldalt is vállalok —
 // minden kimenő üzenet végén ott van, P.s.-ként, nem a fő szövegben.
-const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne a javítás helyett, azt is szívesen vállalom: richardkormendi.com/hire?lang=hu";
+const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne a javítás helyett, azt is szívesen vállalom: richardkormendi.com/hire?lang=hu&utm_source=audit_ps";
 
 // Konkrét, alacsony-elköteleződésű CTA — könnyebb rá válaszolni, mint egy
 // homályos "keressenek bizalommal"-ra.
