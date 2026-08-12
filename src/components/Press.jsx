@@ -13,6 +13,17 @@ const ACCENT_STRONG = "#e8342b";
 const pressItems = [
   {
     type: { en: "Review", hu: "Kritika" },
+    outlet: "Ok Music Play",
+    song: "You Become My Only",
+    quote: {
+      en: "The vocalist's expressive voice explodes into an intense chorus whose timbre recalls Serj Tankian, of System of a Down.",
+      hu: "Az énekes kifejező hangja egy intenzív refrénben tör elő, melynek timbre-je Serj Tankianra, a System of a Down frontemberére emlékeztet.",
+    },
+    role: { en: "Lucas Henrique dos Santos", hu: "Lucas Henrique dos Santos" },
+    href: "https://okmusicplay.com/2026/08/10/guia-de-descobertas-colepitz-ambimatix/",
+  },
+  {
+    type: { en: "Review", hu: "Kritika" },
     outlet: "Indie Dream",
     song: "Still I Go",
     quote: {

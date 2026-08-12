@@ -22,6 +22,14 @@ const TEXT = "#f5f1ea";
 
 const pressItems = [
   {
+    outlet: "Ok Music Play",
+    quote: "“The vocalist's expressive voice explodes into an intense chorus whose timbre recalls Serj Tankian, of System of a Down.”",
+    quoteHu: "„Az énekes kifejező hangja egy intenzív refrénben tör elő, melynek timbre-je Serj Tankianra, a System of a Down frontemberére emlékeztet.”",
+    type: { en: "Review", hu: "Kritika" },
+    song: "You Become My Only",
+    url: "https://okmusicplay.com/2026/08/10/guia-de-descobertas-colepitz-ambimatix/",
+  },
+  {
     outlet: "Indie Dream",
     quote: "“The vocal moment at 2:42 feels like the push you need to realize there's still so much left to do in life.”",
     quoteHu: "„A 2:42-es pillanat éneke olyan, mint a lökés, amire szükséged van, hogy ráébredj: még oly sok mindent kell tenned az életben.”",
