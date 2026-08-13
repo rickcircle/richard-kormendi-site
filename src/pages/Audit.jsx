@@ -76,6 +76,17 @@ function getChatbotFinding(checks = {}) {
   return null;
 }
 
+// Csak akkor hívjuk, ha NINCS kritikus hiba — a "nincs kritikus hiba"
+// képernyőn egy gombra kattintva generálódik, nem automatikusan.
+function getStandaloneChatbotMessage(finding, domain) {
+  const siteRef = domain ? ` (${domain})` : "";
+  const opener = finding.kind === "aiact"
+    ? "bár klasszikus technikai hibát nem találtam rajta, van egy jogi jellegű észrevételem a chatbotjukkal kapcsolatban"
+    : "bár kritikus hibát nem találtam rajta, van egy fejlesztési ötletem, amit érdemesnek találtam megosztani";
+  const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és ${opener}: ${finding.text} ${CTA_CALL}\n\n${SIGNATURE}`;
+  return { message, subject: finding.subject };
+}
+
 // ── Kritikus hiba detektálás ─────────────────────────────────────────────────
 // Csak ezek a dolgok számítanak "kritikusnak" — ezek indokolják önmagukban a
 // hideg megkeresést. Minden más (meta leírás, schema, analytics stb.) mostantól
@@ -174,19 +185,11 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
 
   const chatbotFinding = getChatbotFinding(checks);
 
-  if (bullets.length === 0) {
-    // Nincs kritikus hiba — de lehet, hogy van egy chatbot-vonatkozású találat
-    // (AI Act hiányosság VAGY fejlesztési ötlet). Ez sosem keveredik a
-    // kritikus-hiba szöveggel, mert itt olyan egyáltalán nincs — ez a
-    // teljesen külön ág.
-    if (!chatbotFinding) return null;
-    const siteRef = domain ? ` (${domain})` : "";
-    const opener = chatbotFinding.kind === "aiact"
-      ? "bár klasszikus technikai hibát nem találtam rajta, van egy jogi jellegű észrevételem a chatbotjukkal kapcsolatban"
-      : "bár kritikus hibát nem találtam rajta, van egy fejlesztési ötletem, amit érdemesnek találtam megosztani";
-    const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és ${opener}: ${chatbotFinding.text} ${CTA_CALL}\n\n${SIGNATURE}`;
-    return { types: [`chatbot-${chatbotFinding.kind}`], message, subject: chatbotFinding.subject };
-  }
+  // Ha nincs kritikus hiba, a chatbot-találatot NEM ide keverjük — az a "nincs
+  // kritikus hiba" képernyőn jelenik meg, külön, gombra kattintva generált
+  // üzenetként (lásd getStandaloneChatbotMessage). Itt csak akkor van dolgunk,
+  // ha VAN legalább egy kritikus bullet is.
+  if (bullets.length === 0) return null;
 
   const siteRef = domain ? ` (${domain})` : "";
   const closing = bullets.length === 1
@@ -279,11 +282,20 @@ export default function Audit() {
   const [fbBusinessName, setFbBusinessName] = useState("");
   const [fbDeadDomain, setFbDeadDomain] = useState("");
   const [fbCopied, setFbCopied] = useState(false);
+  const [chatbotPitchRevealed, setChatbotPitchRevealed] = useState(false);
+  const [chatbotCopied, setChatbotCopied] = useState(false);
 
   const handleCopyFb = (text) => {
     navigator.clipboard.writeText(text).then(() => {
       setFbCopied(true);
       setTimeout(() => setFbCopied(false), 2500);
+    }).catch(() => {});
+  };
+
+  const handleCopyChatbot = (text) => {
+    navigator.clipboard.writeText(text).then(() => {
+      setChatbotCopied(true);
+      setTimeout(() => setChatbotCopied(false), 2500);
     }).catch(() => {});
   };
 
@@ -385,6 +397,9 @@ export default function Audit() {
   const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks, resultDomain) : null;
   const outreachMsg = critical?.message || null;
   const outreachSubject = critical?.subject || null;
+  // Csak akkor releváns, ha NINCS kritikus hiba — ott jelenik meg gombbal.
+  const standaloneChatbotFinding = results && !critical ? getChatbotFinding(results.checks) : null;
+  const standaloneChatbotPitch = standaloneChatbotFinding ? getStandaloneChatbotMessage(standaloneChatbotFinding, resultDomain) : null;
   const fbPitch = getNoWebsitePitch(fbBusinessName, fbDeadDomain);
   const unreachableDomain = url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
   const unreachablePitch = getUnreachableMessage(unreachableDomain, errorTlsError);
@@ -704,6 +719,54 @@ export default function Audit() {
                       <p style={{ fontSize: "0.78rem", color: "#c98a00", background: "#fff8ea", border: "1px solid #f0dfb0", borderRadius: "4px", padding: "0.6rem 0.9rem", marginTop: "1.25rem", lineHeight: 1.5, textAlign: "left" }}>
                         ⚠️ A Google Lighthouse-elemzés nem sikerült ezúttal — a mobil-teljesítmény alapú találatok nem futottak le, csak a HTTPS/PHP/WordPress/AngularJS-alapú ellenőrzések. Ha bizonytalan vagy, próbáld újra később.
                       </p>
+                    )}
+                    {standaloneChatbotFinding && (
+                      <div style={{ marginTop: "1.5rem", textAlign: "left" }}>
+                        <p style={{ fontSize: "0.85rem", color: "#4a3d66", lineHeight: 1.6, background: "#f4f0fb", border: "1px solid #ddd0f0", borderRadius: "6px", padding: "0.8rem 1.1rem" }}>
+                          {standaloneChatbotFinding.kind === "aiact"
+                            ? "⚖️ Viszont van chatbotjuk AI-jelzés nélkül — ez EU AI Act szempontból érdemes megkeresésre."
+                            : "💬 Viszont úgy látom, nekik tényleg hasznos lenne egy chatbot."}
+                        </p>
+                        {!chatbotPitchRevealed ? (
+                          <button onClick={() => setChatbotPitchRevealed(true)} style={{
+                            marginTop: "0.75rem", padding: "0.55rem 1.25rem", background: "#4a3d66", color: "#fff",
+                            border: "none", borderRadius: "4px", fontSize: "0.8rem", fontWeight: 600,
+                            cursor: "pointer", fontFamily: "inherit",
+                          }}>
+                            {standaloneChatbotFinding.kind === "aiact" ? "AI Act-levél generálása" : "Chatbot-ajánlólevél generálása"} →
+                          </button>
+                        ) : (
+                          <div style={{ marginTop: "1rem", padding: "1.5rem", background: "#fff", borderRadius: "8px", border: "1px solid #e8e8e8", borderLeft: "4px solid #4a3d66" }}>
+                            <p style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+                              Tárgy
+                            </p>
+                            <p style={{ fontSize: "0.88rem", color: "#333", marginBottom: "1rem" }}>
+                              {standaloneChatbotPitch.subject}
+                            </p>
+                            <p style={{ fontSize: "0.92rem", color: "#333", lineHeight: 1.8, marginBottom: "1.25rem", fontStyle: "italic", whiteSpace: "pre-line" }}>
+                              "{standaloneChatbotPitch.message}"
+                            </p>
+                            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+                              <button onClick={() => handleCopyChatbot(standaloneChatbotPitch.subject)} style={{
+                                padding: "0.55rem 1.25rem", background: "#fff",
+                                color: chatbotCopied ? "#0cce6b" : "#4a3d66",
+                                border: "1px solid #4a3d66", borderRadius: "4px",
+                                fontSize: "0.8rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                              }}>
+                                {chatbotCopied ? "✓ Másolva!" : "Tárgy másolása"}
+                              </button>
+                              <button onClick={() => handleCopyChatbot(standaloneChatbotPitch.message)} style={{
+                                padding: "0.55rem 1.25rem",
+                                background: chatbotCopied ? "#0cce6b" : "#4a3d66",
+                                color: "#fff", border: "none", borderRadius: "4px",
+                                fontSize: "0.8rem", fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                              }}>
+                                {chatbotCopied ? "✓ Másolva!" : "Üzenet másolása"}
+                              </button>
+                            </div>
+                          </div>
+                        )}
+                      </div>
                     )}
                   </motion.div>
                 </div>
