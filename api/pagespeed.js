@@ -333,7 +333,11 @@ export default async function handler(req, res) {
       // időpont). A címben (nem a teljes body-ban) keresünk, hogy alacsony
       // legyen a hamis találat esélye. A webshopnál platform-ujjlenyomatot
       // nézünk (objektív tény), nem "kosár" jellegű kulcsszót.
-      const titleLower = (pageTitle || "").toLowerCase();
+      // FONTOS: a NYERS <title> szövegét nézzük (titleMatch[1]), NEM a már
+      // levágott pageTitle-t — a "Page Title | Site Name" levágó regex sok
+      // kötőjelet tartalmazó címnél (pl. "Müller-Dental Kft. - Fogászat -
+      // Fogorvos") túl agresszíven vág, és pont a kulcsszót vágja le.
+      const titleLower = (titleMatch?.[1] || "").toLowerCase();
       const isEcommerce  = /woocommerce|shopify|prestashop|shoprenter|unas\.hu/i.test(html);
       const isDental     = /fogászat|fogorvos/i.test(titleLower);
       const isMedical    = /orvosi rendelő|magánrendelés|szemészet|bőrgyógyász|nőgyógyász|klinika/i.test(titleLower);
