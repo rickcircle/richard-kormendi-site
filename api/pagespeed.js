@@ -210,6 +210,18 @@ export default async function handler(req, res) {
         ? /mesterséges\s?intelligenciá|AI[\s-]?asszisztens|AI[\s-]?ügynök|ez egy chatbot|automated\s?bot|chatting with an AI|talking to an AI|you'?re\s+(chatting|talking)\s+(with|to)\s+an?\s+AI|powered by AI/i.test(html)
         : null;
 
+      // ── GDPR / süti-hozzájárulás hiánya ──────────────────────────────────────
+      // Csak akkor releváns, ha TÉNYLEG van követő kód — egy követés nélküli
+      // oldalnak nincs mit hozzájárulnia. Konzervatívan jelezzük: csak akkor
+      // kritikus, ha SEM ismert consent-eszköz jele, SEM adatvédelmi
+      // tájékoztatóra mutató link nincs a HTML-ben — ha bármelyik megvan,
+      // inkább nem szólunk, mint hogy hamis találatot adjunk.
+      const hasFacebookPixel = /connect\.facebook\.net\/.*fbevents\.js|fbq\(/i.test(html);
+      const hasTracking      = hasAnalytics || hasFacebookPixel;
+      const hasConsentTool   = /cookiebot|cookieyes|onetrust|complianz|iubenda|cookie-consent|cookieconsent|gdpr-cookie|\bcmplz\b/i.test(html);
+      const hasPrivacyPolicyLink = /adatvédelm|adatkezelési\s?tájékoztat|privacy[\s-]?policy/i.test(html);
+      const gdprConsentMissing = hasTracking ? (!hasConsentTool && !hasPrivacyPolicyLink) : null;
+
       // ── CMS azonosítás (WordPress) — a PHP-frissítés kockázatához kell ──────
       // WordPress esetén a mag + a legtöbb bővítmény aktívan karbantartott,
       // jól dokumentált, tehát a PHP-verzióváltás kockázata alacsonyabb.
@@ -334,7 +346,7 @@ export default async function handler(req, res) {
         : isRestaurant ? "restaurant"
         : null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, businessCategory, pageReachable: true, tlsError: null };
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, businessCategory, gdprConsentMissing, pageReachable: true, tlsError: null };
     } catch (err) {
       // FONTOS: ez akkor is lefut, ha a saját közvetlen fetch-ünk sikertelen
       // (a szerver tényleg nem válaszol), tehát a pageReachable:false az
@@ -342,7 +354,7 @@ export default async function handler(req, res) {
       // el — ezt használja a fő handler, amikor a Lighthouse is elhasal.
       // A tlsError plusz információ: gyakran nem is elérhetetlen az oldal,
       // csak a tanúsítványa rossz domainre van kiállítva.
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, businessCategory: null, pageReachable: false, tlsError: classifyTlsError(err) };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, businessCategory: null, gdprConsentMissing: null, pageReachable: false, tlsError: classifyTlsError(err) };
     }
   };
 
@@ -436,6 +448,7 @@ export default async function handler(req, res) {
       hasFlash:        page.hasFlash,
       missingViewport: page.missingViewport,
       businessCategory: page.businessCategory,
+      gdprConsentMissing: page.gdprConsentMissing,
       // Cégminőség
       businessQuality: businessQuality,
     };

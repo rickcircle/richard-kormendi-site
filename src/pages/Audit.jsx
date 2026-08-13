@@ -42,9 +42,17 @@ const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne
 // homályos "keressenek bizalommal"-ra.
 const CTA_CALL = "Ha nyitottak rá, megbeszélhetjük a részleteket egy rövid, 5 perces telefonhívás során — mikor lenne erre alkalmas időpont a héten?";
 
-// ── Chatbot-fejlesztési ötlet — NEM kritikus hiba, külön kategória ───────────
-// Csak akkor jön elő, ha a cégtípus tényleg indokolja (fogászat, webshop
-// stb. — lásd checks.businessCategory a backendből) ÉS nincs chatbot.
+// ── Chatbot-vonatkozású találatok — mindkettő KÜLÖN kategória marad a ────────
+// kritikus-hiba listától, mert az egyik jogi jellegű, a másik csak egy ötlet,
+// és ezek szándékosan nem keverednek a "valós kockázat" bullet-felsorolással.
+//
+// 1) VAN chatbot, de nincs AI-jelzés rajta — 2026. augusztus 2. óta aktívan
+//    érvényesített EU AI Act előírás, valós bírságkockázattal (arányosítva
+//    KKV-knál is). FONTOS KORLÁT: a hasAiDisclosure csak a kezdő HTML-t nézi,
+//    sok widget csak megnyitás után írja ki a jelzést — MINDIG nézd meg
+//    kézzel (kattints a chatre) is, mielőtt ezt kiküldöd egy ügyfélnek.
+// 2) NINCS chatbot, de a cégtípus indokolná (fogászat, webshop stb.) — ez
+//    tisztán fejlesztési ötlet, nem hiba, nem jogi kockázat.
 const CHATBOT_CATEGORY_TEXT = {
   dental:     "Fogászati/orvosi rendelőknél sok a hasonló, ismétlődő kérdés (nyitvatartás, árak, időpont-elérhetőség) — egy chatbot ezeket automatikusan megválaszolná, és este vagy hétvégén is fogadná az érdeklődőket, amikor Önök épp nem érnek rá.",
   medical:    "Orvosi rendelőknél sok a hasonló, ismétlődő kérdés (nyitvatartás, árak, időpont-elérhetőség) — egy chatbot ezeket automatikusan megválaszolná, és este vagy hétvégén is fogadná az érdeklődőket, amikor Önök épp nem érnek rá.",
@@ -53,9 +61,19 @@ const CHATBOT_CATEGORY_TEXT = {
   webshop:    "Webshopoknál a vásárlók gyakran ugyanazokat a kérdéseket teszik fel (szállítás, visszaküldés, elérhetőség) — egy chatbot ezeket azonnal megválaszolná, ami a kosárelhagyást is csökkentheti.",
 };
 
-function getChatbotOpportunity(checks = {}) {
-  if (!checks.businessCategory || checks.hasChatbot !== false) return null;
-  return CHATBOT_CATEGORY_TEXT[checks.businessCategory] || null;
+function getChatbotFinding(checks = {}) {
+  if (checks.hasChatbot === true && checks.hasAiDisclosure === false) {
+    const nameRef = checks.chatbotName ? ` (${checks.chatbotName})` : "";
+    return {
+      kind: "aiact",
+      text: `Azt látom, hogy van chatbot a weboldalukon${nameRef}, de nem találtam rajta egyértelmű jelzést arra, hogy a látogató mesterséges intelligenciával beszélget. 2026. augusztus 2. óta ez az EU AI Act aktívan érvényesített előírása — kötelező jelezni, ha valaki AI-val, nem élő emberrel kommunikál, és a hiánya már ténylegesen bírságolható. A javítás technikailag egyszerű, de a kockázat valós és aktuális.`,
+      subject: "EU AI Act megfelelőségi hiányosság a weboldalukon",
+    };
+  }
+  if (checks.hasChatbot === false && checks.businessCategory && CHATBOT_CATEGORY_TEXT[checks.businessCategory]) {
+    return { kind: "opportunity", text: CHATBOT_CATEGORY_TEXT[checks.businessCategory], subject: "Egy fejlesztési ötlet a weboldalukhoz" };
+  }
+  return null;
 }
 
 // ── Kritikus hiba detektálás ─────────────────────────────────────────────────
@@ -82,6 +100,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
   const deadGoogleAnalytics = checks.deadGoogleAnalytics === true;
   const hasFlash        = checks.hasFlash === true;
   const missingViewport = checks.missingViewport === true;
+  const gdprConsentMissing = checks.gdprConsentMissing === true;
   // PHP 7.x-ről 8-ra váltani jellemzően csak szerverbeállítás + apró javítás —
   // valódi frissítési út van. PHP 5.x-nél viszont a kód szinte biztos, hogy a
   // rég megszűnt mysql_* függvényeket használja, ami PHP 7+ alatt egyáltalán
@@ -141,6 +160,10 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     types.push("noviewport");
     bullets.push("hiányzik róla a mobil-nézetért felelős alapbeállítás (viewport), ami azt jelenti, hogy az oldal garantáltan nem reszponzív — ez erős jele annak, hogy a teljes oldal a mobil-first kor (kb. 2012) előtt készült");
   }
+  if (gdprConsentMissing) {
+    types.push("gdpr");
+    bullets.push("látogatókövető kódot (pl. Google Analytics) futtat, de sem süti-hozzájárulási felületet, sem adatvédelmi tájékoztatóra mutató linket nem találtam rajta — ez GDPR-szempontból kockázatos, és bármikor bejelentés vagy ellenőrzés tárgya lehet");
+  }
   if (mobileBroken) {
     types.push("mobilebroken");
     bullets.push("asztali gépen jól néz ki, de mobilon sajnos nehézkes a használata — ma már az érdeklődők nagy része telefonon keres, és ez sok látogatót eltérít, mielőtt még kapcsolatba lépnének");
@@ -149,16 +172,20 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     bullets.push(`mobilon igen lassan tölt be — a Google mérése szerint ${mobileScore}/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe`);
   }
 
-  const chatbotOppText = getChatbotOpportunity(checks);
+  const chatbotFinding = getChatbotFinding(checks);
 
   if (bullets.length === 0) {
-    // Nincs kritikus hiba — de lehet, hogy van egy fejlesztési ötlet (chatbot).
-    // Ez sosem keveredik a kritikus-hiba szöveggel, mert itt olyan egyáltalán
-    // nincs — ez a teljesen külön, "csak ötlet" ág.
-    if (!chatbotOppText) return null;
+    // Nincs kritikus hiba — de lehet, hogy van egy chatbot-vonatkozású találat
+    // (AI Act hiányosság VAGY fejlesztési ötlet). Ez sosem keveredik a
+    // kritikus-hiba szöveggel, mert itt olyan egyáltalán nincs — ez a
+    // teljesen külön ág.
+    if (!chatbotFinding) return null;
     const siteRef = domain ? ` (${domain})` : "";
-    const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és bár kritikus hibát nem találtam rajta, van egy fejlesztési ötletem, amit érdemesnek találtam megosztani: ${chatbotOppText} ${CTA_CALL}\n\n${SIGNATURE}`;
-    return { types: ["chatbotopportunity"], message, subject: "Egy fejlesztési ötlet a weboldalukhoz" };
+    const opener = chatbotFinding.kind === "aiact"
+      ? "bár klasszikus technikai hibát nem találtam rajta, van egy jogi jellegű észrevételem a chatbotjukkal kapcsolatban"
+      : "bár kritikus hibát nem találtam rajta, van egy fejlesztési ötletem, amit érdemesnek találtam megosztani";
+    const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és ${opener}: ${chatbotFinding.text} ${CTA_CALL}\n\n${SIGNATURE}`;
+    return { types: [`chatbot-${chatbotFinding.kind}`], message, subject: chatbotFinding.subject };
   }
 
   const siteRef = domain ? ` (${domain})` : "";
@@ -169,18 +196,18 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     ? `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. ${closing}`
     : `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. ${closing}`;
 
-  // A fejlesztési ötlet (ha van) külön bekezdésként jön a kritikus rész UTÁN —
-  // szándékosan nem kerül be a felsorolásba, hogy világos maradjon: az egyik
-  // valós kockázat, a másik csak egy lehetőség.
-  const chatbotParagraph = chatbotOppText
-    ? `\n\nEmellett van egy fejlesztési ötletem is — ez nem hiba, csak lehetőség, amit érdemesnek találtam megemlíteni: ${chatbotOppText}`
-    : "";
+  // A chatbot-vonatkozású találat (ha van) külön bekezdésként jön a kritikus
+  // rész UTÁN — szándékosan nem kerül be a felsorolásba, hogy világos maradjon:
+  // az egyik valós kockázat, a másik jogi észrevétel vagy csak egy lehetőség.
+  const chatbotParagraph = !chatbotFinding ? "" : chatbotFinding.kind === "aiact"
+    ? `\n\nEmellett egy másik, jogi jellegű észrevételem is van a chatbotjukkal kapcsolatban: ${chatbotFinding.text}`
+    : `\n\nEmellett van egy fejlesztési ötletem is — ez nem hiba, csak lehetőség, amit érdemesnek találtam megemlíteni: ${chatbotFinding.text}`;
 
   const message = `${body}${chatbotParagraph} ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php/info-szivárgás érintett, mobil-jellegű,
   // ha a reszponzivitás/teljesítmény érintett, egyébként egy semleges tárgy.
-  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold", "phperrors"].includes(t));
+  const hasSecurityIssue = types.some(t => ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold", "phperrors", "gdpr"].includes(t));
   const hasMobileIssue   = types.some(t => ["mobilebroken", "mobileslow", "noviewport", "flash"].includes(t));
   const subject = hasSecurityIssue && hasMobileIssue
     ? "Pár fontos észrevétel a weboldalukhoz"
