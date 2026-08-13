@@ -30,6 +30,10 @@ const OPPORTUNITY_KEYS = [
 
 const SIGNATURE = "Üdvözlettel:\nKörmendi Richárd\nWebfejlesztő\n+36301480917\nrichardkormendi.com";
 
+// Ismeretlen feladótól jövő hideg levélnél a bemutatkozás hiánya gyanússá
+// teheti az egészet — ez megy a megszólítás után, minden sablonban.
+const INTRO = "Körmendi Richárd vagyok, digitális projektmenedzser és webfejlesztő.";
+
 // Halk, nem direktbe tolakodó utalás arra, hogy vadonatúj oldalt is vállalok —
 // minden kimenő üzenet végén ott van, P.s.-ként, nem a fő szövegben.
 const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne a javítás helyett, azt is szívesen vállalom: richardkormendi.com/hire?lang=hu&utm_source=audit_ps";
@@ -136,8 +140,8 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     ? (needsRebuild ? "Szívesen segítek ezt modern, biztonságos felületre cserélni." : "Szívesen segítek rendbe tenni ezt.")
     : (needsRebuild ? "Szívesen segítek ezeket modern, biztonságos felületre cserélni." : "Szívesen segítek rendbe tenni ezeket.");
   const body = bullets.length === 1
-    ? `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. ${closing}`
-    : `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. ${closing}`;
+    ? `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. ${closing}`
+    : `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. ${closing}`;
 
   const message = `${body} ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
@@ -169,7 +173,7 @@ function getNoWebsitePitch(businessName = "", deadDomain = "") {
   const opener = domain
     ? `Megnéztem a Facebook oldalukat${nameRef}, és észrevettem, hogy van rajta egy link a weboldalukra (${domain}), de az jelenleg egyáltalán nem érhető el — aki megpróbál rákattintani, nem talál semmit.`
     : `Megnéztem a Facebook oldalukat${nameRef}, és azt látom, hogy jelenleg nincs önálló weboldaluk.`;
-  const message = `Tisztelt Hölgyem/Uram!\n\n${opener} Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek felépíteni egy modern, gyors és ügyfélszerzésre optimalizált weboldalt. Ha nyitottak rá, szívesen átbeszélek Önökkel pár ötletet egy rövid, 5-10 perces kötetlen telefonhívás során — mikor lenne erre alkalmas időpont a héten?\n\n${SIGNATURE}`;
+  const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} ${opener} Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek felépíteni egy modern, gyors és ügyfélszerzésre optimalizált weboldalt. Ha nyitottak rá, szívesen átbeszélek Önökkel pár ötletet egy rövid, 5-10 perces kötetlen telefonhívás során — mikor lenne erre alkalmas időpont a héten?\n\n${SIGNATURE}`;
   const subject = domain
     ? "Weboldal-lehetőség — a Facebook oldalukon lévő link nem működik"
     : "Weboldal-lehetőség — jelenleg csak Facebook oldaluk van";
@@ -188,13 +192,13 @@ function getUnreachableMessage(domain, tlsError) {
     return {
       explanation: "Ez nem feltétlenül azt jelenti, hogy az oldal teljesen üzemen kívül van — a biztonságos (https) kapcsolatuk tanúsítványával van probléma, emiatt minden böngésző blokkolja a hozzáférést. Ez önmagában is elég erős, konkrét ok a megkeresésre.",
       subject: "SSL-tanúsítvány hiba a weboldalukon",
-      message: `Tisztelt Hölgyem/Uram!\n\nMegnéztem a weboldalukat${domainRef}, és azt találtam, hogy a biztonságos (https) verziójuk el van rontva${tlsError === "hostname_mismatch" ? " — a tanúsítvány egy másik domainre van kiállítva, nem az Önökére" : ""}. Emiatt aki a böngészőjében rákattint vagy beírja a https-es címüket, egy ijesztő "Nem biztonságos kapcsolat" hibaüzenetet kap, amit a legtöbb látogató be sem enged. Úgy gondolom, hogy ez valós kockázatot jelent, mert sok érdeklődő pont emiatt fordulhat el Önöktől anélkül, hogy egyáltalán látnák az oldalt. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
+      message: `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${domainRef}, és azt találtam, hogy a biztonságos (https) verziójuk el van rontva${tlsError === "hostname_mismatch" ? " — a tanúsítvány egy másik domainre van kiállítva, nem az Önökére" : ""}. Emiatt aki a böngészőjében rákattint vagy beírja a https-es címüket, egy ijesztő "Nem biztonságos kapcsolat" hibaüzenetet kap, amit a legtöbb látogató be sem enged. Úgy gondolom, hogy ez valós kockázatot jelent, mert sok érdeklődő pont emiatt fordulhat el Önöktől anélkül, hogy egyáltalán látnák az oldalt. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
     };
   }
   return {
     explanation: "Ez önmagában is kritikus hiba, és erős ok a megkeresésre — lehet, hogy csak nálad nem töltött be, ellenőrizd az URL-t; de ha valóban nem elérhető az oldal, ez önmagában véve is elég a hideg megkereséshez.",
     subject: "A weboldal nem töltött be",
-    message: `Tisztelt Hölgyem/Uram!\n\nRá akartam nézni a weboldalukra${domainRef}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
+    message: `Tisztelt Hölgyem/Uram!\n\n${INTRO} Rá akartam nézni a weboldalukra${domainRef}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
   };
 }
 
