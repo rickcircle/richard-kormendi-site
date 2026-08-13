@@ -315,7 +315,26 @@ export default async function handler(req, res) {
       const hasBooking   = !!bookingMatch;
       const bookingName  = bookingMatch?.label || null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, pageReachable: true, tlsError: null };
+      // ── Cégtípus — NEM kritikus hiba, csak egy fejlesztési ötlet alapja ──────
+      // Csak azokat a típusokat vesszük fel, ahol a chatbot-hiány tényleg
+      // indokolható (sok ismétlődő, egyszerű kérdés: nyitvatartás, ár,
+      // időpont). A címben (nem a teljes body-ban) keresünk, hogy alacsony
+      // legyen a hamis találat esélye. A webshopnál platform-ujjlenyomatot
+      // nézünk (objektív tény), nem "kosár" jellegű kulcsszót.
+      const titleLower = (pageTitle || "").toLowerCase();
+      const isEcommerce  = /woocommerce|shopify|prestashop|shoprenter|unas\.hu/i.test(html);
+      const isDental     = /fogászat|fogorvos/i.test(titleLower);
+      const isMedical    = /orvosi rendelő|magánrendelés|szemészet|bőrgyógyász|nőgyógyász|klinika/i.test(titleLower);
+      const isBeauty     = /kozmetika|fodrász|szépségszalon|manikűr|pedikűr|szolárium/i.test(titleLower);
+      const isRestaurant = /étterem|vendéglő|pizzéria/i.test(titleLower);
+      const businessCategory = isEcommerce ? "webshop"
+        : isDental ? "dental"
+        : isMedical ? "medical"
+        : isBeauty ? "beauty"
+        : isRestaurant ? "restaurant"
+        : null;
+
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, businessCategory, pageReachable: true, tlsError: null };
     } catch (err) {
       // FONTOS: ez akkor is lefut, ha a saját közvetlen fetch-ünk sikertelen
       // (a szerver tényleg nem válaszol), tehát a pageReachable:false az
@@ -323,7 +342,7 @@ export default async function handler(req, res) {
       // el — ezt használja a fő handler, amikor a Lighthouse is elhasal.
       // A tlsError plusz információ: gyakran nem is elérhetetlen az oldal,
       // csak a tanúsítványa rossz domainre van kiállítva.
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, pageReachable: false, tlsError: classifyTlsError(err) };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, businessCategory: null, pageReachable: false, tlsError: classifyTlsError(err) };
     }
   };
 
@@ -416,6 +435,7 @@ export default async function handler(req, res) {
       deadGoogleAnalytics: page.deadGoogleAnalytics,
       hasFlash:        page.hasFlash,
       missingViewport: page.missingViewport,
+      businessCategory: page.businessCategory,
       // Cégminőség
       businessQuality: businessQuality,
     };

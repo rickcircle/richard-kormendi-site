@@ -42,6 +42,22 @@ const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne
 // homályos "keressenek bizalommal"-ra.
 const CTA_CALL = "Ha nyitottak rá, megbeszélhetjük a részleteket egy rövid, 5 perces telefonhívás során — mikor lenne erre alkalmas időpont a héten?";
 
+// ── Chatbot-fejlesztési ötlet — NEM kritikus hiba, külön kategória ───────────
+// Csak akkor jön elő, ha a cégtípus tényleg indokolja (fogászat, webshop
+// stb. — lásd checks.businessCategory a backendből) ÉS nincs chatbot.
+const CHATBOT_CATEGORY_TEXT = {
+  dental:     "Fogászati/orvosi rendelőknél sok a hasonló, ismétlődő kérdés (nyitvatartás, árak, időpont-elérhetőség) — egy chatbot ezeket automatikusan megválaszolná, és este vagy hétvégén is fogadná az érdeklődőket, amikor Önök épp nem érnek rá.",
+  medical:    "Orvosi rendelőknél sok a hasonló, ismétlődő kérdés (nyitvatartás, árak, időpont-elérhetőség) — egy chatbot ezeket automatikusan megválaszolná, és este vagy hétvégén is fogadná az érdeklődőket, amikor Önök épp nem érnek rá.",
+  beauty:     "Szépségipari vállalkozásoknál sok a hasonló kérdés (árak, elérhető időpontok, szolgáltatások) — egy chatbot ezeket automatikusan kezelné, este és hétvégén is.",
+  restaurant: "Éttermeknél/vendéglátásban sok az ismétlődő kérdés (nyitvatartás, asztalfoglalás, allergén infó) — egy chatbot ezeket automatikusan megválaszolná, akár csúcsidőben is.",
+  webshop:    "Webshopoknál a vásárlók gyakran ugyanazokat a kérdéseket teszik fel (szállítás, visszaküldés, elérhetőség) — egy chatbot ezeket azonnal megválaszolná, ami a kosárelhagyást is csökkentheti.",
+};
+
+function getChatbotOpportunity(checks = {}) {
+  if (!checks.businessCategory || checks.hasChatbot !== false) return null;
+  return CHATBOT_CATEGORY_TEXT[checks.businessCategory] || null;
+}
+
 // ── Kritikus hiba detektálás ─────────────────────────────────────────────────
 // Csak ezek a dolgok számítanak "kritikusnak" — ezek indokolják önmagukban a
 // hideg megkeresést. Minden más (meta leírás, schema, analytics stb.) mostantól
@@ -133,7 +149,17 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     bullets.push(`mobilon igen lassan tölt be — a Google mérése szerint ${mobileScore}/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe`);
   }
 
-  if (bullets.length === 0) return null;
+  const chatbotOppText = getChatbotOpportunity(checks);
+
+  if (bullets.length === 0) {
+    // Nincs kritikus hiba — de lehet, hogy van egy fejlesztési ötlet (chatbot).
+    // Ez sosem keveredik a kritikus-hiba szöveggel, mert itt olyan egyáltalán
+    // nincs — ez a teljesen külön, "csak ötlet" ág.
+    if (!chatbotOppText) return null;
+    const siteRef = domain ? ` (${domain})` : "";
+    const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és bár kritikus hibát nem találtam rajta, van egy fejlesztési ötletem, amit érdemesnek találtam megosztani: ${chatbotOppText} ${CTA_CALL}\n\n${SIGNATURE}`;
+    return { types: ["chatbotopportunity"], message, subject: "Egy fejlesztési ötlet a weboldalukhoz" };
+  }
 
   const siteRef = domain ? ` (${domain})` : "";
   const closing = bullets.length === 1
@@ -143,7 +169,14 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     ? `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és azt látom, hogy ${bullets[0]}. Úgy gondolom, hogy ez valós kockázatot jelent, ezért gondoltam, hogy jelezném Önök felé. ${closing}`
     : `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és pár dolgot találtam, amit érdemes lenne tudniuk:\n\n${bullets.map(b => `• ${b.charAt(0).toUpperCase()}${b.slice(1)}.`).join("\n")}\n\nÚgy gondolom, hogy ezek valós kockázatot jelentenek, ezért gondoltam, hogy jelezném Önök felé. ${closing}`;
 
-  const message = `${body} ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
+  // A fejlesztési ötlet (ha van) külön bekezdésként jön a kritikus rész UTÁN —
+  // szándékosan nem kerül be a felsorolásba, hogy világos maradjon: az egyik
+  // valós kockázat, a másik csak egy lehetőség.
+  const chatbotParagraph = chatbotOppText
+    ? `\n\nEmellett van egy fejlesztési ötletem is — ez nem hiba, csak lehetőség, amit érdemesnek találtam megemlíteni: ${chatbotOppText}`
+    : "";
+
+  const message = `${body}${chatbotParagraph} ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php/info-szivárgás érintett, mobil-jellegű,
   // ha a reszponzivitás/teljesítmény érintett, egyébként egy semleges tárgy.
