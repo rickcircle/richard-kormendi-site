@@ -339,7 +339,10 @@ export default async function handler(req, res) {
       // Fogorvos") túl agresszíven vág, és pont a kulcsszót vágja le.
       const titleLower = (titleMatch?.[1] || "").toLowerCase();
       const isEcommerce  = /woocommerce|shopify|prestashop|shoprenter|unas\.hu/i.test(html);
-      const isDental     = /fogászat|fogorvos/i.test(titleLower);
+      // "Dental"/"Dentál" angol/latin eredetű márkanév-elem is nagyon gyakori
+      // magyar fogászatoknál, gyakran egybeírva egy másik szóval (pl.
+      // "WellDental") — ezért NINCS szóhatár-korlátozás a "dental"-on.
+      const isDental     = /fogászat|fogorvos|dentál|dental/i.test(titleLower);
       const isMedical    = /orvosi rendelő|magánrendelés|szemészet|bőrgyógyász|nőgyógyász|klinika/i.test(titleLower);
       const isBeauty     = /kozmetika|fodrász|szépségszalon|manikűr|pedikűr|szolárium/i.test(titleLower);
       const isRestaurant = /étterem|vendéglő|pizzéria/i.test(titleLower);
