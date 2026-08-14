@@ -343,11 +343,17 @@ export default async function handler(req, res) {
       const isMedical    = /orvosi rendelő|magánrendelés|szemészet|bőrgyógyász|nőgyógyász|klinika/i.test(titleLower);
       const isBeauty     = /kozmetika|fodrász|szépségszalon|manikűr|pedikűr|szolárium/i.test(titleLower);
       const isRestaurant = /étterem|vendéglő|pizzéria/i.test(titleLower);
-      const businessCategory = isEcommerce ? "webshop"
-        : isDental ? "dental"
+      // FONTOS SORREND: a title-alapú kategóriák (amit a cég saját magáról
+      // mond) ELŐBB jönnek, mint a webshop-platform ujjlenyomat — egy
+      // fogászat simán futtathat WooCommerce-t másodlagosan (pl. termékek
+      // eladására), attól még elsősorban nem webshop. A karpatidental.hu
+      // pont ezt a hibát mutatta: WooCommerce plugin volt rajta, "webshop"-
+      // nak jelölte, holott a title egyértelműen fogászatot mond.
+      const businessCategory = isDental ? "dental"
         : isMedical ? "medical"
         : isBeauty ? "beauty"
         : isRestaurant ? "restaurant"
+        : isEcommerce ? "webshop"
         : null;
 
       return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, businessCategory, gdprConsentMissing, pageReachable: true, tlsError: null };
