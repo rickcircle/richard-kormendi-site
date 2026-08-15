@@ -15,7 +15,7 @@ export const t = {
     },
     about: {
       label: "About",
-      heading: "A voice shaped\nby reinvention.",
+      heading: "A classical tenor\nin the world of rock.",
       bio: "Richárd Körmendi is a Hungarian singer-songwriter and classically trained tenor. He fronted the indie rock band Éberálom, performed in musical theatre, and in 2024 graduated in classical vocal performance from Partium Christian University in Oradea. His English-language solo project launched in 2026 — raw emotion, years in the making, finally on record.",
       tiles: {
         eberalom: { label: "Roots", title: "Éberálom", body: "Hungarian indie rock band. Raw energy, packed stages, and the first real proof of what a voice can do." },
@@ -118,7 +118,7 @@ export const t = {
     },
     about: {
       label: "Rólam",
-      heading: "Egy hang,\namit az átalakulás formált.",
+      heading: "Klasszikus tenor\na rockzene világában.",
       bio: "Körmendi Richárd magyar énekes-dalszerző és klasszikus képzettségű tenor. Pályáját az Éberálom nevű indie rock zenekar frontembereként kezdte, azután musicalekben szerepelt, mielőtt 2024-ben klasszikus énekdiplomát szerzett a Nagyváradi Partiumi Keresztény Egyetemen. Első angol nyelvű dalai 2026-ban jelentek meg — évek óta érlelődő anyag, ami végre lemezen is hallható.",
       tiles: {
         eberalom: { label: "Gyökerek", title: "Éberálom", body: "Magyar indie rock banda. Nyers energia, teli házak — az első valódi bizonyíték arra, mire képes ez a hang." },
