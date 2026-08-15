@@ -76,6 +76,31 @@ function getChatbotFinding(checks = {}) {
   return null;
 }
 
+// Legördülő menü opciói a kézi felülbíráláshoz — arra az esetre, amikor a
+// cégtípus-felismerés némán elhasal (pl. a célszerver blokkolja a szerver-
+// oldali lekérésünket, ahogy a blue-dent.hu-nál is történt: a szerver egy
+// "Hitelesítés / Verification" oldalt adott vissza a valódi tartalom helyett).
+// A fogászat/orvosi van legfelül, mert ez volt a mai nap legerősebb,
+// legtöbbször validált kategória — de bármelyik kiválasztható.
+const CHATBOT_CATEGORY_OPTIONS = [
+  { value: "", label: "— Nincs chatbot-ajánlás —" },
+  { value: "dental", label: "Fogászat / orvosi rendelő (ajánlott)" },
+  { value: "medical", label: "Egyéb orvosi rendelő" },
+  { value: "beauty", label: "Szépségipar (fodrász, kozmetika)" },
+  { value: "restaurant", label: "Étterem / vendéglátás" },
+  { value: "webshop", label: "Webshop" },
+];
+
+// Kézi felülbírálás mindig elsőbbséget élvez az automatikus felismeréssel
+// szemben — ha ki van választva egy kategória, azt használjuk, különben az
+// automatikus getChatbotFinding eredményét.
+function resolveChatbotFinding(checks, manualCategory) {
+  if (manualCategory && CHATBOT_CATEGORY_TEXT[manualCategory]) {
+    return { kind: "opportunity", text: CHATBOT_CATEGORY_TEXT[manualCategory], subject: "Egy fejlesztési ötlet a weboldalukhoz" };
+  }
+  return getChatbotFinding(checks);
+}
+
 // Csak akkor hívjuk, ha NINCS kritikus hiba — a "nincs kritikus hiba"
 // képernyőn egy gombra kattintva generálódik, nem automatikusan.
 function getStandaloneChatbotMessage(finding, domain) {
@@ -94,7 +119,7 @@ function getStandaloneChatbotMessage(finding, domain) {
 // egyáltalán mit írni.
 // FONTOS: ha TÖBB kritikus hiba is fennáll egyszerre, mindegyik bekerül az
 // üzenetbe — nem csak az első találat (korábban ez volt a hiba).
-function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
+function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", manualChatbotCategory = "") {
   // Ha a Lighthouse elhasalt (lásd lighthouseFailed az API válaszban), a
   // pontszámok null-ok lehetnek — null < 40 JS-ben igazra értékelődne ki
   // (0-ra kényszerülne), ezért csak akkor nézzük a mobil-alapú találatokat,
@@ -183,7 +208,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "") {
     bullets.push(`mobilon igen lassan tölt be — a Google mérése szerint ${mobileScore}/100 pont, ami azt jelenti, hogy egy átlagos kapcsolaton az oldal betöltése több másodpercet vesz igénybe`);
   }
 
-  const chatbotFinding = getChatbotFinding(checks);
+  const chatbotFinding = resolveChatbotFinding(checks, manualChatbotCategory);
 
   // Ha nincs kritikus hiba, a chatbot-találatot NEM ide keverjük — az a "nincs
   // kritikus hiba" képernyőn jelenik meg, külön, gombra kattintva generált
@@ -284,6 +309,7 @@ export default function Audit() {
   const [fbCopied, setFbCopied] = useState(false);
   const [chatbotPitchRevealed, setChatbotPitchRevealed] = useState(false);
   const [chatbotCopied, setChatbotCopied] = useState(false);
+  const [manualChatbotCategory, setManualChatbotCategory] = useState("");
 
   const handleCopyFb = (text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -346,6 +372,8 @@ export default function Audit() {
     if (!/^https?:\/\//i.test(cleanUrl)) cleanUrl = "https://" + cleanUrl;
     setStatus("loading");
     setResults(null);
+    setManualChatbotCategory("");
+    setChatbotPitchRevealed(false);
     setErrorTlsError(null);
     try {
       const res = await fetch(`${PAGESPEED_URL}?url=${encodeURIComponent(cleanUrl)}`);
@@ -394,11 +422,11 @@ export default function Audit() {
   };
 
   const resultDomain = results ? (() => { try { return new URL(results.url).hostname; } catch { return ""; } })() : "";
-  const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks, resultDomain) : null;
+  const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks, resultDomain, manualChatbotCategory) : null;
   const outreachMsg = critical?.message || null;
   const outreachSubject = critical?.subject || null;
   // Csak akkor releváns, ha NINCS kritikus hiba — ott jelenik meg gombbal.
-  const standaloneChatbotFinding = results && !critical ? getChatbotFinding(results.checks) : null;
+  const standaloneChatbotFinding = results && !critical ? resolveChatbotFinding(results.checks, manualChatbotCategory) : null;
   const standaloneChatbotPitch = standaloneChatbotFinding ? getStandaloneChatbotMessage(standaloneChatbotFinding, resultDomain) : null;
   const fbPitch = getNoWebsitePitch(fbBusinessName, fbDeadDomain);
   const unreachableDomain = url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
@@ -603,6 +631,17 @@ export default function Audit() {
                       <p style={{ fontSize: "0.8rem", color: "#aaa", marginBottom: "1rem", lineHeight: 1.5 }}>
                         LinkedIn-en vagy emailben küldheted el — nem hivatkozik eszközre, nem kér semmit:
                       </p>
+                      <div style={{ marginBottom: "1.25rem", padding: "0.75rem 1rem", background: "#f7f6f3", borderRadius: "6px" }}>
+                        <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.08em", color: "#999", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+                          Chatbot-ajánlás kézi felülbírálása (ha az automatikus felismerés nem talált semmit)
+                        </label>
+                        <select value={manualChatbotCategory} onChange={e => setManualChatbotCategory(e.target.value)}
+                          style={{ width: "100%", padding: "0.5rem 0.6rem", fontSize: "0.85rem", fontFamily: "inherit", border: "1px solid #ddd", borderRadius: "4px", background: "#fff", color: "#333" }}>
+                          {CHATBOT_CATEGORY_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
                       {outreachSubject && (
                         <>
                           <p style={{ fontSize: "0.7rem", letterSpacing: "0.1em", color: "#bbb", textTransform: "uppercase", marginBottom: "0.4rem" }}>
@@ -720,8 +759,19 @@ export default function Audit() {
                         ⚠️ A Google Lighthouse-elemzés nem sikerült ezúttal — a mobil-teljesítmény alapú találatok nem futottak le, csak a HTTPS/PHP/WordPress/AngularJS-alapú ellenőrzések. Ha bizonytalan vagy, próbáld újra később.
                       </p>
                     )}
+                    <div style={{ marginTop: "1.5rem", textAlign: "left" }}>
+                      <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.08em", color: "#999", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+                        Chatbot-ajánlás kézi felülbírálása (ha az automatikus felismerés nem talált semmit)
+                      </label>
+                      <select value={manualChatbotCategory} onChange={e => setManualChatbotCategory(e.target.value)}
+                        style={{ width: "100%", padding: "0.5rem 0.6rem", fontSize: "0.85rem", fontFamily: "inherit", border: "1px solid #ddd", borderRadius: "4px", background: "#fff", color: "#333" }}>
+                        {CHATBOT_CATEGORY_OPTIONS.map(opt => (
+                          <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        ))}
+                      </select>
+                    </div>
                     {standaloneChatbotFinding && (
-                      <div style={{ marginTop: "1.5rem", textAlign: "left" }}>
+                      <div style={{ marginTop: "1rem", textAlign: "left" }}>
                         <p style={{ fontSize: "0.85rem", color: "#4a3d66", lineHeight: 1.6, background: "#f4f0fb", border: "1px solid #ddd0f0", borderRadius: "6px", padding: "0.8rem 1.1rem" }}>
                           {standaloneChatbotFinding.kind === "aiact"
                             ? "⚖️ Viszont van chatbotjuk AI-jelzés nélkül — ez EU AI Act szempontból érdemes megkeresésre."
