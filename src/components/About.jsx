@@ -78,7 +78,7 @@ export default function About() {
             <TileTitle style={{ whiteSpace: "pre-line" }}>{tx.tiles.singles.title}</TileTitle>
             <TileBody>{tx.tiles.singles.body}</TileBody>
             <a
-              href="https://open.spotify.com/album/539fHNOQNfCHWLW2mWoijM"
+              href="https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR"
               target="_blank" rel="noreferrer"
               onClick={() => track("click", { label: "about_spotify_link" })}
               style={{ display: "inline-block", marginTop: "1.25rem", fontSize: "0.8rem", letterSpacing: "0.08em", color: "#f5f1ea", textDecoration: "none", borderBottom: "1px solid rgba(255,255,255,0.25)", paddingBottom: "2px", transition: "border-color 0.2s, color 0.2s" }}

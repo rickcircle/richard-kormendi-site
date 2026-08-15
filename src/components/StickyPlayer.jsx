@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 
 const ACCENT = "#d16b63";
-const SPOTIFY_URL = "https://open.spotify.com/album/539fHNOQNfCHWLW2mWoijM";
+const SPOTIFY_URL = "https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR";
 
 export default function StickyPlayer() {
   const [visible, setVisible] = useState(false);
@@ -68,7 +68,7 @@ export default function StickyPlayer() {
 
           {/* Szöveg */}
           <span style={{ fontSize: "0.82rem", color: "rgba(255,255,255,0.7)", letterSpacing: "0.02em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-            <span style={{ color: "#fff", fontWeight: 600 }}>Fall Into You</span>
+            <span style={{ color: "#fff", fontWeight: 600 }}>My Burning Devotion</span>
             <span className="sticky-artist-name"> · Richard Körmendi</span>
           </span>
 

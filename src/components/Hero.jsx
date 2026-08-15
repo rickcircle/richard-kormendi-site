@@ -25,8 +25,8 @@ const SLIDES = [
     kind: "promo",
     image: burningDevotionCanvas,
     mobileImage: burningDevotionCanvasMobile,
-    href: "https://distrokid.com/hyperfollow/richardkrmendi/my-burning-devotion",
-    badge: { en: "Pre-Save", hu: "Előrendelés" },
+    href: "https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR",
+    badge: { en: "Out Now", hu: "Már elérhető" },
     title: "My Burning Devotion",
     trackLabel: "hero_slide_burning_devotion",
   },
@@ -312,7 +312,7 @@ export default function Hero() {
         }}>
           {/* OUT NOW badge */}
           <motion.a
-            href="https://open.spotify.com/album/539fHNOQNfCHWLW2mWoijM"
+            href="https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR"
             target="_blank" rel="noreferrer"
             onClick={() => track("click", { label: "hero_out_now_badge" })}
             initial={{ opacity: 0, y: 6 }}
@@ -342,7 +342,7 @@ export default function Hero() {
               flexShrink: 0,
               animation: "pulse-dot 1.8s ease-in-out infinite",
             }} />
-            Out Now — Fall Into You
+            Out Now — My Burning Devotion
           </motion.a>
 
           {/* Press badge */}

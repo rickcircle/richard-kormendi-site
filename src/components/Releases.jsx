@@ -22,12 +22,8 @@ const ACCENT = "#d16b63";
 const ACCENT_STRONG = "#e8342b";
 
 const RELEASES = [
-  {
-    title: "My Burning Devotion", cover: coverMyBurningDevotion,
-    href: "https://distrokid.com/hyperfollow/richardkrmendi/my-burning-devotion",
-    comingSoon: true,
-  },
-  { title: "Fall Into You",      year: "2026", cover: coverFallIntoYou,     spotifyId: "539fHNOQNfCHWLW2mWoijM", isNew: true },
+  { title: "My Burning Devotion", year: "2026", cover: coverMyBurningDevotion, spotifyId: "32LLbLolCdLWUH2pzJDZLR", isNew: true },
+  { title: "Fall Into You",      year: "2026", cover: coverFallIntoYou,     spotifyId: "539fHNOQNfCHWLW2mWoijM" },
   { title: "Still I Go",         year: "2026", cover: coverStillIGo,        spotifyId: "7gT1yqH7HjtBA3wWcTwtD7" },
   { title: "The Absent",         year: "2026", cover: coverTheAbsent,       spotifyId: "29BOxHtSuQC7qTGJBeKP3D" },
   { title: "You Become My Only", year: "2026", cover: coverYouBecomeMyOnly, spotifyId: "3bCpO4FDUqgNGp4D4aIYTJ" },

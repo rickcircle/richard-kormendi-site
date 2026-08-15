@@ -5,9 +5,11 @@ import { track } from "../utils/track";
 import coverMyBurningDevotion from "../assets/images/cover-my-burning-devotion.jpg";
 
 const ACCENT = "#d16b63";
-const SEEN_KEY = "rk_popup_mbd_seen";
+// Új kulcs (nem az eredeti "rk_popup_mbd_seen"), hogy azok is lássák egyszer az
+// "Out Now" verziót, akik korábban már bezárták az előrendelős popupot.
+const SEEN_KEY = "rk_popup_mbd_outnow_seen";
 const SHOW_DELAY_MS = 4000;
-const MBD_URL = "https://distrokid.com/hyperfollow/richardkrmendi/my-burning-devotion";
+const MBD_URL = "https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR";
 
 // Csak egyszer, böngészőnként (localStorage) — nem IP alapján: az IP megosztott/változó
 // (mobilnet, VPN, közös wifi), a localStorage megbízhatóbban azonosítja ugyanazt a látogatót,
@@ -86,20 +88,20 @@ export default function PreSavePopup() {
                 padding: "3px 10px", textTransform: "uppercase", fontWeight: 700,
                 marginBottom: "0.85rem",
               }}>
-                {lang === "hu" ? "Hamarosan" : "Coming Soon"}
+                {lang === "hu" ? "Már elérhető" : "Out Now"}
               </span>
               <h3 style={{ margin: "0 0 0.5rem", color: "#fff", fontSize: "1.2rem", fontWeight: 700 }}>
                 My Burning Devotion
               </h3>
               <p style={{ margin: "0 0 1.25rem", color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", lineHeight: 1.6 }}>
                 {lang === "hu"
-                  ? "Az új kislemezem hamarosan érkezik — foglald le előre most, hogy elsők között hallgathasd."
-                  : "My next single is on its way — pre-save it now to be among the first to hear it."}
+                  ? "Az új kislemezem megjelent — hallgasd meg most a Spotify-on."
+                  : "My new single is out now — listen to it on Spotify."}
               </p>
               <a
                 href={MBD_URL}
                 target="_blank" rel="noreferrer"
-                onClick={() => { track("click", { label: "popup_presave_burning_devotion" }); dismiss(); }}
+                onClick={() => { track("click", { label: "popup_outnow_burning_devotion" }); dismiss(); }}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
                   padding: "0.85rem", background: ACCENT, color: "#fff",
@@ -108,7 +110,7 @@ export default function PreSavePopup() {
                   boxShadow: "0 0 24px rgba(209, 107, 99,0.35)",
                 }}
               >
-                {lang === "hu" ? "Előrendelés most →" : "Pre-Save Now →"}
+                {lang === "hu" ? "Hallgasd meg most →" : "Listen Now →"}
               </a>
             </div>
           </motion.div>
