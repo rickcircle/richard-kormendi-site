@@ -86,7 +86,7 @@ function pickImpactCategory(types) {
 // pitch, "nem elérhető" pitch), de a user kérésére ez lecserélődött erre,
 // konzisztencia kedvéért — lásd getStandaloneChatbotMessage, getCriticalIssue,
 // getNoWebsitePitch, getUnreachableMessage.
-const CTA_QUESTION = 'Küldhetek egy rövid, kb. 1 perces videót vagy összefoglalót arról, pontosan mit látok, és mekkora hatása lehet ennek havi szinten? Ha igen, csak annyit írjon vissza: "igen, küldje".';
+const CTA_QUESTION = 'Küldhetek egy rövid, kb. 1 perces videót vagy összefoglalót arról, pontosan mit látok? Ha igen, csak annyit írjon vissza: "igen, küldje".';
 
 // Legördülő a kézi felülbíráláshoz — ugyanaz a minta, mint a chatbot-
 // kategóriánál: ha a title-alapú automatikus felismerés némán elhasal (pl.
