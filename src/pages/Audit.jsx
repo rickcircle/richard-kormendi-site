@@ -168,6 +168,28 @@ function getStandaloneChatbotMessage(finding, domain) {
   return { message, subject: finding.subject };
 }
 
+// ── "Hirdet, de a lemorzsolódó látogatókat nem gyűjti be" — 2026-08-18, ÚJ ──
+// Szándékosan NEM kézi dropdown dönti el, kire vonatkozik — a user explicit
+// kérése volt, hogy ne kelljen találgatnia. Ehelyett egy DETERMINISZTIKUS
+// jelet nézünk: ha az auditált URL-ben ott van egy Google Ads kattintás-
+// azonosító (gclid/gad_campaignid/gbraid/wbraid/gad_source), az önmagában
+// bizonyítja, hogy a cég ténylegesen fut Google Ads kampányt — ezt a Google
+// csak akkor fűzi a linkhez, ha valaki tényleg egy hirdetésre kattintott.
+// Pont így találta meg Richárd is ezeket a cégeket (a saját, valós
+// kattintásából másolt linket illesztette be az audit mezőbe) — a jel tehát
+// mindig ott van, amikor releváns, nem kell kézzel bejelölni semmit.
+const AD_CLICK_PARAM_PATTERN = /[?&](gclid|gad_campaignid|gad_source|gbraid|wbraid)=/i;
+
+// Csak akkor hívjuk, ha NINCS kritikus hiba ÉS az URL-ben van hirdetés-jel —
+// lásd a fenti komment. Tudatosan NEM állítunk konkrét %-os statisztikát
+// (pl. "95-97% elmegy ajánlatkérés nélkül") — ez cégenként eltérő, nincs
+// mögötte saját mérési adatunk, csak egy általános, védhető állítást teszünk.
+function getAdCaptureMessage(domain) {
+  const siteRef = domain ? ` (${domain})` : "";
+  const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és bár kritikus hibát nem találtam rajta, van egy észrevételem, ami a hirdetési költésükhöz kapcsolódik: azt látom, hogy Google Ads-en hirdetnek. A legtöbb PPC-kutatás szerint a fizetett hirdetésre kattintók túlnyomó többsége nem kér azonnal ajánlatot, csak elmegy — és az a kattintás visszahozhatatlanul elveszik. Egy erre betanított AI chat-asszisztens ezeket a bizonytalan látogatókat is meg tudná szólítani, és be tudná gyűjteni az elérhetőségüket, mielőtt elmennének. ${CTA_QUESTION}\n\n${SIGNATURE}`;
+  return { message, subject: "Elveszhetnek a hirdetésből érkező, bizonytalan látogatók" };
+}
+
 // ── Kritikus hiba detektálás ─────────────────────────────────────────────────
 // Csak ezek a dolgok számítanak "kritikusnak" — ezek indokolják önmagukban a
 // hideg megkeresést. Minden más (meta leírás, schema, analytics stb.) mostantól
@@ -515,7 +537,20 @@ export default function Audit() {
   const outreachSubject = critical?.subject || null;
   // Csak akkor releváns, ha NINCS kritikus hiba — ott jelenik meg gombbal.
   const standaloneChatbotFinding = results && !critical ? resolveChatbotFinding(results.checks, manualChatbotCategory) : null;
-  const standaloneChatbotPitch = standaloneChatbotFinding ? getStandaloneChatbotMessage(standaloneChatbotFinding, resultDomain) : null;
+  // Az URL-ben lévő gclid/gad_campaignid stb. deterministikusan bizonyítja,
+  // hogy a cég hirdet — ez erősebb, konkrétabb érv, mint az általános
+  // "jó lenne egy chatbot" ötlet, ezért felülírja azt. A jogi/compliance
+  // kockázatot (aiact) viszont SOSEM írja felül — az mindig elsőbbséget élvez.
+  const cameFromAdClick = results ? AD_CLICK_PARAM_PATTERN.test(results.url) : false;
+  const secondaryFinding = standaloneChatbotFinding?.kind === "aiact"
+    ? standaloneChatbotFinding
+    : cameFromAdClick
+    ? { kind: "adcapture" }
+    : standaloneChatbotFinding;
+  const secondaryPitch = !secondaryFinding ? null
+    : secondaryFinding.kind === "adcapture"
+    ? getAdCaptureMessage(resultDomain)
+    : getStandaloneChatbotMessage(secondaryFinding, resultDomain);
   const fbPitch = getNoWebsitePitch(fbBusinessName, fbDeadDomain);
   const unreachableDomain = url.trim().replace(/^https?:\/\//i, "").replace(/\/$/, "");
   const unreachablePitch = getUnreachableMessage(unreachableDomain, errorTlsError);
@@ -868,12 +903,17 @@ export default function Audit() {
                           <option key={opt.value} value={opt.value}>{opt.label}</option>
                         ))}
                       </select>
+                      <p style={{ fontSize: "0.72rem", color: "#bbb", marginTop: "0.4rem", lineHeight: 1.5 }}>
+                        Ezt csak akkor kell állítanod, ha a cégtípus nem egyértelmű az oldal címéből — a hirdetés-alapú ajánlás (lásd lent, ha releváns) mindig automatikus, ahhoz nem kell semmit kiválasztanod.
+                      </p>
                     </div>
-                    {standaloneChatbotFinding && (
+                    {secondaryFinding && (
                       <div style={{ marginTop: "1rem", textAlign: "left" }}>
                         <p style={{ fontSize: "0.85rem", color: "#4a3d66", lineHeight: 1.6, background: "#f4f0fb", border: "1px solid #ddd0f0", borderRadius: "6px", padding: "0.8rem 1.1rem" }}>
-                          {standaloneChatbotFinding.kind === "aiact"
+                          {secondaryFinding.kind === "aiact"
                             ? "⚖️ Viszont van chatbotjuk AI-jelzés nélkül — ez EU AI Act szempontból érdemes megkeresésre."
+                            : secondaryFinding.kind === "adcapture"
+                            ? "📈 Viszont a linkjükön látszik, hogy hirdetnek — a lemorzsolódó látogatókat egy AI chat-asszisztens megfoghatná."
                             : "💬 Viszont úgy látom, nekik tényleg hasznos lenne egy chatbot."}
                         </p>
                         {!chatbotPitchRevealed ? (
@@ -882,7 +922,7 @@ export default function Audit() {
                             border: "none", borderRadius: "4px", fontSize: "0.8rem", fontWeight: 600,
                             cursor: "pointer", fontFamily: "inherit",
                           }}>
-                            {standaloneChatbotFinding.kind === "aiact" ? "AI Act-levél generálása" : "Chatbot-ajánlólevél generálása"} →
+                            {secondaryFinding.kind === "aiact" ? "AI Act-levél generálása" : secondaryFinding.kind === "adcapture" ? "Lead-megtartó levél generálása" : "Chatbot-ajánlólevél generálása"} →
                           </button>
                         ) : (
                           <div style={{ marginTop: "1rem", padding: "1.5rem", background: "#fff", borderRadius: "8px", border: "1px solid #e8e8e8", borderLeft: "4px solid #4a3d66" }}>
@@ -890,13 +930,13 @@ export default function Audit() {
                               Tárgy
                             </p>
                             <p style={{ fontSize: "0.88rem", color: "#333", marginBottom: "1rem" }}>
-                              {standaloneChatbotPitch.subject}
+                              {secondaryPitch.subject}
                             </p>
                             <p style={{ fontSize: "0.92rem", color: "#333", lineHeight: 1.8, marginBottom: "1.25rem", fontStyle: "italic", whiteSpace: "pre-line" }}>
-                              "{standaloneChatbotPitch.message}"
+                              "{secondaryPitch.message}"
                             </p>
                             <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                              <button onClick={() => handleCopyChatbot(standaloneChatbotPitch.subject)} style={{
+                              <button onClick={() => handleCopyChatbot(secondaryPitch.subject)} style={{
                                 padding: "0.55rem 1.25rem", background: "#fff",
                                 color: chatbotCopied ? "#0cce6b" : "#4a3d66",
                                 border: "1px solid #4a3d66", borderRadius: "4px",
@@ -904,7 +944,7 @@ export default function Audit() {
                               }}>
                                 {chatbotCopied ? "✓ Másolva!" : "Tárgy másolása"}
                               </button>
-                              <button onClick={() => handleCopyChatbot(standaloneChatbotPitch.message)} style={{
+                              <button onClick={() => handleCopyChatbot(secondaryPitch.message)} style={{
                                 padding: "0.55rem 1.25rem",
                                 background: chatbotCopied ? "#0cce6b" : "#4a3d66",
                                 color: "#fff", border: "none", borderRadius: "4px",
