@@ -359,7 +359,28 @@ export default async function handler(req, res) {
         : isEcommerce ? "webshop"
         : null;
 
-      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, businessCategory, gdprConsentMissing, pageReachable: true, tlsError: null };
+      // ── Iparág-tier a hirdetés-hatás alapú (High-Ticket/sürgősségi) üzenethez ──
+      // 2026-08-17, user kérésére: a cold email célcsoportja kibővült olyan
+      // iparágakra, ahol a rossz weboldal MÉRHETŐ bevételkiesést okoz, és ahol
+      // a cégek tipikusan hirdetnek is (Google Ads) — itt a technikai hibát
+      // közvetlenül "elveszett fizetett kattintás/érdeklődő" nyelvre fordítjuk.
+      // Külön mező a businessCategory-tól, mert az a chatbot-pitchhez való, és
+      // más logikát (title-kulcsszó elsőbbség stb.) követ.
+      const isMedAesthetic = /plasztikai sebész|esztétikai (sebészet|klinika)|lézerklinika|gyógytorna|prémium fogászat|fogászat|fogorvos|dentál|dental|szemészeti lézer|bőrgyógyász|nőgyógyász|szépségklinika/i.test(titleLower);
+      const isPremiumHome  = /generálkivitelez|építőipar|napelem|hőszivattyú|belsőépítész|teljes körű kivitelezés|tetőfedő/i.test(titleLower);
+      const isEmergencyService = /duguláselhárít|autóment|zárszervi|gyorsszerviz|24\s?ór[aá]s (szerviz|ügyelet|segítség)/i.test(titleLower);
+      const industryTier = isEmergencyService ? "emergency"
+        : isPremiumHome ? "premiumhome"
+        : isMedAesthetic ? "medaesthetic"
+        : null;
+
+      // ── Google Ads jelenlét — konkrét bizonyíték, nem feltételezés ───────────
+      // A "hirdetésből érkező látogató elvész" érv csak akkor kerül a levélbe
+      // konkrét hirdetés-hivatkozással, ha TÉNYLEG találunk Google Ads
+      // konverziókövetést (AW-XXXXXXXXX) vagy googleadservices szkriptet.
+      const hasGoogleAds = /\bAW-\d{9,}\b|googleadservices\.com|google_conversion_id/i.test(html);
+
+      return { hasPhoneLink, hasAnyPhone, hasSchemaOrg, hasLocalBizSchema, hasMapsEmbed, hasFacebook, hasInstagram, copyrightYear, siteIsRecent, hasAnalytics, pageTitle, hasChatbot, chatbotName, hasAiDisclosure, hasBooking, bookingName, phpVersion, phpEol, isWordPress, isAngularJs, wpVersion, wpCoreEol, jqueryVersion, jqueryVeryOld, phpErrorsExposed, deadGoogleAnalytics, hasFlash, missingViewport, businessCategory, industryTier, hasGoogleAds, gdprConsentMissing, pageReachable: true, tlsError: null };
     } catch (err) {
       // FONTOS: ez akkor is lefut, ha a saját közvetlen fetch-ünk sikertelen
       // (a szerver tényleg nem válaszol), tehát a pageReachable:false az
@@ -367,7 +388,7 @@ export default async function handler(req, res) {
       // el — ezt használja a fő handler, amikor a Lighthouse is elhasal.
       // A tlsError plusz információ: gyakran nem is elérhetetlen az oldal,
       // csak a tanúsítványa rossz domainre van kiállítva.
-      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, businessCategory: null, gdprConsentMissing: null, pageReachable: false, tlsError: classifyTlsError(err) };
+      return { hasPhoneLink: null, hasAnyPhone: null, hasSchemaOrg: null, hasLocalBizSchema: null, hasMapsEmbed: null, hasFacebook: null, hasInstagram: null, copyrightYear: null, siteIsRecent: null, hasAnalytics: null, pageTitle: null, hasChatbot: null, chatbotName: null, hasAiDisclosure: null, hasBooking: null, bookingName: null, phpVersion: null, phpEol: null, isWordPress: null, isAngularJs: null, wpVersion: null, wpCoreEol: null, jqueryVersion: null, jqueryVeryOld: null, phpErrorsExposed: null, deadGoogleAnalytics: null, hasFlash: null, missingViewport: null, businessCategory: null, industryTier: null, hasGoogleAds: null, gdprConsentMissing: null, pageReachable: false, tlsError: classifyTlsError(err) };
     }
   };
 
@@ -461,6 +482,8 @@ export default async function handler(req, res) {
       hasFlash:        page.hasFlash,
       missingViewport: page.missingViewport,
       businessCategory: page.businessCategory,
+      industryTier:    page.industryTier,
+      hasGoogleAds:    page.hasGoogleAds,
       gdprConsentMissing: page.gdprConsentMissing,
       // Cégminőség
       businessQuality: businessQuality,

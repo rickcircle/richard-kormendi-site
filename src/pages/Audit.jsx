@@ -42,6 +42,60 @@ const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne
 // homályos "keressenek bizalommal"-ra.
 const CTA_CALL = "Ha nyitottak rá, megbeszélhetjük a részleteket egy rövid, 5 perces telefonhívás során — mikor lenne erre alkalmas időpont a héten?";
 
+// ── Iparág-specifikus üzleti hatás — 2026-08-17, ÚJ ─────────────────────────
+// User kérésére: a High-Ticket/sürgősségi iparágaknál (egészségügy-esztétika,
+// prémium otthon/építőipar, sürgősségi szolgáltatók) a technikai hibát NEM
+// technikai nyelven írjuk le, hanem közvetlen bevételkiesésre/elveszett
+// hirdetési kattintásra fordítjuk — ez a célcsoport nem IT-s, a technikai
+// súlyt nem érzi, a pénzügyi súlyt igen. A `hasGoogleAds` paraméter csak
+// akkor ad konkrét "hirdetésből érkező látogató" hivatkozást, ha TÉNYLEG
+// találtunk Google Ads konverziókövetést a HTML-ben (lásd api/pagespeed.js)
+// — nem feltételezünk hirdetést, ha nincs rá bizonyíték.
+const BUSINESS_IMPACT = {
+  medaesthetic: {
+    mobile: (hasAds) => `mobilon nehezen kattintható vagy nem működik jól az időpontfoglalás/hívás gomb — ${hasAds ? "mivel Google Ads-en hirdetnek, a fizetett kattintásokból érkező érdeklődők egy része" : "az érdeklődők egy része"} még mielőtt megkeresné Önöket, egyszerűen a következő, könnyebben elérhető klinikára vált`,
+    security: (hasAds) => `elavult vagy nem biztonságos a weboldal technikai háttere — ez pont azt a bizalmat ássa alá, ami egy egészségügyi/esztétikai döntésnél a legfontosabb szempont${hasAds ? ", és Google Ads esetén emeli is a kattintásonkénti költséget" : ""}, miközben a betegek jellemzően több klinikát hasonlítanak össze konzultáció előtt`,
+    tracking: () => `hónapok, talán évek óta nem gyűlik valós adat a látogatóikról — vagyis fogalmuk sincs, a hirdetési költésük ténylegesen megkeresést hoz-e, vagy csak elszivárog`,
+  },
+  premiumhome: {
+    mobile: (hasAds) => `mobilon lassan tölt be az oldal — egy generálkivitelezőt vagy napelem-/hőszivattyú-telepítőt keresők jellemzően több helyről kérnek párhuzamosan ajánlatot, és ${hasAds ? "egy hirdetésből érkező látogató" : "aki"} nem vár meg egy lassú oldalt, hanem a gyorsabban elérhető versenytársnál landol`,
+    security: (hasAds) => `elavult vagy nem biztonságos a weboldal technikai háttere — egy magasabb értékű megrendelésnél (napelem, teljes felújítás) ez azonnal bizalmatlanná teszi az ajánlatkérőt${hasAds ? ", és Google Ads esetén rontja a hirdetés minőségi mutatóját is" : ""}`,
+    tracking: () => `hónapok, talán évek óta nem gyűlik valós adat a látogatóikról — nem látják, mely forrás hozza a ténylegesen megtérülő ajánlatkéréseket`,
+  },
+  emergency: {
+    mobile: () => `mobilon nem egyértelmű vagy nem működik jól a hívás gomb — sürgősségi helyzetben (dugulás, defekt, kizárás) másodpercek számítanak, és aki nem tud egy kattintással hívni, egyszerűen a következő találatot vagy hirdetést hívja fel`,
+    security: () => `nem biztonságos a weboldal — a böngészők "Nem biztonságos" figyelmeztetést mutatnak, ami egy sürgősségi helyzetben lévő, amúgy is bizalmatlan érdeklődőt azonnal elriaszthat`,
+    tracking: () => `hónapok, talán évek óta nem gyűlik valós adat a látogatóikról — nem látják, melyik csatorna hozza ténylegesen a hívásokat`,
+  },
+};
+
+// A kritikus bullet-típusokat 3 üzleti-hatás kategóriába soroljuk — a
+// legerősebb (mobil UX) élvez elsőbbséget, mert ez a legkonkrétabb, legjobban
+// átélhető veszteség ennél a célcsoportnál.
+function pickImpactCategory(types) {
+  const securityTypes = ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold", "phperrors", "gdpr"];
+  const mobileTypes   = ["mobilebroken", "mobileslow", "noviewport", "flash"];
+  if (types.some(t => mobileTypes.includes(t)))   return "mobile";
+  if (types.some(t => securityTypes.includes(t))) return "security";
+  if (types.includes("deadga"))                   return "tracking";
+  return null;
+}
+
+// Kérdés/engedély-kérés jellegű CTA a direkt eladás helyett — a cél csak egy
+// VÁLASZ kiváltása ("igen"), nem azonnali elköteleződés. Ez a "no-brainer
+// offer" elv: minél kisebb a kért lépés, annál nagyobb az esély a válaszra.
+const CTA_QUESTION = 'Küldhetek egy rövid, kb. 1 perces videót vagy összefoglalót arról, pontosan mit látok, és mekkora hatása lehet ennek havi szinten? Ha igen, csak annyit írjon vissza: "igen, küldje".';
+
+// Legördülő a kézi felülbíráláshoz — ugyanaz a minta, mint a chatbot-
+// kategóriánál: ha a title-alapú automatikus felismerés némán elhasal (pl.
+// bot-védelem), itt kézzel kiválasztható a helyes iparág-tier.
+const INDUSTRY_TIER_OPTIONS = [
+  { value: "", label: "— Nincs High-Ticket/sürgősségi iparág —" },
+  { value: "medaesthetic", label: "Egészségügy / esztétika (plasztika, lézerklinika, prémium fogászat)" },
+  { value: "premiumhome",  label: "Prémium otthon / építőipar (kivitelező, napelem, hőszivattyú)" },
+  { value: "emergency",    label: "Sürgősségi szolgáltató (duguláselhárítás, autómentés, zárszerviz)" },
+];
+
 // ── Chatbot-vonatkozású találatok — mindkettő KÜLÖN kategória marad a ────────
 // kritikus-hiba listától, mert az egyik jogi jellegű, a másik csak egy ötlet,
 // és ezek szándékosan nem keverednek a "valós kockázat" bullet-felsorolással.
@@ -119,7 +173,7 @@ function getStandaloneChatbotMessage(finding, domain) {
 // egyáltalán mit írni.
 // FONTOS: ha TÖBB kritikus hiba is fennáll egyszerre, mindegyik bekerül az
 // üzenetbe — nem csak az első találat (korábban ez volt a hiba).
-function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", manualChatbotCategory = "") {
+function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", manualChatbotCategory = "", manualIndustryTier = "") {
   // Ha a Lighthouse elhasalt (lásd lighthouseFailed az API válaszban), a
   // pontszámok null-ok lehetnek — null < 40 JS-ben igazra értékelődne ki
   // (0-ra kényszerülne), ezért csak akkor nézzük a mobil-alapú találatokat,
@@ -216,6 +270,27 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", m
   // ha VAN legalább egy kritikus bullet is.
   if (bullets.length === 0) return null;
 
+  // ── High-Ticket/sürgősségi rövid, üzleti-hatás sablon ───────────────────
+  // Ha van iparág-tier (automatikus vagy kézi felülbírálás) ÉS a talált
+  // hibák közül legalább egy besorolható üzleti-hatás kategóriába, EGY rövid,
+  // 4-6 mondatos, kérdés-CTA-s levelet küldünk a klasszikus, technikai
+  // bullet-lista helyett — ez a user explicit kérése (2026-08-17): ez a
+  // célcsoport nem IT-s, a technikai részletezés nem hoz választ, a
+  // konkrét, pénzben kifejezett veszteség viszont igen.
+  const industryTier = manualIndustryTier || checks.industryTier || null;
+  const impactCategory = industryTier ? pickImpactCategory(types) : null;
+  if (industryTier && impactCategory && BUSINESS_IMPACT[industryTier]?.[impactCategory]) {
+    const impactText = BUSINESS_IMPACT[industryTier][impactCategory](!!checks.hasGoogleAds);
+    const shortSiteRef = domain ? ` (${domain})` : "";
+    const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${shortSiteRef}, és azt találtam, hogy ${impactText}. ${CTA_QUESTION}\n\n${SIGNATURE}`;
+    const subject = impactCategory === "mobile"
+      ? "Elveszhetnek a hirdetésből érkező érdeklődők"
+      : impactCategory === "security"
+      ? "Bizalmi kockázat a weboldalukon"
+      : "Nem mérik, mit hoz a hirdetési költésük";
+    return { types, message, subject };
+  }
+
   const siteRef = domain ? ` (${domain})` : "";
   const closing = bullets.length === 1
     ? (needsRebuild ? "Szívesen segítek ezt modern, biztonságos felületre cserélni." : "Szívesen segítek rendbe tenni ezt.")
@@ -310,6 +385,7 @@ export default function Audit() {
   const [chatbotPitchRevealed, setChatbotPitchRevealed] = useState(false);
   const [chatbotCopied, setChatbotCopied] = useState(false);
   const [manualChatbotCategory, setManualChatbotCategory] = useState("");
+  const [manualIndustryTier, setManualIndustryTier] = useState("");
 
   const handleCopyFb = (text) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -373,6 +449,7 @@ export default function Audit() {
     setStatus("loading");
     setResults(null);
     setManualChatbotCategory("");
+    setManualIndustryTier("");
     setChatbotPitchRevealed(false);
     setErrorTlsError(null);
     try {
@@ -422,7 +499,7 @@ export default function Audit() {
   };
 
   const resultDomain = results ? (() => { try { return new URL(results.url).hostname; } catch { return ""; } })() : "";
-  const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks, resultDomain, manualChatbotCategory) : null;
+  const critical = results ? getCriticalIssue(results.mobile.score, results.desktop.score, results.checks, resultDomain, manualChatbotCategory, manualIndustryTier) : null;
   const outreachMsg = critical?.message || null;
   const outreachSubject = critical?.subject || null;
   // Csak akkor releváns, ha NINCS kritikus hiba — ott jelenik meg gombbal.
@@ -631,6 +708,17 @@ export default function Audit() {
                       <p style={{ fontSize: "0.8rem", color: "#aaa", marginBottom: "1rem", lineHeight: 1.5 }}>
                         LinkedIn-en vagy emailben küldheted el — nem hivatkozik eszközre, nem kér semmit:
                       </p>
+                      <div style={{ marginBottom: "0.75rem", padding: "0.75rem 1rem", background: "#f7f6f3", borderRadius: "6px" }}>
+                        <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.08em", color: "#999", textTransform: "uppercase", marginBottom: "0.4rem" }}>
+                          High-Ticket/sürgősségi iparág kézi felülbírálása (rövid, üzleti-hatás alapú levelet generál a technikai lista helyett)
+                        </label>
+                        <select value={manualIndustryTier} onChange={e => setManualIndustryTier(e.target.value)}
+                          style={{ width: "100%", padding: "0.5rem 0.6rem", fontSize: "0.85rem", fontFamily: "inherit", border: "1px solid #ddd", borderRadius: "4px", background: "#fff", color: "#333" }}>
+                          {INDUSTRY_TIER_OPTIONS.map(opt => (
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                          ))}
+                        </select>
+                      </div>
                       <div style={{ marginBottom: "1.25rem", padding: "0.75rem 1rem", background: "#f7f6f3", borderRadius: "6px" }}>
                         <label style={{ display: "block", fontSize: "0.7rem", letterSpacing: "0.08em", color: "#999", textTransform: "uppercase", marginBottom: "0.4rem" }}>
                           Chatbot-ajánlás kézi felülbírálása (ha az automatikus felismerés nem talált semmit)
