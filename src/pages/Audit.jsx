@@ -284,7 +284,16 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", m
   if (industryTier && impactCategory && BUSINESS_IMPACT[industryTier]?.[impactCategory]) {
     const impactText = BUSINESS_IMPACT[industryTier][impactCategory](!!checks.hasGoogleAds);
     const shortSiteRef = domain ? ` (${domain})` : "";
-    const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${shortSiteRef}, és azt találtam, hogy ${impactText}. ${CTA_QUESTION}\n\n${SIGNATURE}`;
+    // A jogi/compliance jellegű chatbot-találat (AI Act) egy önálló, komoly
+    // kockázat — ez SOSEM maradhat ki csendben, még a rövid sablonból se
+    // (2026-08-18-i hiba volt: energoptimo.hu-nál elnyelte a mobil-hiba
+    // ága). A puha "fejlesztési ötlet" (opportunity) viszont marad kint a
+    // rövid ágból, hogy ne hízzon el a levél minden dental/medaesthetic
+    // lead-nél, ahol amúgy sincs chatbot.
+    const shortChatbotParagraph = chatbotFinding?.kind === "aiact"
+      ? `\n\nEmellett egy jogi jellegű észrevételem is van a chatbotjukkal kapcsolatban: ${chatbotFinding.text}`
+      : "";
+    const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${shortSiteRef}, és azt találtam, hogy ${impactText}.${shortChatbotParagraph} ${CTA_QUESTION}\n\n${SIGNATURE}`;
     const subject = impactCategory === "mobile"
       ? "Elveszhetnek a hirdetésből érkező érdeklődők"
       : impactCategory === "security"
