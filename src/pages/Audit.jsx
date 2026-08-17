@@ -56,20 +56,46 @@ const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne
 // esetén ez WordPress 5.2.21, egy 2019-es alapváltozat), és (b) néha
 // pontatlan is volt — pl. a "hívás gomb" szöveg akkor is bejött, ha valójában
 // a lassú betöltés (mobileslow) volt az ok, nem egy törött gomb.
+// 2026-08-18-i MÁSODIK javítás: a `security` eredetileg EGY szöveg volt
+// tier-enként, ami mindig azt állította, hogy a látogató "bizalmatlanná
+// válik" / "azonnal elriad" a hibától. Ez 3 típusnál (nohttps,
+// httpnotenforced, phperrors) igaz — ott a látogató TÉNYLEG lát valamit
+// (böngésző-figyelmeztetés vagy nyers hibaüzenet). DE 4 típusnál (phpeol,
+// angulareol, wpcoreeol, jqueryold) ez FALS: a látogató fizikailag nem látja
+// a szerver PHP-verzióját vagy a WordPress alapváltozat-számát, tehát nem
+// "bizalmatlanná válik" tőle — ezt a user vetette fel jogosan
+// (napelemoazis.hu, WP 5.2.21 kapcsán: "miért lenne bizalmatlan? fogalma
+// nincs róla a megrendelőnek"). Ezeknél a valódi, védhető kockázat az, hogy
+// a rejtett sebezhetőség miatt MEGNŐ az esélye, hogy az oldalt feltörik vagy
+// leállítják — ami már tényleg látható lesz, csak nem a mai napon. A gdpr
+// megint más: az nem hack-kockázat, hanem jogi/hatósági kockázat, aminek
+// szintén semmi köze ahhoz, hogy a látogató észreveszi-e.
 const BUSINESS_IMPACT = {
   medaesthetic: {
     mobile: (hasAds) => `${hasAds ? "mivel Google Ads-en hirdetnek, a fizetett kattintásokból érkező érdeklődők egy része" : "az érdeklődők egy része"} még mielőtt megkeresné Önöket, egyszerűen a következő, könnyebben elérhető klinikára vált`,
-    security: (hasAds) => `ez pont azt a bizalmat ássa alá, ami egy egészségügyi/esztétikai döntésnél a legfontosabb szempont${hasAds ? ", és Google Ads esetén emeli is a kattintásonkénti költséget" : ""}, miközben a betegek jellemzően több klinikát hasonlítanak össze konzultáció előtt`,
+    security: {
+      visible: (hasAds) => `ezt minden látogató azonnal látja (böngésző-figyelmeztetés vagy hibaüzenet formájában) — egy egészségügyi/esztétikai döntésnél pont a bizalom a legfontosabb szempont, és sokan emiatt fordulnak el, mielőtt egyáltalán megkeresnék Önöket${hasAds ? ", Google Ads esetén ez a kattintásonkénti költséget is emeli" : ""}`,
+      hidden:  () => `ez a látogatóknak közvetlenül nem látszik, de jelentősen megnöveli annak esélyét, hogy az oldalt feltörik vagy leállítják — és az már nagyon is látható lesz, pont akkor, amikor egy érdeklődő éppen keresné Önöket`,
+      gdpr:    () => `ez GDPR-szempontból kockázatos, és bármikor bejelentés vagy hatósági ellenőrzés tárgya lehet — függetlenül attól, hogy a látogatók ezt egyáltalán észreveszik-e`,
+    },
     tracking: () => `vagyis fogalmuk sincs, a hirdetési költésük ténylegesen megkeresést hoz-e, vagy csak elszivárog`,
   },
   premiumhome: {
     mobile: (hasAds) => `egy generálkivitelezőt vagy napelem-/hőszivattyú-telepítőt keresők jellemzően több helyről kérnek párhuzamosan ajánlatot, és ${hasAds ? "egy hirdetésből érkező látogató" : "aki ezt tapasztalja"} könnyen a gyorsabban elérhető versenytárstól kér inkább ajánlatot`,
-    security: (hasAds) => `egy magasabb értékű megrendelésnél (napelem, teljes felújítás) ez azonnal bizalmatlanná teszi az ajánlatkérőt${hasAds ? ", és Google Ads esetén rontja a hirdetés minőségi mutatóját is" : ""}`,
+    security: {
+      visible: (hasAds) => `ezt minden látogató azonnal látja (böngésző-figyelmeztetés vagy hibaüzenet formájában) — egy magasabb értékű megrendelésnél (napelem, teljes felújítás) ez azonnal bizalmatlanná teszi az ajánlatkérőt${hasAds ? ", Google Ads esetén rontja a hirdetés minőségi mutatóját is" : ""}`,
+      hidden:  () => `ez a látogatóknak közvetlenül nem látszik, de jelentősen megnöveli annak esélyét, hogy az oldalt feltörik vagy leállítják — és onnantól minden hirdetési kattintás egy hibás vagy hackelt oldalra érkezik, amíg észre nem veszik`,
+      gdpr:    () => `ez GDPR-szempontból kockázatos, és bármikor bejelentés vagy hatósági ellenőrzés tárgya lehet — függetlenül attól, hogy a látogatók ezt egyáltalán észreveszik-e`,
+    },
     tracking: () => `nem látják, mely forrás hozza a ténylegesen megtérülő ajánlatkéréseket`,
   },
   emergency: {
     mobile: () => `sürgősségi helyzetben (dugulás, defekt, kizárás) másodpercek számítanak, és aki ezt tapasztalja, egyszerűen a következő találatot vagy hirdetést hívja fel`,
-    security: () => `sürgősségi helyzetben az amúgy is bizalmatlan érdeklődőt ez azonnal elriaszthatja, mielőtt egyáltalán hívna`,
+    security: {
+      visible: () => `ezt minden látogató azonnal látja — sürgősségi helyzetben az amúgy is bizalmatlan érdeklődőt ez azonnal elriaszthatja, mielőtt egyáltalán hívna`,
+      hidden:  () => `ez a látogatóknak közvetlenül nem látszik, de jelentősen megnöveli annak esélyét, hogy az oldal leáll vagy feltörik — és ha ez pont egy sürgősségi helyzet közepén történik, elveszítik azt a hívást, aminek a legjobban kellett volna eljutnia Önökhöz`,
+      gdpr:    () => `ez GDPR-szempontból kockázatos, és bármikor bejelentés vagy hatósági ellenőrzés tárgya lehet — függetlenül attól, hogy a látogatók ezt egyáltalán észreveszik-e`,
+    },
     tracking: () => `nem látják, melyik csatorna hozza ténylegesen a hívásokat`,
   },
 };
@@ -79,11 +105,20 @@ const BUSINESS_IMPACT = {
 // átélhető veszteség ennél a célcsoportnál.
 const MOBILE_IMPACT_TYPES   = ["mobilebroken", "mobileslow", "noviewport", "flash"];
 const SECURITY_IMPACT_TYPES = ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold", "phperrors", "gdpr"];
+// Ezeknél a típusoknál a látogató TÉNYLEG lát valamit (böngésző-
+// figyelmeztetés vagy nyers hibaüzenet) — a többi security-típus a szerver/
+// keretrendszer háttérben van, a látogató számára láthatatlan.
+const VISIBLE_SECURITY_TYPES = ["nohttps", "httpnotenforced", "phperrors"];
 function pickImpactCategory(types) {
   if (types.some(t => MOBILE_IMPACT_TYPES.includes(t)))   return "mobile";
   if (types.some(t => SECURITY_IMPACT_TYPES.includes(t))) return "security";
   if (types.includes("deadga"))                            return "tracking";
   return null;
+}
+function getSecurityConsequenceKind(types) {
+  if (types.includes("gdpr")) return "gdpr";
+  const type = types.find(t => SECURITY_IMPACT_TYPES.includes(t));
+  return VISIBLE_SECURITY_TYPES.includes(type) ? "visible" : "hidden";
 }
 
 // A rövid sablonhoz kell egy KONKRÉT, rövid tény-töredék (nem a hosszú,
@@ -350,7 +385,11 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", m
   const impactCategory = industryTier ? pickImpactCategory(types) : null;
   if (industryTier && impactCategory && BUSINESS_IMPACT[industryTier]?.[impactCategory]) {
     const concreteReason = getConcreteReason(types, impactCategory, checks, mobileScore);
-    const consequenceText = BUSINESS_IMPACT[industryTier][impactCategory](!!checks.hasGoogleAds);
+    // A "security" kategórián belül 3 alszöveg van (visible/hidden/gdpr) —
+    // lásd a BUSINESS_IMPACT feletti komment, miért nem egyetlen szöveg ez.
+    const consequenceText = impactCategory === "security"
+      ? BUSINESS_IMPACT[industryTier].security[getSecurityConsequenceKind(types)](!!checks.hasGoogleAds)
+      : BUSINESS_IMPACT[industryTier][impactCategory](!!checks.hasGoogleAds);
     const impactText = concreteReason ? `${concreteReason} — ${consequenceText}` : consequenceText;
     const shortSiteRef = domain ? ` (${domain})` : "";
     // A jogi/compliance jellegű chatbot-találat (AI Act) egy önálló, komoly
