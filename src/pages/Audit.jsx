@@ -47,33 +47,78 @@ const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne
 // akkor ad konkrét "hirdetésből érkező látogató" hivatkozást, ha TÉNYLEG
 // találtunk Google Ads konverziókövetést a HTML-ben (lásd api/pagespeed.js)
 // — nem feltételezünk hirdetést, ha nincs rá bizonyíték.
+// FONTOS, 2026-08-18-i javítás: ezek a szövegek CSAK a következményt írják
+// le, a KONKRÉT tényt (mi pontosan elavult/lassú) mostantól a
+// getConcreteReason() adja hozzá elé — korábban ezek a szövegek maguk is egy
+// generikus tény-állítással kezdődtek ("elavult vagy nem biztonságos a
+// weboldal technikai háttere" / "mobilon nehezen kattintható... gomb"), ami
+// (a) sosem árulta el, MI konkrétan elavult (userkérdés volt: napelemoazis.hu
+// esetén ez WordPress 5.2.21, egy 2019-es alapváltozat), és (b) néha
+// pontatlan is volt — pl. a "hívás gomb" szöveg akkor is bejött, ha valójában
+// a lassú betöltés (mobileslow) volt az ok, nem egy törött gomb.
 const BUSINESS_IMPACT = {
   medaesthetic: {
-    mobile: (hasAds) => `mobilon nehezen kattintható vagy nem működik jól az időpontfoglalás/hívás gomb — ${hasAds ? "mivel Google Ads-en hirdetnek, a fizetett kattintásokból érkező érdeklődők egy része" : "az érdeklődők egy része"} még mielőtt megkeresné Önöket, egyszerűen a következő, könnyebben elérhető klinikára vált`,
-    security: (hasAds) => `elavult vagy nem biztonságos a weboldal technikai háttere — ez pont azt a bizalmat ássa alá, ami egy egészségügyi/esztétikai döntésnél a legfontosabb szempont${hasAds ? ", és Google Ads esetén emeli is a kattintásonkénti költséget" : ""}, miközben a betegek jellemzően több klinikát hasonlítanak össze konzultáció előtt`,
-    tracking: () => `hónapok, talán évek óta nem gyűlik valós adat a látogatóikról — vagyis fogalmuk sincs, a hirdetési költésük ténylegesen megkeresést hoz-e, vagy csak elszivárog`,
+    mobile: (hasAds) => `${hasAds ? "mivel Google Ads-en hirdetnek, a fizetett kattintásokból érkező érdeklődők egy része" : "az érdeklődők egy része"} még mielőtt megkeresné Önöket, egyszerűen a következő, könnyebben elérhető klinikára vált`,
+    security: (hasAds) => `ez pont azt a bizalmat ássa alá, ami egy egészségügyi/esztétikai döntésnél a legfontosabb szempont${hasAds ? ", és Google Ads esetén emeli is a kattintásonkénti költséget" : ""}, miközben a betegek jellemzően több klinikát hasonlítanak össze konzultáció előtt`,
+    tracking: () => `vagyis fogalmuk sincs, a hirdetési költésük ténylegesen megkeresést hoz-e, vagy csak elszivárog`,
   },
   premiumhome: {
-    mobile: (hasAds) => `mobilon lassan tölt be az oldal — egy generálkivitelezőt vagy napelem-/hőszivattyú-telepítőt keresők jellemzően több helyről kérnek párhuzamosan ajánlatot, és ${hasAds ? "egy hirdetésből érkező látogató" : "aki"} nem vár meg egy lassú oldalt, hanem a gyorsabban elérhető versenytársnál landol`,
-    security: (hasAds) => `elavult vagy nem biztonságos a weboldal technikai háttere — egy magasabb értékű megrendelésnél (napelem, teljes felújítás) ez azonnal bizalmatlanná teszi az ajánlatkérőt${hasAds ? ", és Google Ads esetén rontja a hirdetés minőségi mutatóját is" : ""}`,
-    tracking: () => `hónapok, talán évek óta nem gyűlik valós adat a látogatóikról — nem látják, mely forrás hozza a ténylegesen megtérülő ajánlatkéréseket`,
+    mobile: (hasAds) => `egy generálkivitelezőt vagy napelem-/hőszivattyú-telepítőt keresők jellemzően több helyről kérnek párhuzamosan ajánlatot, és ${hasAds ? "egy hirdetésből érkező látogató" : "aki ezt tapasztalja"} könnyen a gyorsabban elérhető versenytárstól kér inkább ajánlatot`,
+    security: (hasAds) => `egy magasabb értékű megrendelésnél (napelem, teljes felújítás) ez azonnal bizalmatlanná teszi az ajánlatkérőt${hasAds ? ", és Google Ads esetén rontja a hirdetés minőségi mutatóját is" : ""}`,
+    tracking: () => `nem látják, mely forrás hozza a ténylegesen megtérülő ajánlatkéréseket`,
   },
   emergency: {
-    mobile: () => `mobilon nem egyértelmű vagy nem működik jól a hívás gomb — sürgősségi helyzetben (dugulás, defekt, kizárás) másodpercek számítanak, és aki nem tud egy kattintással hívni, egyszerűen a következő találatot vagy hirdetést hívja fel`,
-    security: () => `nem biztonságos a weboldal — a böngészők "Nem biztonságos" figyelmeztetést mutatnak, ami egy sürgősségi helyzetben lévő, amúgy is bizalmatlan érdeklődőt azonnal elriaszthat`,
-    tracking: () => `hónapok, talán évek óta nem gyűlik valós adat a látogatóikról — nem látják, melyik csatorna hozza ténylegesen a hívásokat`,
+    mobile: () => `sürgősségi helyzetben (dugulás, defekt, kizárás) másodpercek számítanak, és aki ezt tapasztalja, egyszerűen a következő találatot vagy hirdetést hívja fel`,
+    security: () => `sürgősségi helyzetben az amúgy is bizalmatlan érdeklődőt ez azonnal elriaszthatja, mielőtt egyáltalán hívna`,
+    tracking: () => `nem látják, melyik csatorna hozza ténylegesen a hívásokat`,
   },
 };
 
 // A kritikus bullet-típusokat 3 üzleti-hatás kategóriába soroljuk — a
 // legerősebb (mobil UX) élvez elsőbbséget, mert ez a legkonkrétabb, legjobban
 // átélhető veszteség ennél a célcsoportnál.
+const MOBILE_IMPACT_TYPES   = ["mobilebroken", "mobileslow", "noviewport", "flash"];
+const SECURITY_IMPACT_TYPES = ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold", "phperrors", "gdpr"];
 function pickImpactCategory(types) {
-  const securityTypes = ["nohttps", "httpnotenforced", "phpeol", "angulareol", "wpcoreeol", "jqueryold", "phperrors", "gdpr"];
-  const mobileTypes   = ["mobilebroken", "mobileslow", "noviewport", "flash"];
-  if (types.some(t => mobileTypes.includes(t)))   return "mobile";
-  if (types.some(t => securityTypes.includes(t))) return "security";
-  if (types.includes("deadga"))                   return "tracking";
+  if (types.some(t => MOBILE_IMPACT_TYPES.includes(t)))   return "mobile";
+  if (types.some(t => SECURITY_IMPACT_TYPES.includes(t))) return "security";
+  if (types.includes("deadga"))                            return "tracking";
+  return null;
+}
+
+// A rövid sablonhoz kell egy KONKRÉT, rövid tény-töredék (nem a hosszú,
+// részletes `bullets`-beli mondat — az túl hosszú lenne a 4-6 mondatos
+// elvhez), amit a business-impact mondat elé illesztünk, hogy sose maradjon
+// homályos, MI pontosan a gond.
+const SECURITY_REASON = {
+  nohttps:         () => "nincs biztonságos (HTTPS) kapcsolatuk",
+  httpnotenforced: () => "a biztonságos (HTTPS) verziójuk nincs kikényszerítve",
+  phpeol:          (checks) => `elavult, nem támogatott PHP-verziót (${checks.phpVersion}) futtatnak`,
+  angulareol:      () => "egy 2022 óta nem támogatott keretrendszert (AngularJS) használnak",
+  wpcoreeol:       (checks) => `egy régóta nem frissített WordPress-alapváltozatot (${checks.wpVersion}) futtatnak`,
+  jqueryold:       (checks) => `egy elavult JavaScript-könyvtárat (jQuery ${checks.jqueryVersion}) használnak`,
+  phperrors:       () => "nyilvánosan látszik egy PHP-hibaüzenet az oldalukon",
+  gdpr:            () => "látogatókövetést futtatnak süti-hozzájárulási felület nélkül",
+};
+const MOBILE_REASON = {
+  mobilebroken: () => "mobilon nehezen használható az oldal",
+  mobileslow:   (checks, mobileScore) => `mobilon nagyon lassan tölt be az oldal (${mobileScore}/100 pont)`,
+  noviewport:   () => "az oldal nincs mobilra optimalizálva",
+  flash:        () => "Flash-alapú tartalom van rajta, amit a böngészők évek óta nem futtatnak",
+};
+
+function getConcreteReason(types, category, checks, mobileScore) {
+  if (category === "mobile") {
+    const type = types.find(t => MOBILE_IMPACT_TYPES.includes(t));
+    return type ? MOBILE_REASON[type](checks, mobileScore) : null;
+  }
+  if (category === "security") {
+    const type = types.find(t => SECURITY_IMPACT_TYPES.includes(t));
+    return type ? SECURITY_REASON[type](checks) : null;
+  }
+  if (category === "tracking") {
+    return "a régi Google Analytics-kódjuk (ga.js) 2023 óta nem gyűjt adatot";
+  }
   return null;
 }
 
@@ -304,7 +349,9 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", m
   const industryTier = manualIndustryTier || checks.industryTier || null;
   const impactCategory = industryTier ? pickImpactCategory(types) : null;
   if (industryTier && impactCategory && BUSINESS_IMPACT[industryTier]?.[impactCategory]) {
-    const impactText = BUSINESS_IMPACT[industryTier][impactCategory](!!checks.hasGoogleAds);
+    const concreteReason = getConcreteReason(types, impactCategory, checks, mobileScore);
+    const consequenceText = BUSINESS_IMPACT[industryTier][impactCategory](!!checks.hasGoogleAds);
+    const impactText = concreteReason ? `${concreteReason} — ${consequenceText}` : consequenceText;
     const shortSiteRef = domain ? ` (${domain})` : "";
     // A jogi/compliance jellegű chatbot-találat (AI Act) egy önálló, komoly
     // kockázat — ez SOSEM maradhat ki csendben, még a rövid sablonból se
