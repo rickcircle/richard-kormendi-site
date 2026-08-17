@@ -38,10 +38,6 @@ const INTRO = "Körmendi Richárd vagyok, digitális projektmenedzser és webfej
 // minden kimenő üzenet végén ott van, P.s.-ként, nem a fő szövegben.
 const PS_NEW_SITE = "P.s.: Ha esetleg egy vadonatúj weboldal is szóba jöhetne a javítás helyett, azt is szívesen vállalom: richardkormendi.com/hire?lang=hu&utm_source=audit_ps";
 
-// Konkrét, alacsony-elköteleződésű CTA — könnyebb rá válaszolni, mint egy
-// homályos "keressenek bizalommal"-ra.
-const CTA_CALL = "Ha nyitottak rá, megbeszélhetjük a részleteket egy rövid, 5 perces telefonhívás során — mikor lenne erre alkalmas időpont a héten?";
-
 // ── Iparág-specifikus üzleti hatás — 2026-08-17, ÚJ ─────────────────────────
 // User kérésére: a High-Ticket/sürgősségi iparágaknál (egészségügy-esztétika,
 // prémium otthon/építőipar, sürgősségi szolgáltatók) a technikai hibát NEM
@@ -84,6 +80,12 @@ function pickImpactCategory(types) {
 // Kérdés/engedély-kérés jellegű CTA a direkt eladás helyett — a cél csak egy
 // VÁLASZ kiváltása ("igen"), nem azonnali elköteleződés. Ez a "no-brainer
 // offer" elv: minél kisebb a kért lépés, annál nagyobb az esély a válaszra.
+// 2026-08-17 óta ez az EGYETLEN CTA a teljes rendszerben — korábban volt egy
+// külön "beszéljünk telefonon" CTA_CALL a nem-High-Ticket sablonoknál
+// (generikus kritikus-hiba lista, chatbot/AI Act pitch, "nincs weboldal"
+// pitch, "nem elérhető" pitch), de a user kérésére ez lecserélődött erre,
+// konzisztencia kedvéért — lásd getStandaloneChatbotMessage, getCriticalIssue,
+// getNoWebsitePitch, getUnreachableMessage.
 const CTA_QUESTION = 'Küldhetek egy rövid, kb. 1 perces videót vagy összefoglalót arról, pontosan mit látok, és mekkora hatása lehet ennek havi szinten? Ha igen, csak annyit írjon vissza: "igen, küldje".';
 
 // Legördülő a kézi felülbíráláshoz — ugyanaz a minta, mint a chatbot-
@@ -162,7 +164,7 @@ function getStandaloneChatbotMessage(finding, domain) {
   const opener = finding.kind === "aiact"
     ? "bár klasszikus technikai hibát nem találtam rajta, van egy jogi jellegű észrevételem a chatbotjukkal kapcsolatban"
     : "bár kritikus hibát nem találtam rajta, van egy fejlesztési ötletem, amit érdemesnek találtam megosztani";
-  const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és ${opener}: ${finding.text} ${CTA_CALL}\n\n${SIGNATURE}`;
+  const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${siteRef}, és ${opener}: ${finding.text} ${CTA_QUESTION}\n\n${SIGNATURE}`;
   return { message, subject: finding.subject };
 }
 
@@ -306,7 +308,7 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", m
     ? `\n\nEmellett egy másik, jogi jellegű észrevételem is van a chatbotjukkal kapcsolatban: ${chatbotFinding.text}`
     : `\n\nEmellett van egy fejlesztési ötletem is — ez nem hiba, csak lehetőség, amit érdemesnek találtam megemlíteni: ${chatbotFinding.text}`;
 
-  const message = `${body}${chatbotParagraph} ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
+  const message = `${body}${chatbotParagraph} ${CTA_QUESTION}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`;
 
   // Tárgy: biztonsági jellegű, ha https/php/info-szivárgás érintett, mobil-jellegű,
   // ha a reszponzivitás/teljesítmény érintett, egyébként egy semleges tárgy.
@@ -336,7 +338,7 @@ function getNoWebsitePitch(businessName = "", deadDomain = "") {
   const opener = domain
     ? `Megnéztem a Facebook oldalukat${nameRef}, és észrevettem, hogy van rajta egy link a weboldalukra (${domain}), de az jelenleg egyáltalán nem érhető el — aki megpróbál rákattintani, nem talál semmit.`
     : `Megnéztem a Facebook oldalukat${nameRef}, és azt látom, hogy jelenleg nincs önálló weboldaluk.`;
-  const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} ${opener} Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek felépíteni egy modern, gyors és ügyfélszerzésre optimalizált weboldalt. Ha nyitottak rá, szívesen átbeszélek Önökkel pár ötletet egy rövid, 5-10 perces kötetlen telefonhívás során — mikor lenne erre alkalmas időpont a héten?\n\n${SIGNATURE}`;
+  const message = `Tisztelt Hölgyem/Uram!\n\n${INTRO} ${opener} Úgy gondolom, hogy ez valós lehetőséget jelent Önöknek, mégpedig a következők miatt:\n\n• Akik Google-ban keresnek rájuk, nem találják meg Önöket — egy Facebook-oldal sokkal gyengébben szerepel a keresésben, mint egy saját weboldal.\n• A Facebook-oldal nem az Önöké — bármikor korlátozhatja az elérést, megváltoztathatja az algoritmust, vagy akár le is tilthatja az oldalt, és ezen Önöknek nincs befolyásuk.\n• Sok érdeklődő bizalmatlanabb egy olyan céggel szemben, akinek nincs saját weboldala.\n\nSzívesen segítek felépíteni egy modern, gyors és ügyfélszerzésre optimalizált weboldalt. ${CTA_QUESTION}\n\n${SIGNATURE}`;
   const subject = domain
     ? "Weboldal-lehetőség — a Facebook oldalukon lévő link nem működik"
     : "Weboldal-lehetőség — jelenleg csak Facebook oldaluk van";
@@ -355,13 +357,13 @@ function getUnreachableMessage(domain, tlsError) {
     return {
       explanation: "Ez nem feltétlenül azt jelenti, hogy az oldal teljesen üzemen kívül van — a biztonságos (https) kapcsolatuk tanúsítványával van probléma, emiatt minden böngésző blokkolja a hozzáférést. Ez önmagában is elég erős, konkrét ok a megkeresésre.",
       subject: "SSL-tanúsítvány hiba a weboldalukon",
-      message: `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${domainRef}, és azt találtam, hogy a biztonságos (https) verziójuk el van rontva${tlsError === "hostname_mismatch" ? " — a tanúsítvány egy másik domainre van kiállítva, nem az Önökére" : ""}. Emiatt aki a böngészőjében rákattint vagy beírja a https-es címüket, egy ijesztő "Nem biztonságos kapcsolat" hibaüzenetet kap, amit a legtöbb látogató be sem enged. Úgy gondolom, hogy ez valós kockázatot jelent, mert sok érdeklődő pont emiatt fordulhat el Önöktől anélkül, hogy egyáltalán látnák az oldalt. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
+      message: `Tisztelt Hölgyem/Uram!\n\n${INTRO} Megnéztem a weboldalukat${domainRef}, és azt találtam, hogy a biztonságos (https) verziójuk el van rontva${tlsError === "hostname_mismatch" ? " — a tanúsítvány egy másik domainre van kiállítva, nem az Önökére" : ""}. Emiatt aki a böngészőjében rákattint vagy beírja a https-es címüket, egy ijesztő "Nem biztonságos kapcsolat" hibaüzenetet kap, amit a legtöbb látogató be sem enged. Úgy gondolom, hogy ez valós kockázatot jelent, mert sok érdeklődő pont emiatt fordulhat el Önöktől anélkül, hogy egyáltalán látnák az oldalt. ${CTA_QUESTION}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
     };
   }
   return {
     explanation: "Ez önmagában is kritikus hiba, és erős ok a megkeresésre — lehet, hogy csak nálad nem töltött be, ellenőrizd az URL-t; de ha valóban nem elérhető az oldal, ez önmagában véve is elég a hideg megkereséshez.",
     subject: "A weboldal nem töltött be",
-    message: `Tisztelt Hölgyem/Uram!\n\n${INTRO} Rá akartam nézni a weboldalukra${domainRef}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő. ${CTA_CALL}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
+    message: `Tisztelt Hölgyem/Uram!\n\n${INTRO} Rá akartam nézni a weboldalukra${domainRef}, de sajnos nem sikerült betöltenie — vagy nagyon lassú, vagy éppen nem elérhető. Úgy gondolom, hogy ez valós kockázatot jelent, mert minden érdeklődő, aki most Önökre keres, valószínűleg ugyanezt tapasztalja. Szívesen segítek, hogy ez ne fordulhasson elő. ${CTA_QUESTION}\n\n${SIGNATURE}\n\n${PS_NEW_SITE}`,
   };
 }
 
