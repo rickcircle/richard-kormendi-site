@@ -115,9 +115,16 @@ function pickImpactCategory(types) {
   if (types.includes("deadga"))                            return "tracking";
   return null;
 }
+// FONTOS: ugyanazt a típust kell választania, mint amit getConcreteReason()
+// használ a konkrét tény-mondathoz — különben a konkrét tény (pl. "nincs
+// kikényszerítve a HTTPS") és a hozzá fűzött következmény-mondat (pl. egy
+// GDPR-höz illő szöveg) nem illene össze. 2026-08-18-i eset mutatta meg ezt:
+// dugulas-viz-villany.com-nál EGYSZERRE jött ki httpNotEnforced ÉS gdpr —
+// a régi "gdpr mindig elsőbbséget élvez" szabály itt épp a rossz kombinációt
+// adta volna (HTTPS-tény + GDPR-következmény).
 function getSecurityConsequenceKind(types) {
-  if (types.includes("gdpr")) return "gdpr";
   const type = types.find(t => SECURITY_IMPACT_TYPES.includes(t));
+  if (type === "gdpr") return "gdpr";
   return VISIBLE_SECURITY_TYPES.includes(type) ? "visible" : "hidden";
 }
 
