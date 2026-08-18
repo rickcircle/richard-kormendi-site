@@ -97,12 +97,21 @@ export default async function handler(req, res) {
   // A checkPage() csak azt nézi, amit a felhasználó beírt (jellemzően https).
   // Ez itt külön lekéri a sima http:// verziót, redirect KÖVETÉSE NÉLKÜL, hogy
   // lássuk, tényleg átirányít-e https-re, vagy simán kiszolgálja titkosítatlanul.
+  // JAVÍTVA 2026-08-18: korábban MINDIG a domain gyökerét (`http://hostname/`)
+  // nézte, sose az auditált útvonalat — ez valós hamis negatívot okozott
+  // (dugulas-viz-villany.com/dugulaselharitas-esztergom/ aloldalán: a
+  // gyökér WordPress-canonical-redirectje https-re visz, DE ez az adott
+  // aloldal http-n simán, titkosítatlanul kiszolgálja magát, redirect
+  // nélkül — pont ezt az URL-t nyitja meg valaki, aki egy hirdetésből vagy
+  // linkből érkezik, nem a gyökeret). Mostantól UGYANAZT az útvonalat/query
+  // stringet nézi http-n, amit ténylegesen auditálunk.
   const checkHttpEnforced = async () => {
     try {
-      const { hostname } = new URL(url);
+      const httpUrl = new URL(url);
+      httpUrl.protocol = "http:";
       const controller = new AbortController();
       const timeout = setTimeout(() => controller.abort(), 8000);
-      const response = await fetch(`http://${hostname}/`, {
+      const response = await fetch(httpUrl.toString(), {
         signal: controller.signal,
         redirect: "manual",
         headers: {
