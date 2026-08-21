@@ -32,6 +32,7 @@ const TX = {
       h1a: "A website",
       h1accent: "Google loves.",
       sub: "Freelance web developer and digital project manager. React, WordPress, SEO, Google Ads – everything that works online.",
+      aiLine: "Classic project management and web development — accelerated by an AI-driven workflow. A fraction of typical agency turnaround times.",
       cta: "Request a free consultation",
       sec: "See packages",
     },
@@ -79,6 +80,12 @@ const TX = {
           features: ["Monthly updates", "SEO monitoring + report", "Content refresh", "Google Ads management", "Cancel anytime"],
           cta: "Start retainer",
         },
+        {
+          name: "AI-Dev Retainer", price: "80 000 Ft", period: "/mo", highlight: false,
+          desc: "Fast, AI-accelerated changes for teams that can't wait weeks for updates.",
+          features: ["Free Git-based infrastructure setup", "24-hour turnaround on requests", "Direct WhatsApp / email line", "Fixed monthly hour bank", "Cancel anytime"],
+          cta: "Start AI-Dev retainer",
+        },
       ],
     },
     workflow: {
@@ -116,6 +123,7 @@ const TX = {
       h1a: "Weboldal,",
       h1accent: "amit a Google is szeret.",
       sub: "Freelance web fejlesztő és digitális projektmenedzser. React, WordPress, SEO, Google Ads – mindent vállalok ami online működik.",
+      aiLine: "Klasszikus projektmenedzsment és webfejlesztés — AI-alapú munkafolyamattal felgyorsítva. A megszokott ügynökségi átfutási idők töredéke alatt.",
       cta: "Kérj ingyenes konzultációt",
       sec: "Csomagok",
     },
@@ -162,6 +170,12 @@ const TX = {
           desc: "Folyamatos támogatás és növekedés meglévő oldalakhoz.",
           features: ["Havi frissítések", "SEO monitorozás + riport", "Tartalom frissítés", "Google Ads kezelés", "Bármikor lemondható"],
           cta: "Retainer indítása",
+        },
+        {
+          name: "AI-Dev Retainer", price: "80 000 Ft", period: "/hó", highlight: false,
+          desc: "Gyors, AI-alapú módosítások azoknak, akik nem várnak heteket egy frissítésre.",
+          features: ["Díjmentes Git-alapú infrastruktúra kiépítés", "24 órás átfutás a kérésekre", "Közvetlen WhatsApp / email vonal", "Fix havi óra-keret", "Bármikor lemondható"],
+          cta: "AI-Dev retainer indítása",
         },
       ],
     },
@@ -216,6 +230,19 @@ export default function Hire() {
     };
   }, [tx]);
 
+  // Élő AI-chatbot demo — Richárd saját chatbot-widget termékét ágyazza be,
+  // hogy a látogató rögtön ki is próbálhassa, ne csak olvasson róla.
+  useEffect(() => {
+    if (document.getElementById("rk-hire-chatbot-widget")) return;
+    const script = document.createElement("script");
+    script.id = "rk-hire-chatbot-widget";
+    script.src = "https://ai-chatbot-widget-blush.vercel.app/widget.js";
+    script.async = true;
+    script.setAttribute("data-client-id", "richard-hire");
+    script.setAttribute("data-api-base", "https://ai-chatbot-widget-blush.vercel.app");
+    document.body.appendChild(script);
+  }, []);
+
   const handleChange = e => setForm(f => ({ ...f, [e.target.name]: e.target.value }));
 
   const handleSubmit = async e => {
@@ -261,8 +288,13 @@ export default function Hire() {
             </h1>
 
             {/* Subtitle */}
-            <p style={{ fontSize: "clamp(1rem, 2.2vw, 1.2rem)", color: "#888", lineHeight: 1.8, maxWidth: "580px", margin: "0 auto 2.5rem" }}>
+            <p style={{ fontSize: "clamp(1rem, 2.2vw, 1.2rem)", color: "#888", lineHeight: 1.8, maxWidth: "580px", margin: "0 auto 1.25rem" }}>
               {tx.hero.sub}
+            </p>
+
+            {/* AI-gyorsítás kiemelése */}
+            <p style={{ fontSize: "0.95rem", color: A, lineHeight: 1.7, maxWidth: "560px", margin: "0 auto 2.5rem", fontWeight: 500 }}>
+              ⚡ {tx.hero.aiLine}
             </p>
 
             {/* CTAs */}
