@@ -381,6 +381,26 @@ function getCriticalIssue(mobileScore, desktopScore, checks = {}, domain = "", m
   // ha VAN legalább egy kritikus bullet is.
   if (bullets.length === 0) return null;
 
+  // ── Súlyossági kapu — 2026-08-18, user explicit kérése ──────────────────
+  // Nem minden talált hiba elég komoly ahhoz, hogy ÖNMAGÁBAN indokolja a
+  // megkeresést. A HTTPS-hiány/-kikényszerítetlenség és a hiányzó süti-
+  // hozzájárulás valós, de olcsó/gyors javítás (kb. 20-35 000 Ft, lásd
+  // Hire.jsx árazás) és nem elég drámai ahhoz, hogy egy idegen cégvezető
+  // emiatt fizessen vagy egyáltalán válaszoljon — ezt a user konkrét esetből
+  // (dugulas-viz-villany.com: csak cookie + http-kikényszerítés) vonta le.
+  // Ha EGYIK ilyen "gyenge" típus sincs kísérve legalább egy "komoly" (SERIOUS)
+  // találattal, nem küldünk levelet — még akkor sem, ha technikailag van
+  // bullet. A komoly találatok VALAMELYIKÉNEK kell fennállnia:
+  //  - elavult PHP (phpeol) — folyamatos, javítatlan biztonsági kockázat
+  //  - elavult WordPress-mag (wpcoreeol) — ugyanaz a kategória, mint a PHP
+  //  - AngularJS / nagyon régi jQuery — a teljes oldal évtizede érintetlen
+  //  - Flash-tartalom — láthatóan, garantáltan nem működik semmilyen látogatónak
+  //  - nyilvános PHP-hibaüzenet — valódi információszivárgás
+  //  - törött/hiányzó mobil-élmény — a legtöbb érdeklődő ma mobilon keres
+  const WEAK_ALONE_TYPES = ["nohttps", "httpnotenforced", "gdpr", "deadga"];
+  const hasSeriousIssue = types.some(t => !WEAK_ALONE_TYPES.includes(t));
+  if (!hasSeriousIssue) return null;
+
   // ── High-Ticket/sürgősségi rövid, üzleti-hatás sablon ───────────────────
   // Ha van iparág-tier (automatikus vagy kézi felülbírálás) ÉS a talált
   // hibák közül legalább egy besorolható üzleti-hatás kategóriába, EGY rövid,
