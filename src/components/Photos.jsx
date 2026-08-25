@@ -6,20 +6,20 @@ import { t } from "../i18n/translations";
 import photosData from "../data/photos.json";
 
 import photo1    from "../assets/images/photo-esztergom-basilica.jpg";
-import photo2    from "../assets/images/photo-neon-city.jpg";
+import photo2    from "../assets/images/casting/casting-look-urban.jpg";
 import photo4    from "../assets/images/photo-golden-hour.jpg";
 import photo5    from "../assets/images/photo-img3896.jpg";
 import photo6    from "../assets/images/photo-img3953.jpg";
-import photo7    from "../assets/images/photo-guitarist.jpg";
+import photo7    from "../assets/images/casting/casting-look-cinematic.jpg";
 import photoLast from "../assets/images/6751152D-9E3E-4556-883D-A15F0A63B04F_1_105_c.jpeg";
 
 const staticPhotos = [
   { src: photo1,    alt: "Richard Körmendi portrait outdoors near Esztergom Basilica" },
-  { src: photo2,    alt: "Richard Körmendi in a neon-lit city street" },
+  { src: photo2,    alt: "Richard Körmendi portrait, urban setting" },
   { src: photo4,    alt: "Richard Körmendi portrait in golden hour light" },
   { src: photo5,    alt: "Richard Körmendi with an electric guitar" },
   { src: photo6,    alt: "Richard Körmendi candid outdoor photo" },
-  { src: photo7,    alt: "Richard Körmendi playing electric guitar in a studio" },
+  { src: photo7,    alt: "Richard Körmendi portrait outdoors" },
   { src: photoLast, alt: "Richard Körmendi behind the scenes" },
 ];
 

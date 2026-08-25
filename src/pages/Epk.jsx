@@ -9,9 +9,9 @@ import { track } from "../utils/track";
 // Direct URL: /epk
 
 import photoStudio    from "../assets/images/photo-golden-hour.jpg";
-import photoBar       from "../assets/images/photo-bar-suit.jpg";
-import photoGuitarist from "../assets/images/photo-guitarist.jpg";
-import photoSession   from "../assets/images/photo-studio-portrait.jpg";
+import photoBar       from "../assets/images/casting/casting-look-dramatic.jpg";
+import photoGuitarist from "../assets/images/photo-img3896.jpg";
+import photoSession   from "../assets/images/photo-img3953.jpg";
 
 const ACCENT = "#d16b63";
 const BG_1 = "#0b0a08";
