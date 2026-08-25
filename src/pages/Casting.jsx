@@ -15,6 +15,9 @@ import lookCasual     from "../assets/images/casting/casting-look-casual.jpg";
 import lookSoft       from "../assets/images/casting/casting-look-soft.jpg";
 import lookCinematic  from "../assets/images/casting/casting-look-cinematic.jpg";
 import lookUrban      from "../assets/images/casting/casting-look-urban.jpg";
+import lookFullBody   from "../assets/images/casting/casting-look-fullbody.jpg";
+import lookWarm       from "../assets/images/casting/casting-look-warm.jpg";
+import lookSerious    from "../assets/images/casting/casting-look-serious.jpg";
 
 const ACCENT = "#e8963a";
 const BG_1 = "#0b0a08";
@@ -40,6 +43,9 @@ const gallery = [
   { src: lookCinematic, label: { en: "Cinematic", hu: "Filmszerű" } },
   { src: lookCasual,    label: { en: "Natural", hu: "Természetes" } },
   { src: lookUrban,     label: { en: "Urban", hu: "Városi" } },
+  { src: lookWarm,      label: { en: "Approachable", hu: "Közvetlen" } },
+  { src: lookSerious,   label: { en: "Serious", hu: "Komoly" } },
+  { src: lookFullBody,  label: { en: "Full Body", hu: "Teljes alak" } },
 ];
 
 export default function Casting() {
@@ -156,16 +162,6 @@ export default function Casting() {
                 </span>
               </motion.div>
             ))}
-
-            <motion.div variants={staggerItem} style={{
-              aspectRatio: "3/4", borderRadius: "8px", border: `1px dashed ${BORDER}`,
-              display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.5rem",
-            }}>
-              <span style={{ fontSize: "1.5rem", opacity: 0.3 }}>＋</span>
-              <p style={{ margin: 0, fontSize: "0.7rem", letterSpacing: "0.08em", textTransform: "uppercase", color: "rgba(245,241,234,0.35)", textAlign: "center", padding: "0 1rem" }}>
-                {hu ? "Full body — hamarosan" : "Full Body — Coming Soon"}
-              </p>
-            </motion.div>
           </motion.div>
         </div>
       </section>
