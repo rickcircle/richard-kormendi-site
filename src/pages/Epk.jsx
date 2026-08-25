@@ -8,7 +8,7 @@ import { track } from "../utils/track";
 // Ez az oldal NEM jelenik meg a navigációban — bookereknek / sajtónak szól
 // Direct URL: /epk
 
-import photoStudio    from "../assets/images/photo-golden-hour.jpg";
+import photoStudio    from "../assets/images/photo-img7255.jpg";
 import photoBar       from "../assets/images/casting/casting-look-dramatic.jpg";
 import photoGuitarist from "../assets/images/photo-img3896.jpg";
 import photoSession   from "../assets/images/photo-img3953.jpg";

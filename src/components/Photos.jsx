@@ -7,7 +7,7 @@ import photosData from "../data/photos.json";
 
 import photo1    from "../assets/images/photo-esztergom-basilica.jpg";
 import photo2    from "../assets/images/casting/casting-look-urban.jpg";
-import photo4    from "../assets/images/photo-golden-hour.jpg";
+import photo4    from "../assets/images/photo-img7255.jpg";
 import photo5    from "../assets/images/photo-img3896.jpg";
 import photo6    from "../assets/images/photo-img3953.jpg";
 import photo7    from "../assets/images/casting/casting-look-cinematic.jpg";
