@@ -13,7 +13,6 @@ import lookDramatic   from "../assets/images/casting/casting-look-dramatic.jpg";
 import lookEdgy       from "../assets/images/casting/casting-look-edgy.jpg";
 import lookCasual     from "../assets/images/casting/casting-look-casual.jpg";
 import lookSoft       from "../assets/images/casting/casting-look-soft.jpg";
-import lookCinematic  from "../assets/images/casting/casting-look-cinematic.jpg";
 import lookUrban      from "../assets/images/casting/casting-look-urban.jpg";
 import lookFullBody   from "../assets/images/casting/casting-look-fullbody.jpg";
 import lookWarm       from "../assets/images/casting/casting-look-warm.jpg";
@@ -40,7 +39,6 @@ const gallery = [
   { src: lookDramatic,  label: { en: "Dramatic", hu: "Drámai" } },
   { src: lookEdgy,      label: { en: "Intense", hu: "Intenzív" } },
   { src: lookSoft,      label: { en: "Leading Man", hu: "Főszereplő" } },
-  { src: lookCinematic, label: { en: "Cinematic", hu: "Filmszerű" } },
   { src: lookCasual,    label: { en: "Natural", hu: "Természetes" } },
   { src: lookUrban,     label: { en: "Urban", hu: "Városi" } },
   { src: lookWarm,      label: { en: "Approachable", hu: "Közvetlen" } },

@@ -8,27 +8,21 @@ import photosData from "../data/photos.json";
 import photo1    from "../assets/images/photo-esztergom-basilica.jpg";
 import photo2    from "../assets/images/casting/casting-look-urban.jpg";
 import photo4    from "../assets/images/photo-img7255.jpg";
-import photo5    from "../assets/images/photo-img3896.jpg";
 import photo6    from "../assets/images/photo-img3953.jpg";
-import photo7    from "../assets/images/casting/casting-look-cinematic.jpg";
-import photoLast from "../assets/images/6751152D-9E3E-4556-883D-A15F0A63B04F_1_105_c.jpeg";
 import photo8    from "../assets/images/casting/casting-look-fullbody.jpg";
 import photo9    from "../assets/images/casting/casting-look-warm.jpg";
 import photo10   from "../assets/images/casting/casting-look-serious.jpg";
 import photo11   from "../assets/images/casting/casting-look-smile.jpg";
 
 const staticPhotos = [
-  { src: photo1,    alt: "Richard Körmendi portrait outdoors near Esztergom Basilica" },
-  { src: photo2,    alt: "Richard Körmendi portrait, urban setting" },
-  { src: photo4,    alt: "Richard Körmendi portrait in golden hour light" },
-  { src: photo5,    alt: "Richard Körmendi with an electric guitar" },
-  { src: photo6,    alt: "Richard Körmendi candid outdoor photo" },
-  { src: photo7,    alt: "Richard Körmendi portrait outdoors" },
-  { src: photoLast, alt: "Richard Körmendi behind the scenes" },
   { src: photo8,    alt: "Richard Körmendi full-length portrait against a stone wall" },
   { src: photo9,    alt: "Richard Körmendi portrait, warm smile" },
   { src: photo10,   alt: "Richard Körmendi portrait, side profile" },
   { src: photo11,   alt: "Richard Körmendi portrait, smiling" },
+  { src: photo1,    alt: "Richard Körmendi portrait outdoors near Esztergom Basilica" },
+  { src: photo2,    alt: "Richard Körmendi portrait, urban setting" },
+  { src: photo4,    alt: "Richard Körmendi portrait in golden hour light" },
+  { src: photo6,    alt: "Richard Körmendi candid outdoor photo" },
 ];
 
 export default function Photos() {

@@ -10,7 +10,7 @@ import { track } from "../utils/track";
 
 import photoStudio    from "../assets/images/photo-img7255.jpg";
 import photoBar       from "../assets/images/casting/casting-look-dramatic.jpg";
-import photoGuitarist from "../assets/images/photo-img3896.jpg";
+import photoGuitarist from "../assets/images/casting/casting-look-edgy.jpg";
 import photoSession   from "../assets/images/photo-img3953.jpg";
 
 const ACCENT = "#d16b63";
