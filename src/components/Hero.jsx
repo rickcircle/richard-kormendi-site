@@ -2,7 +2,7 @@ import { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence, useScroll, useTransform } from "framer-motion";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
-import heroPhoto from "../assets/images/casting/casting-hero-bright.jpg";
+import heroPhoto from "../assets/images/casting/casting-hero.jpg";
 const heroPhotoMobile = heroPhoto;
 import burningDevotionCanvas from "../assets/images/burning-devotion-canvas.png";
 import burningDevotionCanvasMobile from "../assets/images/burning-devotion-canvas-mobil.png";
