@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLang } from "../context/LanguageContext";
 import { track } from "../utils/track";
-import coverMyBurningDevotion from "../assets/images/cover-my-burning-devotion.jpg";
+import coverCallingForFlame from "../assets/images/cover-calling-for-flame.jpg";
 
 const ACCENT = "#d16b63";
-// Új kulcs (nem az eredeti "rk_popup_mbd_seen"), hogy azok is lássák egyszer az
-// "Out Now" verziót, akik korábban már bezárták az előrendelős popupot.
-const SEEN_KEY = "rk_popup_mbd_outnow_seen";
+// Új kulcs minden alkalommal, amikor a popup egy másik kiadásra vált, hogy azok
+// is lássák egyszer az új verziót, akik egy korábbi kiadás popupját már bezárták.
+const SEEN_KEY = "rk_popup_cff_seen";
 const SHOW_DELAY_MS = 4000;
-const MBD_URL = "https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR";
+const CFF_URL = "https://distrokid.com/hyperfollow/richardkrmendi/calling-for-flame";
 
 // Csak egyszer, böngészőnként (localStorage) — nem IP alapján: az IP megosztott/változó
 // (mobilnet, VPN, közös wifi), a localStorage megbízhatóbban azonosítja ugyanazt a látogatót,
@@ -76,8 +76,8 @@ export default function PreSavePopup() {
             </button>
 
             <img
-              src={coverMyBurningDevotion}
-              alt="My Burning Devotion"
+              src={coverCallingForFlame}
+              alt="Calling for Flame"
               style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", display: "block" }}
             />
 
@@ -88,20 +88,20 @@ export default function PreSavePopup() {
                 padding: "3px 10px", textTransform: "uppercase", fontWeight: 700,
                 marginBottom: "0.85rem",
               }}>
-                {lang === "hu" ? "Már elérhető" : "Out Now"}
+                {lang === "hu" ? "Szeptember 3-án érkezik" : "Releasing Sept 3"}
               </span>
               <h3 style={{ margin: "0 0 0.5rem", color: "#fff", fontSize: "1.2rem", fontWeight: 700 }}>
-                My Burning Devotion
+                Calling for Flame
               </h3>
               <p style={{ margin: "0 0 1.25rem", color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", lineHeight: 1.6 }}>
                 {lang === "hu"
-                  ? "Az új kislemezem megjelent — hallgasd meg most a Spotify-on."
-                  : "My new single is out now — listen to it on Spotify."}
+                  ? "Az új kislemezem hamarosan érkezik — kövesd most, hogy ne maradj le a megjelenésről."
+                  : "My new single is coming soon — follow now so you don't miss the release."}
               </p>
               <a
-                href={MBD_URL}
+                href={CFF_URL}
                 target="_blank" rel="noreferrer"
-                onClick={() => { track("click", { label: "popup_outnow_burning_devotion" }); dismiss(); }}
+                onClick={() => { track("click", { label: "popup_presave_calling_for_flame" }); dismiss(); }}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
                   padding: "0.85rem", background: ACCENT, color: "#fff",
@@ -110,7 +110,7 @@ export default function PreSavePopup() {
                   boxShadow: "0 0 24px rgba(209, 107, 99,0.35)",
                 }}
               >
-                {lang === "hu" ? "Hallgasd meg most →" : "Listen Now →"}
+                {lang === "hu" ? "Kövesd most →" : "Follow Now →"}
               </a>
             </div>
           </motion.div>
