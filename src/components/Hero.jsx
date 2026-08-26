@@ -9,6 +9,7 @@ import burningDevotionCanvasMobile from "../assets/images/burning-devotion-canva
 import fallIntoYouCanvas from "../assets/images/fall-into-you-canvas.png";
 import fallIntoYouCanvasMobile from "../assets/images/fall-into-you-canvas-mobil.png";
 import callingForFlameCanvas from "../assets/images/calling-for-flame-canvas.png";
+import callingForFlameCanvasMobile from "../assets/images/calling-for-flame-canvas-mobil.png";
 import { track } from "../utils/track";
 
 const ACCENT = "#d16b63";
@@ -43,7 +44,7 @@ const SLIDES = [
   {
     kind: "promo",
     image: callingForFlameCanvas,
-    mobileImage: callingForFlameCanvas,
+    mobileImage: callingForFlameCanvasMobile,
     href: "https://distrokid.com/hyperfollow/richardkrmendi/calling-for-flame",
     badge: { en: "Releasing Sept 3", hu: "Szeptember 3-án érkezik" },
     title: "Calling for Flame",
