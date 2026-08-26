@@ -8,7 +8,7 @@ import { track } from "../utils/track";
 // Ez az oldal NEM jelenik meg a navigációban — casting rendezőknek / ügynökségeknek szól
 // Direct URL: /casting
 
-import heroPhoto      from "../assets/images/casting/casting-hero.jpg";
+import heroPhoto      from "../assets/images/casting/casting-hero-2.jpg";
 import lookDramatic   from "../assets/images/casting/casting-look-dramatic.jpg";
 import lookEdgy       from "../assets/images/casting/casting-look-edgy.jpg";
 import lookCasual     from "../assets/images/casting/casting-look-casual.jpg";
