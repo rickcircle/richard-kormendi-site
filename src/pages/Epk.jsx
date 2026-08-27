@@ -22,6 +22,14 @@ const TEXT = "#f5f1ea";
 
 const pressItems = [
   {
+    outlet: "Shock!",
+    quote: "“Featured the release of ‘My Burning Devotion,’ together with Richard's own reflection on returning to his rock roots after years of classical vocal training.”",
+    quoteHu: "„Bemutatta a »My Burning Devotion« megjelenését, Richárd saját visszatekintésével arra, hogyan tért vissza rock gyökereihez évek klasszikus énekképzése után.”",
+    type: { en: "Feature", hu: "Cikk" },
+    song: "My Burning Devotion",
+    url: "https://www.shockmagazin.hu/ar/richard-kormendi-my-burning-devotion",
+  },
+  {
     outlet: "Ok Music Play",
     quote: "“The vocalist's expressive voice explodes into an intense chorus whose timbre recalls Serj Tankian, of System of a Down.”",
     quoteHu: "„Az énekes kifejező hangja egy intenzív refrénben tör elő, melynek timbre-je Serj Tankianra, a System of a Down frontemberére emlékeztet.”",

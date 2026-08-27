@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
-import profilePhoto from "../assets/images/photo-img3953.jpg";
+import profilePhoto from "../assets/images/casting/casting-hero-2.jpg";
 import { track } from "../utils/track";
 
 const CARD_BG = "#2b171a";

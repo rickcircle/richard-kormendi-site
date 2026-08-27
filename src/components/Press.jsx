@@ -12,6 +12,17 @@ const ACCENT_STRONG = "#e8342b";
 // Egységes sajtó-kártya formátum: { type: {en,hu}, outlet, song, quote: {en,hu}, role: {en,hu}|null, href }
 const pressItems = [
   {
+    type: { en: "Feature", hu: "Cikk" },
+    outlet: "Shock!",
+    song: "My Burning Devotion",
+    quote: {
+      en: "Featured the release of “My Burning Devotion,” together with Richard's own reflection on returning to his rock roots after years of classical vocal training.",
+      hu: "Bemutatta a „My Burning Devotion” megjelenését, Richárd saját visszatekintésével arra, hogyan tért vissza rock gyökereihez évek klasszikus énekképzése után.",
+    },
+    role: null,
+    href: "https://www.shockmagazin.hu/ar/richard-kormendi-my-burning-devotion",
+  },
+  {
     type: { en: "Review", hu: "Kritika" },
     outlet: "Ok Music Play",
     song: "You Become My Only",

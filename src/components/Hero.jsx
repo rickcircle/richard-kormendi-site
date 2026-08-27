@@ -25,6 +25,15 @@ const SLIDES = [
   },
   {
     kind: "promo",
+    image: callingForFlameCanvas,
+    mobileImage: callingForFlameCanvasMobile,
+    href: "https://distrokid.com/hyperfollow/richardkrmendi/calling-for-flame",
+    badge: { en: "Releasing Sept 3", hu: "Szeptember 3-án érkezik" },
+    title: "Calling for Flame",
+    trackLabel: "hero_slide_calling_for_flame",
+  },
+  {
+    kind: "promo",
     image: burningDevotionCanvas,
     mobileImage: burningDevotionCanvasMobile,
     href: "https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR",
@@ -40,15 +49,6 @@ const SLIDES = [
     badge: { en: "Out Now", hu: "Már elérhető" },
     title: "Fall Into You",
     trackLabel: "hero_slide_fall_into_you",
-  },
-  {
-    kind: "promo",
-    image: callingForFlameCanvas,
-    mobileImage: callingForFlameCanvasMobile,
-    href: "https://distrokid.com/hyperfollow/richardkrmendi/calling-for-flame",
-    badge: { en: "Releasing Sept 3", hu: "Szeptember 3-án érkezik" },
-    title: "Calling for Flame",
-    trackLabel: "hero_slide_calling_for_flame",
   },
 ];
 
