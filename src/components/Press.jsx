@@ -12,17 +12,6 @@ const ACCENT_STRONG = "#e8342b";
 // Egységes sajtó-kártya formátum: { type: {en,hu}, outlet, song, quote: {en,hu}, role: {en,hu}|null, href }
 const pressItems = [
   {
-    type: { en: "Feature", hu: "Cikk" },
-    outlet: "Shock!",
-    song: "My Burning Devotion",
-    quote: {
-      en: "Featured the release of “My Burning Devotion,” together with Richard's own reflection on returning to his rock roots after years of classical vocal training.",
-      hu: "Bemutatta a „My Burning Devotion” megjelenését, Richárd saját visszatekintésével arra, hogyan tért vissza rock gyökereihez évek klasszikus énekképzése után.",
-    },
-    role: null,
-    href: "https://www.shockmagazin.hu/ar/richard-kormendi-my-burning-devotion",
-  },
-  {
     type: { en: "Review", hu: "Kritika" },
     outlet: "Ok Music Play",
     song: "You Become My Only",
@@ -32,6 +21,17 @@ const pressItems = [
     },
     role: { en: "Lucas Henrique dos Santos", hu: "Lucas Henrique dos Santos" },
     href: "https://okmusicplay.com/2026/08/10/guia-de-descobertas-colepitz-ambimatix/",
+  },
+  {
+    type: { en: "Feature", hu: "Cikk" },
+    outlet: "Shock!",
+    song: "My Burning Devotion",
+    quote: {
+      en: "Featured the release of “My Burning Devotion,” together with Richard's own reflection on returning to his rock roots after years of classical vocal training.",
+      hu: "Bemutatta a „My Burning Devotion” megjelenését, Richárd saját visszatekintésével arra, hogyan tért vissza rock gyökereihez évek klasszikus énekképzése után.",
+    },
+    role: null,
+    href: "https://www.shockmagazin.hu/ar/richard-kormendi-my-burning-devotion",
   },
   {
     type: { en: "Review", hu: "Kritika" },
@@ -112,14 +112,17 @@ const pressItems = [
   },
 ];
 
-// Az első 2 elem (mindig a legfrissebb) kap kiemelt, nagyobb kártyát — a többi a kisebb rácsban.
-const FEATURED_COUNT = 2;
+// Az első elem a "szuper cikk" — teljes szélességű, kiemelt kártya, mindenki más fölött.
+// A rá következő 2 elem a másodlagos, kiemelt (de kisebb) kártya, a többi a kompakt rácsban.
+const HERO_COUNT = 1;
+const SECONDARY_COUNT = 2;
 
 export default function Press() {
   const { lang } = useLang();
   const tx = t[lang].press;
-  const featured = pressItems.slice(0, FEATURED_COUNT);
-  const rest = pressItems.slice(FEATURED_COUNT);
+  const hero = pressItems[0];
+  const secondary = pressItems.slice(HERO_COUNT, HERO_COUNT + SECONDARY_COUNT);
+  const rest = pressItems.slice(HERO_COUNT + SECONDARY_COUNT);
 
   return (
     <section id="press" style={{ padding: "8rem 2rem", background: "#0b0a08" }}>
@@ -137,10 +140,81 @@ export default function Press() {
           </p>
         </motion.div>
 
-        {/* Kiemelt megjelenések — nagyobb, feltűnőbb kártyák */}
+        {/* Szuper cikk — egyetlen, teljes szélességű kártya, a legnagyobb vizuális hangsúllyal */}
+        <motion.div variants={fadeUp} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
+          style={{ marginBottom: "1.75rem" }}>
+          {(() => {
+            const item = hero;
+            const Tag = item.href ? motion.a : motion.div;
+            return (
+              <Tag
+                {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer", onClick: () => track("click", { label: `press_hero: ${item.outlet}` }) } : {})}
+                style={{
+                  position: "relative", display: "block", overflow: "hidden",
+                  padding: "3rem clamp(2rem, 6vw, 4.5rem)",
+                  border: `1px solid rgba(232, 52, 43, 0.5)`,
+                  borderRadius: "18px",
+                  background: "linear-gradient(135deg, rgba(232, 52, 43, 0.16), rgba(255,255,255,0.02))",
+                  boxShadow: "0 0 70px rgba(232, 52, 43, 0.3)",
+                  textDecoration: "none",
+                  transition: "transform 0.2s ease, box-shadow 0.2s ease",
+                }}
+                onMouseOver={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 10px 70px rgba(232, 52, 43, 0.4)"; }}
+                onMouseOut={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 0 70px rgba(232, 52, 43, 0.3)"; }}
+              >
+                <span style={{
+                  position: "absolute", top: "1rem", left: "1.5rem",
+                  fontSize: "7rem", fontFamily: "Georgia, serif", lineHeight: 1,
+                  color: "rgba(232, 52, 43, 0.22)", userSelect: "none",
+                }}>
+                  “
+                </span>
+
+                <p style={{
+                  position: "relative", margin: "0 0 1.25rem", fontSize: "0.7rem",
+                  letterSpacing: "0.18em", textTransform: "uppercase", fontWeight: 700,
+                  color: ACCENT_STRONG,
+                }}>
+                  ★ {lang === "hu" ? "Kiemelt kritika" : "Top Press Quote"}
+                </p>
+
+                <div style={{ position: "relative", display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "1.1rem" }}>
+                  <TypeBadge strong>{item.type[lang]}</TypeBadge>
+                </div>
+
+                {item.song && (
+                  <p style={{
+                    position: "relative", margin: "0 0 1.25rem",
+                    fontSize: "clamp(1.6rem, 4.5vw, 2.6rem)", fontWeight: 800,
+                    lineHeight: 1.1, letterSpacing: "-0.01em", color: "#fff",
+                  }}>
+                    🎵 {item.song}
+                  </p>
+                )}
+
+                <p style={{ position: "relative", margin: "0 0 1.25rem", fontSize: "clamp(1.15rem, 2.2vw, 1.45rem)", lineHeight: 1.6, color: "#f5f1ea", fontStyle: "italic" }}>
+                  “{item.quote[lang]}”
+                </p>
+
+                <p style={{ position: "relative", margin: 0, fontSize: "0.9rem", color: "rgba(245,241,234,0.55)" }}>
+                  — <span style={{ color: "#f5f1ea", fontWeight: 600 }}>{item.outlet}</span>
+                  {item.role && <span>, {item.role[lang]}</span>}
+                </p>
+
+                {item.href && (
+                  <span style={{ position: "relative", display: "inline-block", marginTop: "1.25rem", fontSize: "0.85rem", letterSpacing: "0.06em", color: ACCENT_STRONG, fontWeight: 600 }}>
+                    {lang === "hu" ? "Teljes cikk →" : "Read full article →"}
+                  </span>
+                )}
+              </Tag>
+            );
+          })()}
+        </motion.div>
+
+        {/* Másodlagos megjelenések — nagyobb, feltűnőbb kártyák a szuper cikk alatt */}
         <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
           className="press-featured-grid" style={{ marginBottom: "1.25rem" }}>
-          {featured.map((item, i) => {
+          {secondary.map((item, i) => {
             const Tag = item.href ? motion.a : motion.div;
             return (
               <Tag key={i} variants={staggerItem}
