@@ -4,6 +4,7 @@ import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { track } from "../utils/track";
 
+import coverCallingForFlame  from "../assets/images/cover-calling-for-flame.jpg";
 import coverMyBurningDevotion from "../assets/images/cover-my-burning-devotion.jpg";
 import coverFallIntoYou     from "../assets/images/cover-fall-into-you.jpg";
 import coverStillIGo        from "../assets/images/cover-still-i-go.jpg";
@@ -22,6 +23,7 @@ const ACCENT = "#d16b63";
 const ACCENT_STRONG = "#e8342b";
 
 const RELEASES = [
+  { title: "Calling for Flame", year: "2026", cover: coverCallingForFlame, href: "https://distrokid.com/hyperfollow/richardkrmendi/calling-for-flame", comingSoon: true },
   { title: "My Burning Devotion", year: "2026", cover: coverMyBurningDevotion, spotifyId: "32LLbLolCdLWUH2pzJDZLR", isNew: true },
   { title: "Fall Into You",      year: "2026", cover: coverFallIntoYou,     spotifyId: "539fHNOQNfCHWLW2mWoijM" },
   { title: "Still I Go",         year: "2026", cover: coverStillIGo,        spotifyId: "7gT1yqH7HjtBA3wWcTwtD7" },

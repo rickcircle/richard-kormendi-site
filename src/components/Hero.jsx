@@ -19,11 +19,6 @@ const SLIDE_INTERVAL_MS = 3000;
 // A Hero "canvasa" — a saját fotó és a promó-diák között váltakozik
 const SLIDES = [
   {
-    kind: "self",
-    href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp",
-    trackLabel: "hero_slide_self",
-  },
-  {
     kind: "promo",
     image: callingForFlameCanvas,
     mobileImage: callingForFlameCanvasMobile,
@@ -49,6 +44,11 @@ const SLIDES = [
     badge: { en: "Out Now", hu: "Már elérhető" },
     title: "Fall Into You",
     trackLabel: "hero_slide_fall_into_you",
+  },
+  {
+    kind: "self",
+    href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp",
+    trackLabel: "hero_slide_self",
   },
 ];
 
@@ -143,9 +143,10 @@ export default function Hero() {
 
   const slide = SLIDES[slideIndex];
   const isSelf = slide.kind === "self";
+  const selfSlide = SLIDES.find(s => s.kind === "self");
   // A promó-tartalom mindig a DOM-ban marad (nem remountol), hogy az önmagam-diára visszatérve
   // ne induljon újra a fő badge-ek 2.4–3.0 mp-es belépő animációja.
-  const promoSlide = isSelf ? SLIDES[1] : slide;
+  const promoSlide = isSelf ? SLIDES.find(s => s.kind === "promo") : slide;
 
   const goToSlide = i => setSlideIndex(((i % SLIDES.length) + SLIDES.length) % SLIDES.length);
   const goPrev = () => goToSlide(slideIndex - 1);
@@ -172,9 +173,9 @@ export default function Hero() {
           {isSelf ? (
             <motion.a
               key="self"
-              href={SLIDES[0].href}
+              href={selfSlide.href}
               target="_blank" rel="noreferrer"
-              onClick={() => track("click", { label: SLIDES[0].trackLabel })}
+              onClick={() => track("click", { label: selfSlide.trackLabel })}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
