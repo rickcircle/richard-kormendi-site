@@ -136,7 +136,7 @@ export default function Press() {
             {tx.heading}
           </h2>
           <p style={{ fontSize: "0.9rem", color: "rgba(245,241,234,0.45)" }}>
-            🎙️ {pressItems.length} {lang === "hu" ? "sajtómegjelenés — és egyre több" : "press features — and counting"}
+            🎙️ {pressItems.length} {lang === "hu" ? "sajtómegjelenés és visszajelzés" : "press mentions and feedback"}
           </p>
         </motion.div>
 
@@ -227,12 +227,12 @@ export default function Press() {
                   borderLeft: `5px solid ${ACCENT_STRONG}`,
                   borderRadius: "0 12px 12px 0",
                   background: "linear-gradient(135deg, rgba(232, 52, 43, 0.12), rgba(255,255,255,0.03))",
-                  boxShadow: "0 0 44px rgba(232, 52, 43, 0.22)",
+                  boxShadow: "0 8px 28px rgba(0,0,0,0.18)",
                   textDecoration: "none",
                   transition: "transform 0.2s ease, box-shadow 0.2s ease",
                 }}
                 onMouseOver={e => { e.currentTarget.style.transform = "translateY(-3px)"; e.currentTarget.style.boxShadow = "0 8px 44px rgba(232, 52, 43, 0.32)"; }}
-                onMouseOut={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 0 44px rgba(232, 52, 43, 0.22)"; }}
+                onMouseOut={e => { e.currentTarget.style.transform = "translateY(0)"; e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,0,0,0.18)"; }}
               >
                 <span style={{
                   position: "absolute", top: "0.9rem", left: "1.15rem",

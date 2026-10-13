@@ -17,10 +17,10 @@ export default function Home() {
     <>
       <Navbar />
       <Hero />
-      <About />
       <Music />
-      <Releases />
       <Press />
+      <About />
+      <Releases />
       <Shows />
       <Newsletter />
       <Photos />

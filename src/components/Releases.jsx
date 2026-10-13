@@ -62,7 +62,7 @@ export default function Releases() {
             {heading}
           </h2>
           <p style={{ fontSize: "0.9rem", color: "rgba(245,241,234,0.45)", marginBottom: "3rem" }}>
-            💿 {RELEASES.length} {lang === "hu" ? "kiadás — és egyre több" : "releases — and counting"}
+            {RELEASES.filter(r => !r.comingSoon).length} {lang === "hu" ? "megjelent kislemez" : "released singles"} · {RELEASES.filter(r => r.comingSoon).length} {lang === "hu" ? "hamarosan" : "upcoming"}
           </p>
         </motion.div>
 
@@ -136,7 +136,7 @@ function FeaturedReleaseCard({ release, delay, lang }) {
         border: `1px solid ${ACCENT_STRONG}`,
         borderRadius: "12px",
         background: "linear-gradient(135deg, rgba(232, 52, 43, 0.14), rgba(255,255,255,0.03))",
-        boxShadow: "0 0 40px rgba(232, 52, 43, 0.22)",
+        boxShadow: "0 8px 28px rgba(0,0,0,0.18)",
         textDecoration: "none",
       }}
     >
