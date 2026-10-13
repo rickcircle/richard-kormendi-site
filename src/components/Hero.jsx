@@ -4,6 +4,8 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import heroPhoto from "../assets/images/casting/casting-hero-2.jpg";
 const heroPhotoMobile = heroPhoto;
+import coverMercy from "../assets/images/cover-mercy-i-dont-want.jpg";
+import coverRegnum from "../assets/images/cover-regnum-marianum.jpg";
 import burningDevotionCanvas from "../assets/images/burning-devotion-canvas.png";
 import burningDevotionCanvasMobile from "../assets/images/burning-devotion-canvas-mobil.png";
 import fallIntoYouCanvas from "../assets/images/fall-into-you-canvas.png";
@@ -18,12 +20,14 @@ const SLIDE_INTERVAL_MS = 3000;
 
 // A Hero "canvasa" — a saját fotó és a promó-diák között váltakozik
 const SLIDES = [
+  { kind: "promo", image: coverRegnum, mobileImage: coverRegnum, href: "https://distrokid.com/hyperfollow/richardkrmendi/regnum-marianum-feat-emily-simon", badge: { en: "Pre-save", hu: "Mentsd előre" }, title: "Regnum Marianum (feat. Emily Simon)", trackLabel: "hero_slide_regnum_marianum" },
+  { kind: "promo", image: coverMercy, mobileImage: coverMercy, href: "https://open.spotify.com/track/3aCAe8fuF3kW3YYHpJFQYc", badge: { en: "Out Now", hu: "Már elérhető" }, title: "Mercy, I Don’t Want", trackLabel: "hero_slide_mercy" },
   {
     kind: "promo",
     image: callingForFlameCanvas,
     mobileImage: callingForFlameCanvasMobile,
-    href: "https://distrokid.com/hyperfollow/richardkrmendi/calling-for-flame",
-    badge: { en: "Releasing Sept 3", hu: "Szeptember 3-án érkezik" },
+    href: "https://open.spotify.com/track/5t63pHAbGvKo34ceFM9dYj",
+    badge: { en: "Out Now", hu: "Már elérhető" },
     title: "Calling for Flame",
     trackLabel: "hero_slide_calling_for_flame",
   },
@@ -324,7 +328,7 @@ export default function Hero() {
         }}>
           {/* OUT NOW badge */}
           <motion.a
-            href="https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR"
+            href="https://open.spotify.com/track/3aCAe8fuF3kW3YYHpJFQYc"
             target="_blank" rel="noreferrer"
             onClick={() => track("click", { label: "hero_out_now_badge" })}
             initial={{ opacity: 0, y: 6 }}
@@ -354,7 +358,7 @@ export default function Hero() {
               flexShrink: 0,
               animation: "pulse-dot 1.8s ease-in-out infinite",
             }} />
-            Out Now — My Burning Devotion
+            Out Now — Mercy, I Don’t Want
           </motion.a>
 
           {/* Press badge */}

@@ -2,14 +2,14 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useLang } from "../context/LanguageContext";
 import { track } from "../utils/track";
-import coverCallingForFlame from "../assets/images/cover-calling-for-flame.jpg";
+import coverRegnum from "../assets/images/cover-regnum-marianum.jpg";
 
 const ACCENT = "#d16b63";
 // Új kulcs minden alkalommal, amikor a popup egy másik kiadásra vált, hogy azok
 // is lássák egyszer az új verziót, akik egy korábbi kiadás popupját már bezárták.
-const SEEN_KEY = "rk_popup_cff_seen";
+const SEEN_KEY = "rk_popup_regnum_seen";
 const SHOW_DELAY_MS = 4000;
-const CFF_URL = "https://distrokid.com/hyperfollow/richardkrmendi/calling-for-flame";
+const CFF_URL = "https://distrokid.com/hyperfollow/richardkrmendi/regnum-marianum-feat-emily-simon";
 
 // Csak egyszer, böngészőnként (localStorage) — nem IP alapján: az IP megosztott/változó
 // (mobilnet, VPN, közös wifi), a localStorage megbízhatóbban azonosítja ugyanazt a látogatót,
@@ -76,8 +76,8 @@ export default function PreSavePopup() {
             </button>
 
             <img
-              src={coverCallingForFlame}
-              alt="Calling for Flame"
+              src={coverRegnum}
+              alt="Regnum Marianum (feat. Emily Simon)"
               style={{ width: "100%", aspectRatio: "1 / 1", objectFit: "cover", display: "block" }}
             />
 
@@ -88,10 +88,10 @@ export default function PreSavePopup() {
                 padding: "3px 10px", textTransform: "uppercase", fontWeight: 700,
                 marginBottom: "0.85rem",
               }}>
-                {lang === "hu" ? "Szeptember 3-án érkezik" : "Releasing Sept 3"}
+                {lang === "hu" ? "Hamarosan" : "Coming Soon"}
               </span>
               <h3 style={{ margin: "0 0 0.5rem", color: "#fff", fontSize: "1.2rem", fontWeight: 700 }}>
-                Calling for Flame
+                Regnum Marianum (feat. Emily Simon)
               </h3>
               <p style={{ margin: "0 0 1.25rem", color: "rgba(255,255,255,0.6)", fontSize: "0.9rem", lineHeight: 1.6 }}>
                 {lang === "hu"
@@ -101,7 +101,7 @@ export default function PreSavePopup() {
               <a
                 href={CFF_URL}
                 target="_blank" rel="noreferrer"
-                onClick={() => { track("click", { label: "popup_presave_calling_for_flame" }); dismiss(); }}
+                onClick={() => { track("click", { label: "popup_presave_regnum_marianum" }); dismiss(); }}
                 style={{
                   display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
                   padding: "0.85rem", background: ACCENT, color: "#fff",
@@ -110,7 +110,7 @@ export default function PreSavePopup() {
                   boxShadow: "0 0 24px rgba(209, 107, 99,0.35)",
                 }}
               >
-                {lang === "hu" ? "Kövesd most →" : "Follow Now →"}
+                {lang === "hu" ? "Mentsd előre →" : "Pre-save now →"}
               </a>
             </div>
           </motion.div>

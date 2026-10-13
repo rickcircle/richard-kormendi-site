@@ -4,6 +4,8 @@ import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { track } from "../utils/track";
 
+import coverMercy from "../assets/images/cover-mercy-i-dont-want.jpg";
+import coverRegnum from "../assets/images/cover-regnum-marianum.jpg";
 import coverCallingForFlame  from "../assets/images/cover-calling-for-flame.jpg";
 import coverMyBurningDevotion from "../assets/images/cover-my-burning-devotion.jpg";
 import coverFallIntoYou     from "../assets/images/cover-fall-into-you.jpg";
@@ -23,8 +25,10 @@ const ACCENT = "#d16b63";
 const ACCENT_STRONG = "#e8342b";
 
 const RELEASES = [
-  { title: "Calling for Flame", year: "2026", cover: coverCallingForFlame, href: "https://distrokid.com/hyperfollow/richardkrmendi/calling-for-flame", comingSoon: true },
-  { title: "My Burning Devotion", year: "2026", cover: coverMyBurningDevotion, spotifyId: "32LLbLolCdLWUH2pzJDZLR", isNew: true },
+  { title: "Regnum Marianum (feat. Emily Simon)", year: "2026", cover: coverRegnum, href: "https://distrokid.com/hyperfollow/richardkrmendi/regnum-marianum-feat-emily-simon", comingSoon: true },
+  { title: "Mercy, I Don’t Want", year: "2026", cover: coverMercy, href: "https://open.spotify.com/track/3aCAe8fuF3kW3YYHpJFQYc", isNew: true },
+  { title: "Calling for Flame", year: "2026", cover: coverCallingForFlame, href: "https://open.spotify.com/track/5t63pHAbGvKo34ceFM9dYj" },
+  { title: "My Burning Devotion", year: "2026", cover: coverMyBurningDevotion, spotifyId: "32LLbLolCdLWUH2pzJDZLR" },
   { title: "Fall Into You",      year: "2026", cover: coverFallIntoYou,     spotifyId: "539fHNOQNfCHWLW2mWoijM" },
   { title: "Still I Go",         year: "2026", cover: coverStillIGo,        spotifyId: "7gT1yqH7HjtBA3wWcTwtD7" },
   { title: "The Absent",         year: "2026", cover: coverTheAbsent,       spotifyId: "29BOxHtSuQC7qTGJBeKP3D" },
