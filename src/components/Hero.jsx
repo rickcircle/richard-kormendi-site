@@ -4,8 +4,10 @@ import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
 import heroPhoto from "../assets/images/casting/casting-hero-2.jpg";
 const heroPhotoMobile = heroPhoto;
-import coverMercy from "../assets/images/cover-mercy-i-dont-want.jpg";
-import coverRegnum from "../assets/images/cover-regnum-marianum.jpg";
+import mercyCanvas from "../assets/images/mercy-canvas.jpg";
+import mercyCanvasMobile from "../assets/images/mercy-canvas-mobil.jpg";
+import regnumCanvas from "../assets/images/regnum-marianum-canvas.jpg";
+import regnumCanvasMobile from "../assets/images/regnum-marianum-canvas-mobil.jpg";
 import burningDevotionCanvas from "../assets/images/burning-devotion-canvas.png";
 import burningDevotionCanvasMobile from "../assets/images/burning-devotion-canvas-mobil.png";
 import fallIntoYouCanvas from "../assets/images/fall-into-you-canvas.png";
@@ -20,8 +22,8 @@ const SLIDE_INTERVAL_MS = 3000;
 
 // A Hero "canvasa" — a saját fotó és a promó-diák között váltakozik
 const SLIDES = [
-  { kind: "promo", image: coverRegnum, mobileImage: coverRegnum, href: "https://distrokid.com/hyperfollow/richardkrmendi/regnum-marianum-feat-emily-simon", badge: { en: "Pre-save", hu: "Mentsd előre" }, title: "Regnum Marianum (feat. Emily Simon)", trackLabel: "hero_slide_regnum_marianum" },
-  { kind: "promo", image: coverMercy, mobileImage: coverMercy, href: "https://open.spotify.com/track/3aCAe8fuF3kW3YYHpJFQYc", badge: { en: "Out Now", hu: "Már elérhető" }, title: "Mercy, I Don’t Want", trackLabel: "hero_slide_mercy" },
+  { kind: "promo", image: regnumCanvas, mobileImage: regnumCanvasMobile, href: "https://distrokid.com/hyperfollow/richardkrmendi/regnum-marianum-feat-emily-simon", badge: { en: "Pre-save", hu: "Mentsd előre" }, title: "Regnum Marianum (feat. Emily Simon)", trackLabel: "hero_slide_regnum_marianum" },
+  { kind: "promo", image: mercyCanvas, mobileImage: mercyCanvasMobile, href: "https://open.spotify.com/track/3aCAe8fuF3kW3YYHpJFQYc", badge: { en: "Out Now", hu: "Már elérhető" }, title: "Mercy, I Don’t Want", trackLabel: "hero_slide_mercy" },
   {
     kind: "promo",
     image: callingForFlameCanvas,
