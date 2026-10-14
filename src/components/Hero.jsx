@@ -9,7 +9,8 @@ import regnum from "../assets/images/regnum-marianum-canvas.jpg";
 import regnumMobile from "../assets/images/regnum-marianum-canvas-mobil.jpg";
 import burning from "../assets/images/burning-devotion-canvas.png";
 import burningMobile from "../assets/images/burning-devotion-canvas-mobil.png";
-import calling from "../assets/images/cover-calling-for-flame.jpg";
+import calling from "../assets/images/calling-for-flame-outnow-wide.jpg";
+import callingMobile from "../assets/images/calling-for-flame-outnow-mobile.jpg";
 import { track } from "../utils/track";
 import "./Hero.css";
 
@@ -17,7 +18,7 @@ const SLIDES = [
   { title: "Richard Körmendi", image: portraitWide, mobile: portrait, self: true, href: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
   { title: "Regnum Marianum (feat. Emily Simon)", image: regnum, mobile: regnumMobile, presave: true, href: "https://distrokid.com/hyperfollow/richardkrmendi/regnum-marianum-feat-emily-simon" },
   { title: "Mercy, I Don’t Want", image: mercy, mobile: mercyMobile, href: "https://open.spotify.com/track/3aCAe8fuF3kW3YYHpJFQYc" },
-  { title: "Calling for Flame", image: calling, mobile: calling, square: true, href: "https://open.spotify.com/track/5t63pHAbGvKo34ceFM9dYj" },
+  { title: "Calling for Flame", image: calling, mobile: callingMobile, href: "https://open.spotify.com/track/5t63pHAbGvKo34ceFM9dYj" },
   { title: "My Burning Devotion", image: burning, mobile: burningMobile, href: "https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR" },
 ];
 
