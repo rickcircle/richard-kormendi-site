@@ -14,7 +14,14 @@ import photo9    from "../assets/images/casting/casting-look-warm.jpg";
 import photo10   from "../assets/images/casting/casting-look-serious.jpg";
 import photo11   from "../assets/images/casting/casting-look-smile.jpg";
 
+import autumn1262 from "../assets/images/photo-autumn-1262.jpg";
+import autumn1392 from "../assets/images/photo-autumn-1392.jpg";
+import autumn1400 from "../assets/images/photo-autumn-1400.jpg";
+
 const staticPhotos = [
+  { src: autumn1262, alt: "Richard Körmendi smiling portrait against a stone wall" },
+  { src: autumn1392, alt: "Richard Körmendi full-length portrait outdoors in autumn" },
+  { src: autumn1400, alt: "Richard Körmendi portrait beneath autumn foliage" },
   { src: photo8,    alt: "Richard Körmendi full-length portrait against a stone wall" },
   { src: photo9,    alt: "Richard Körmendi portrait, warm smile" },
   { src: photo10,   alt: "Richard Körmendi portrait, side profile" },
@@ -55,7 +62,7 @@ export default function Photos() {
               initial={{ opacity: 0, x: 30 }} whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true, amount: 0.05 }} transition={{ duration: 0.6, delay: i * 0.1 }}
               style={{ flex: "0 0 300px", height: "400px", scrollSnapAlign: "start", borderRadius: "2px", overflow: "hidden", background: "rgba(255,255,255,0.05)", position: "relative" }}>
-              <img src={photo.src} alt={photo.alt} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src={photo.src} alt={photo.alt} loading="lazy" decoding="async" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
               {photo.caption && (
                 <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, padding: "0.75rem 1rem", background: "linear-gradient(transparent, rgba(0,0,0,0.65))", color: "#fff", fontSize: "0.8rem", letterSpacing: "0.03em" }}>
                   {photo.caption}
