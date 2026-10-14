@@ -62,8 +62,6 @@ export default function Hero() {
             onClick={() => track("click", { label: "hero_listen_now" })}>{listen} ↗</a>
           <a className="artist-hero-secondary" href="#music">{hu ? "Hallgass bele" : "Explore the music"} ↓</a>
         </div>}
-      </div>
-      <div className="artist-hero-footer">
         {!slide.self && <div className="artist-hero-release">
           <span>{slide.presave ? (hu ? "Hamarosan" : "Coming soon") : (hu ? "Már elérhető" : "Out now")}</span>
           <p>{slide.title}</p>
@@ -72,6 +70,8 @@ export default function Hero() {
             {slide.presave ? (hu ? "Mentsd előre" : "Pre-save now") : listen} ↗
           </a>
         </div>}
+      </div>
+      <div className="artist-hero-footer">
         <div className="artist-hero-controls">
           <button onClick={() => select(index - 1)} aria-label={hu ? "Előző kép" : "Previous slide"}>‹</button>
           <div className="artist-hero-dots">{SLIDES.map((s, i) => <button key={s.title}
