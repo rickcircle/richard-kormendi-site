@@ -14,11 +14,13 @@ import photo9    from "../assets/images/casting/casting-look-warm.jpg";
 import photo10   from "../assets/images/casting/casting-look-serious.jpg";
 import photo11   from "../assets/images/casting/casting-look-smile.jpg";
 
+import autumn1236 from "../assets/images/photo-autumn-1236.jpg";
 import autumn1262 from "../assets/images/photo-autumn-1262.jpg";
 import autumn1392 from "../assets/images/photo-autumn-1392.jpg";
 import autumn1400 from "../assets/images/photo-autumn-1400.jpg";
 
 const staticPhotos = [
+  { src: autumn1236, alt: "Richard Körmendi in a black blazer against a stone wall" },
   { src: autumn1262, alt: "Richard Körmendi smiling portrait against a stone wall" },
   { src: autumn1392, alt: "Richard Körmendi full-length portrait outdoors in autumn" },
   { src: autumn1400, alt: "Richard Körmendi portrait beneath autumn foliage" },
