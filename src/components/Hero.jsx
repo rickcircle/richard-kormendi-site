@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { useLang } from "../context/LanguageContext";
 import { t } from "../i18n/translations";
-import portrait from "../assets/images/portrait-autumn-mobile.jpg";
-import portraitWide from "../assets/images/portrait-autumn-wide.jpg";
+import portrait from "../assets/images/portrait-riverside-mobile.jpg";
+import portraitWide from "../assets/images/portrait-riverside-wide.jpg";
 import mercy from "../assets/images/mercy-canvas.jpg";
 import mercyMobile from "../assets/images/mercy-canvas-mobil.jpg";
 import regnum from "../assets/images/regnum-marianum-canvas.jpg";
