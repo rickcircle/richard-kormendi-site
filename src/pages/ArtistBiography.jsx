@@ -1,38 +1,38 @@
 const biography = {
   hu: [
     {
-      title: "Saját dalok és zenei pálya",
-      text: "Körmendi Richárd esztergomi énekes, gitáros és dalszerző. Az Éberálom indie rock zenekar frontembereként kezdte a zenei pályáját. Ma magyarul és angolul ír dalokat. A klasszikus énektanulmányai során szerzett tudást a saját dalai, az örökzöldek és a klasszikus darabok előadásában egyaránt kamatoztatja.",
-    },
-    {
       title: "Énekesi és színészi tanulmányok",
-      text: "2024-ben klasszikus énekes-előadóművészként végzett a nagyváradi Partiumi Keresztény Egyetem magánének szakán. Énekmestere Berle Senford Rosenberg volt. Korábban Kővári Juditnál tanult klasszikus és musicaléneklést a Kővirágok Énekiskolában, színészi képzést pedig a Thália Tanodában kapott.",
+      text: "A Thália Tanodában kezdett színészetet tanulni, majd a Kővirágok Énekiskolában musicaléneklést tanult. 2024-ben a nagyváradi Partiumi Keresztény Egyetemen szerzett diplomát klasszikus énekes-előadóművészként. Énekmesterei Tordai Éva, Kővári Judit és Berle Sanford Rosenberg voltak.",
     },
     {
       title: "Színpadi szerepek",
-      text: "Jancsit játszotta a János vitézben, Szécsi Pált alakította az énekes emlékére rendezett előadásokon, a Thália Tanodában pedig Lysander és III. Richárd szerepében lépett színpadra. Egyetemi koncertjein Mozart-áriákat, német műdalokat és nápolyi dalokat is énekelt.",
+      text: "Prózai és zenés szerepekben egyaránt játszott. Gergely Róbert produkcióiban több főszerepet kapott, köztük Szécsi Pál szerepét. A padlásban a Rádióst játszotta, klasszikus énektanulmányai alatt pedig a János vitéz címszerepében turnézott Erdélyben.",
+    },
+    {
+      title: "Saját dalok és zenei pálya",
+      text: "Az Éberálom zenekarban énekelt, gitározott és dalokat írt. Innen a színészet és a musical felé fordult, majd klasszikus énekesi diplomát szerzett. 2026-ban indította el angol nyelvű szólóprojektjét. A színpad különösen fontos számára. Saját dalait élőben is szeretné megszólaltatni, és az évek során szerzett tapasztalatait magyar örökzöldek és nápolyi dalok előadásában is kamatoztatná.",
     },
     {
       title: "Digitális háttér",
-      text: "Informatikai mérnöki végzettsége is van. Tizennégy év webfejlesztés után ma digitális projekteket vezet, és mesterséges intelligenciára épülő megoldásokat fejleszt. Alkotóként ma a saját dalaira és a színpadi munkára helyezi a hangsúlyt.",
+      text: "Informatikai mérnöki végzettsége is van. Tizennégy évig dolgozott webfejlesztőként, később digitális projekteket vezetett, és mesterséges intelligenciára épülő megoldásokat fejlesztett.",
     },
   ],
   en: [
     {
-      title: "Songwriting and early career",
-      text: "Richard Körmendi is a singer, guitarist and songwriter from Esztergom, Hungary. He began his music career fronting the indie rock band Éberálom and now writes songs in Hungarian and English. He draws on his classical training when performing original songs, popular standards and classical repertoire.",
-    },
-    {
       title: "Vocal and acting training",
-      text: "He graduated in classical vocal performance from Partium Christian University in Oradea in 2024, where he studied with Berle Senford Rosenberg. He previously studied classical and musical theatre singing with Judit Kővári at the Kővirágok School of Singing and trained as an actor at Thália Tanoda.",
+      text: "Richard began studying acting at Thália Tanoda and went on to study musical theatre singing at Kővirágok Énekiskola. In 2024 he graduated in classical vocal performance from Partium Christian University in Oradea. His voice teachers were Éva Tordai, Judit Kővári and Berle Sanford Rosenberg.",
     },
     {
       title: "Stage roles",
-      text: "He played Jancsi in János vitéz and portrayed Hungarian singer Pál Szécsi in tribute performances. At Thália Tanoda he played Lysander and Richard III. His university concerts included Mozart arias, German art songs and Neapolitan songs.",
+      text: "He has performed in both plays and musicals. He played several leading roles in Róbert Gergely’s productions, including the Hungarian singer Pál Szécsi. He also played Rádiós in A padlás and toured Transylvania in the title role of János vitéz while studying classical singing.",
+    },
+    {
+      title: "Songwriting and musical career",
+      text: "Richard sang, played guitar and wrote songs in the band Éberálom. He went on to work in acting and musical theatre before earning his degree in classical singing. In 2026 he launched his English-language solo project. The stage is central to his work. He wants to perform his own songs live and bring what he has learned to music ranging from Hungarian favourites to Neapolitan songs.",
     },
     {
       title: "Digital background",
-      text: "With a background in computer engineering, he spent 14 years working as a web developer before moving into digital project management and AI development. As an artist, he now focuses on songwriting and performing.",
+      text: "He also holds a degree in computer engineering. He worked as a web developer for 14 years and later managed digital projects and developed AI-based tools.",
     },
   ],
 };
