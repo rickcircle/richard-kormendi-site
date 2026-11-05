@@ -70,9 +70,17 @@ const videos = [
   { id: "N1f6MujK9gc", title: "Like an Ember", hu: "Saját dal · Zongorás részlet", en: "Original song · Piano excerpt" },
 ];
 
-function VideoCard({ video, hu, playing, onPlay }) {
+const additionalVideos = [
+  { id: "qpZUke-3WdE", title: "Regnum Marianum", hu: "Saját dal · Videóklip", en: "Original song · Music video" },
+  { id: "PW9BkG3gnlk", title: "My Burning Devotion", hu: "Saját dal · Videóklip", en: "Original song · Music video" },
+  { id: "DbmA6e0lOEw", title: "Anthem", youtubeOnly: true, hu: "Chess · Zongorás musicalfeldolgozás", en: "Chess · Piano version" },
+];
+
+function VideoCard({ video, hu, playing, onPlay, landscape }) {
   const { id, title, youtubeOnly } = video;
-  const url = `https://www.youtube.com/shorts/${id}`;
+  const url = landscape
+    ? `https://www.youtube.com/watch?v=${id}`
+    : `https://www.youtube.com/shorts/${id}`;
   const thumbnail = (
     <>
       <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" />
@@ -121,6 +129,20 @@ export default function Epk() {
     return () => { document.title = previousTitle; };
   }, [hu]);
 
+  const renderVideo = (video, landscape = false) => (
+    <VideoCard
+      key={video.id}
+      video={video}
+      hu={hu}
+      playing={playing === video.id}
+      landscape={landscape}
+      onPlay={() => {
+        setPlaying(video.id);
+        track("click", { label: `epk_video: ${video.title}` });
+      }}
+    />
+  );
+
   return (
     <div className="epk" lang={lang}>
       <Navbar />
@@ -151,12 +173,7 @@ export default function Epk() {
           <div className="epk-wrap">
             <h2 id="epk-video-heading">{hu ? "Videórészletek" : "Performance clips"}</h2>
             <div className="epk-grid">
-              {videos.map(video => (
-                <VideoCard key={video.id} video={video} hu={hu} playing={playing === video.id} onPlay={() => {
-                  setPlaying(video.id);
-                  track("click", { label: `epk_video: ${video.title}` });
-                }} />
-              ))}
+              {videos.map(video => renderVideo(video))}
             </div>
           </div>
         </section>
@@ -167,15 +184,24 @@ export default function Epk() {
               <p className="epk-kicker">{hu ? "A műsor" : "The set"}</p>
               <h2 id="epk-about-heading">{hu ? "Ismerős dalok, több korszakból" : "Familiar songs from across the decades"}</h2>
               <p>{hu
-                ? "A magyar rock örökzöldjei mellett angol nyelvű pop- és rockslágerek, Sinatra-dalok és olasz dalok is helyet kapnak a műsorban. A repertoár a lírai balladáktól a lendületesebb slágerekig terjed. A műsor összeállítása és hossza előre egyeztethető."
-                : "The repertoire spans Hungarian rock favourites, English-language pop and rock hits, Sinatra standards and Italian songs. It ranges from ballads to up-tempo hits. The set list and running time can be arranged in advance."}</p>
+                ? "A magyar rock örökzöldjei mellett angol nyelvű pop- és rockslágerek, Sinatra-dalok és olasz dalok is helyet kapnak a műsorban. A repertoár a lírai balladáktól a lendületesebb slágerekig terjed. A válogatásban egy-egy saját dal is helyet kaphat. A műsor összeállítása és hossza előre egyeztethető."
+                : "The repertoire spans Hungarian rock favourites, English-language pop and rock hits, Sinatra standards and Italian songs. It ranges from ballads to up-tempo hits. The set can also include an original song or two. The set list and running time can be arranged in advance."}</p>
             </div>
             <div>
               <p className="epk-kicker">{hu ? "Az előadó" : "The artist"}</p>
               <h2>{hu ? "Rövid bemutatkozás" : "Short biography"}</h2>
               <p>{hu
-                ? "Körmendi Richárd esztergomi énekes-dalszerző. Zenei pályáját az Éberálom zenekar frontembereként kezdte, később színészként és musicalekben is fellépett. 2024-ben klasszikus ének szakon diplomázott a nagyváradi Partiumi Keresztény Egyetemen. Ma magyarul és angolul ír saját dalokat, fellépésein pedig főként örökzöldeket énekel."
-                : "Richard Körmendi is a singer-songwriter from Esztergom, Hungary. He began his music career as the frontman of Éberálom and went on to perform as an actor and in musical theatre. In 2024 he graduated in classical vocal performance from Partium Christian University in Oradea. He writes songs in English and Hungarian and mainly performs evergreen favourites live."}</p>
+                ? "Körmendi Richárd esztergomi énekes, gitáros és dalszerző. Zenei pályáját az Éberálom zenekar frontembereként kezdte, később színészként és musicalekben is fellépett. 2024-ben klasszikus ének szakon diplomázott a nagyváradi Partiumi Keresztény Egyetemen. Ma magyarul és angolul ír saját dalokat, fellépésein pedig főként örökzöldeket énekel."
+                : "Richard Körmendi is a singer, guitarist and songwriter from Esztergom, Hungary. He began his music career as the frontman of Éberálom and went on to perform as an actor and in musical theatre. In 2024 he graduated in classical vocal performance from Partium Christian University in Oradea. He writes songs in English and Hungarian and mainly performs evergreen favourites live."}</p>
+            </div>
+          </div>
+        </section>
+
+        <section className="epk-section" aria-labelledby="epk-more-videos-heading">
+          <div className="epk-wrap">
+            <h2 id="epk-more-videos-heading">{hu ? "Saját klipek és musical" : "Music videos and musical theatre"}</h2>
+            <div className="epk-grid epk-wide-videos">
+              {additionalVideos.map(video => renderVideo(video, true))}
             </div>
           </div>
         </section>
