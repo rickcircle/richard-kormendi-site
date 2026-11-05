@@ -75,20 +75,6 @@
 .epk-wrap { max-width: 1140px; margin-inline: auto; }
 .epk-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1rem; }
 .epk-card { background: var(--epk-card); border: 1px solid var(--epk-line); border-radius: 10px; overflow: hidden; }
-.epk-showreel {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: 1rem 2rem;
-  margin-bottom: 1rem;
-  padding: clamp(1rem, 3vw, 1.6rem);
-}
-
-.epk-showreel > div { flex: 1 1 24rem; min-width: 0; }
-.epk-showreel h3 { font-size: clamp(1.25rem, 2.5vw, 1.65rem); margin: 0.25rem 0; }
-.epk-showreel p:last-child { font-size: 0.9rem; }
-
 .epk-card-copy { display: flex; flex-direction: column; gap: 0.55rem; padding: 1rem; }
 .epk-card-copy > a { margin-top: auto; font-size: 0.81rem; text-underline-offset: 0.18em; }
 .epk-card-copy > p { font-size: 0.88rem; }

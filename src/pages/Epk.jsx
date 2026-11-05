@@ -12,7 +12,6 @@ import photoSession from "../assets/images/photo-img3953.jpg";
 import "./Epk.css";
 
 const email = "richard.kormendi@gmail.com";
-const showreelUrl = "https://drive.google.com/file/d/1237A0yrQDL1kFsOK65qSmqpeC4pBJCsS/view";
 
 const pressItems = [
   {
@@ -170,19 +169,6 @@ export default function Epk() {
         <section id="videok" className="epk-section" aria-labelledby="epk-video-heading">
           <div className="epk-wrap">
             <h2 id="epk-video-heading">{hu ? "Videórészletek" : "Performance clips"}</h2>
-            <article className="epk-card epk-showreel">
-              <div>
-                <p className="epk-kicker">{hu ? "Műsorízelítő" : "Showreel"}</p>
-                <h3>{hu ? "Öt dal, 77 másodperc" : "Five songs in 77 seconds"}</h3>
-                <p>{hu
-                  ? "Szeretni valakit valamiért, Sway, Can’t Help Falling in Love, Feeling Good és Delilah egy otthoni felvételen."
-                  : "Recorded at home, with excerpts from Szeretni valakit valamiért, Sway, Can’t Help Falling in Love, Feeling Good and Delilah."}</p>
-              </div>
-              <a className="epk-button epk-button-primary" href={showreelUrl} target="_blank" rel="noreferrer"
-                onClick={() => track("click", { label: "epk_video: showreel" })}>
-                {hu ? "Műsorízelítő megtekintése" : "Watch the showreel"} ↗
-              </a>
-            </article>
             <div className="epk-grid">
               {videos.map(video => renderVideo(video))}
             </div>
