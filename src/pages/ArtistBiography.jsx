@@ -10,7 +10,7 @@ const biography = {
     },
     {
       title: "Saját dalok és zenei pálya",
-      text: "Az Éberálom zenekarban énekelt, gitározott és dalokat írt. Innen a színészet és a musical felé fordult, majd klasszikus énekesi diplomát szerzett. 2026-ban indította el angol nyelvű szólóprojektjét. A színpad különösen fontos számára. Saját dalait élőben is szeretné megszólaltatni, és az évek során szerzett tapasztalatait magyar örökzöldek és nápolyi dalok előadásában is kamatoztatná.",
+      text: "Az Éberálom zenekarban énekelt, gitározott és dalokat írt. Innen a színészet és a musical felé fordult, majd klasszikus énekesi diplomát szerzett. 2026-ban indította el angol nyelvű szólóprojektjét. A következő években elsősorban a zenével szeretne foglalkozni és minél többet fellépni. Saját dalait élőben is szeretné megszólaltatni, és az évek során szerzett tapasztalatait magyar örökzöldek és nápolyi dalok előadásában is kamatoztatná.",
     },
     {
       title: "Digitális háttér",
@@ -28,7 +28,7 @@ const biography = {
     },
     {
       title: "Songwriting and musical career",
-      text: "Richard sang, played guitar and wrote songs in the band Éberálom. He went on to work in acting and musical theatre before earning his degree in classical singing. In 2026 he launched his English-language solo project. The stage is central to his work. He wants to perform his own songs live and bring what he has learned to music ranging from Hungarian favourites to Neapolitan songs.",
+      text: "Richard sang, played guitar and wrote songs in the band Éberálom. He went on to work in acting and musical theatre before earning his degree in classical singing. In 2026 he launched his English-language solo project. In the years ahead, he wants to focus on music and perform as often as possible. He wants to share his own songs live and bring what he has learned to music ranging from Hungarian favourites to Neapolitan songs.",
     },
     {
       title: "Digital background",

@@ -3,6 +3,7 @@ import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import ArtistBiography from "./ArtistBiography";
+import ArtistStagePhotos from "./ArtistStagePhotos";
 import { track } from "../utils/track";
 import portraitWide from "../assets/images/portrait-riverside-wide.jpg";
 import portraitMobile from "../assets/images/portrait-riverside-mobile.jpg";
@@ -70,6 +71,13 @@ const videos = [
   { id: "grixDWxlOGs", title: "Sweet Child o’ Mine", youtubeOnly: true, hu: "Guns N’ Roses · Akusztikus részlet, mélyebb fekvésben", en: "Guns N’ Roses · Acoustic excerpt in a lower register" },
   { id: "N1f6MujK9gc", title: "Like an Ember", hu: "Saját dal · Zongorás részlet", en: "Original song · Piano excerpt" },
 ];
+
+const artistVideo = {
+  id: "OsEl7PvRveE",
+  title: "Parla più piano",
+  hu: "A Keresztapa főtémája",
+  en: "Theme from The Godfather",
+};
 
 const additionalVideos = [
   { id: "qpZUke-3WdE", title: "Regnum Marianum", hu: "Saját dal · Videóklip", en: "Original song · Music video" },
@@ -177,7 +185,7 @@ export default function Epk({ artistProfile = false }) {
                 </a>
               )}
               <a className="epk-button" href="#videok">
-                {artistProfile ? (hu ? "Videók" : "Videos") : (hu ? "Műsorízelítő" : "Watch the showreel")} ↓
+                {artistProfile ? (hu ? "Zenei ízelítő" : "Music highlights") : (hu ? "Műsorízelítő" : "Watch the showreel")} ↓
               </a>
             </div>
           </div>
@@ -187,9 +195,10 @@ export default function Epk({ artistProfile = false }) {
 
         <section id="videok" className="epk-section" aria-labelledby="epk-video-heading">
           <div className="epk-wrap">
-            <h2 id="epk-video-heading">{artistProfile ? (hu ? "Zenei felvételek" : "Recordings") : (hu ? "Videórészletek" : "Performance clips")}</h2>
-            <div className="epk-grid">
+            <h2 id="epk-video-heading">{artistProfile ? (hu ? "Zenei ízelítő" : "Music highlights") : (hu ? "Videórészletek" : "Performance clips")}</h2>
+            <div className={artistProfile ? "epk-grid epk-profile-videos" : "epk-grid"}>
               {videos.map(video => renderVideo(video))}
+              {artistProfile && renderVideo(artistVideo)}
             </div>
           </div>
         </section>
@@ -269,6 +278,8 @@ export default function Epk({ artistProfile = false }) {
             </div>
           </div>
         </section>
+
+        {artistProfile && <ArtistStagePhotos lang={lang} />}
 
         <section className="epk-section epk-contact" aria-labelledby="epk-contact-heading">
           <div className="epk-wrap">
