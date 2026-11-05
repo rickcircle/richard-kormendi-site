@@ -6,7 +6,7 @@ const biography = {
     },
     {
       title: "Színpadi szerepek",
-      text: "Prózai és zenés szerepekben egyaránt játszott. Gergely Róbert produkcióiban több főszerepet kapott, köztük Szécsi Pál szerepét. A padlásban a Rádióst játszotta, klasszikus énektanulmányai alatt pedig a János vitéz címszerepében turnézott Erdélyben.",
+      text: "Prózai és zenés szerepekben egyaránt játszott. A Noir Színházban a Hamupipőke és a Csipkerózsika hercegét is eljátszotta. A Kővirágok Színtársulat Oscar című előadásában Franco Provolonét alakította. Gergely Róbert produkcióiban több főszerepet kapott, köztük Szécsi Pál szerepét. A padlásban a Rádióst játszotta, klasszikus énektanulmányai alatt pedig a János vitéz címszerepében turnézott Erdélyben.",
     },
     {
       title: "Saját dalok és zenei pálya",
@@ -24,7 +24,7 @@ const biography = {
     },
     {
       title: "Stage roles",
-      text: "He has performed in both plays and musicals. He played several leading roles in Róbert Gergely’s productions, including the Hungarian singer Pál Szécsi. He also played Rádiós in A padlás and toured Transylvania in the title role of János vitéz while studying classical singing.",
+      text: "He has performed in both plays and musicals. At Noir Theatre, he played the prince in both Cinderella and Sleeping Beauty. He also played Franco Provolone in the Kővirágok theatre company’s production of Oscar. He played several leading roles in Róbert Gergely’s productions, including the Hungarian singer Pál Szécsi. He also played Rádiós in A padlás and toured Transylvania in the title role of János vitéz while studying classical singing.",
     },
     {
       title: "Songwriting and musical career",
