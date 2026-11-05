@@ -153,7 +153,6 @@ export default function Epk() {
             <img src={portraitWide} alt={hu ? "Körmendi Richárd portréja" : "Portrait of Richard Körmendi"} fetchPriority="high" />
           </picture>
           <div className="epk-hero-copy">
-            <p className="epk-kicker">{hu ? "Fellépésajánló" : "Live bookings"}</p>
             <h1 id="epk-name">{hu ? "Körmendi Richárd" : "Richard Körmendi"}</h1>
             <p className="epk-lead">{hu ? "Klasszikus tenor a rock világában." : "A classical tenor in the world of rock."}</p>
             <div className="epk-actions">
