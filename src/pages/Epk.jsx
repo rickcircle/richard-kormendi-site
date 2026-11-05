@@ -179,8 +179,8 @@ export default function Epk({ artistProfile = false }) {
   );
 
   return (
-    <div className="epk" lang={lang}>
-      <Navbar />
+    <div className={artistProfile ? "epk epk-profile" : "epk"} lang={lang}>
+      {!artistProfile && <Navbar />}
       <main>
         <section className="epk-hero" aria-labelledby="epk-name">
           <picture className="epk-hero-photo">
@@ -314,6 +314,11 @@ export default function Epk({ artistProfile = false }) {
               onClick={() => { track("click", { label: "epk_pdf_download" }); window.print(); }}>
               {hu ? "Mentés PDF-ként" : "Save as PDF"}
             </button>
+            {artistProfile && (
+              <a className="epk-language" href={hu ? "?lang=en" : "?lang=hu"} lang={hu ? "en" : "hu"}>
+                {hu ? "English" : "Magyar"}
+              </a>
+            )}
           </div>
         </section>
       </main>
