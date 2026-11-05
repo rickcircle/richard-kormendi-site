@@ -29,6 +29,7 @@ export default function App() {
         <Route path="/" element={<Home />} />
         <Route path="/hire" element={<Hire />} />
         <Route path="/epk" element={<Epk />} />
+        <Route path="/bemutatkozas" element={<Epk artistProfile />} />
         <Route path="/casting" element={<Casting />} />
         <Route path="/press" element={<PressPage />} />
         <Route path="/discography" element={<DiscographyPage />} />

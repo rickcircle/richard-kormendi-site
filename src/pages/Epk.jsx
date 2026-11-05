@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import ArtistBiography from "./ArtistBiography";
 import { track } from "../utils/track";
 import portraitWide from "../assets/images/portrait-riverside-wide.jpg";
 import portraitMobile from "../assets/images/portrait-riverside-mobile.jpg";
@@ -118,16 +119,20 @@ function VideoCard({ video, hu, playing, onPlay, landscape }) {
   );
 }
 
-export default function Epk() {
+export default function Epk({ artistProfile = false }) {
   const { lang } = useLang();
   const hu = lang === "hu";
   const [playing, setPlaying] = useState(null);
 
   useEffect(() => {
     const previousTitle = document.title;
-    document.title = hu ? "Körmendi Richárd – Fellépésajánló" : "Richard Körmendi – Live bookings";
+    const name = hu ? "Körmendi Richárd" : "Richard Körmendi";
+    const title = artistProfile
+      ? (hu ? "Bemutatkozás" : "Artist biography")
+      : (hu ? "Fellépésajánló" : "Live bookings");
+    document.title = `${name} – ${title}`;
     return () => { document.title = previousTitle; };
-  }, [hu]);
+  }, [artistProfile, hu]);
 
   const renderVideo = (video, landscape = false) => (
     <VideoCard
@@ -154,44 +159,61 @@ export default function Epk() {
           </picture>
           <div className="epk-hero-copy">
             <h1 id="epk-name">{hu ? "Körmendi Richárd" : "Richard Körmendi"}</h1>
-            <p className="epk-lead">{hu ? "Klasszikus tenor a rock világában." : "A classical tenor in the world of rock."}</p>
+            <p className="epk-lead">{artistProfile
+              ? (hu ? "Klasszikus énekművész és dalszerző" : "Classical singer and songwriter")
+              : (hu ? "Klasszikus tenor a rock világában." : "A classical tenor in the world of rock.")}</p>
+            {artistProfile && (
+              <p>{hu
+                ? "Lírai tenor, saját dalok magyarul és angolul."
+                : "Lyric tenor with original songs in Hungarian and English."}</p>
+            )}
             <div className="epk-actions">
-              <a className="epk-button epk-button-primary" href={`mailto:${email}`}
-                onClick={() => track("click", { label: "epk_booking_contact" })}>
-                {hu ? "Fellépés egyeztetése" : "Booking enquiries"}
+              {artistProfile ? (
+                <a className="epk-button epk-button-primary" href="#palyam">{hu ? "Pályám" : "Biography"} ↓</a>
+              ) : (
+                <a className="epk-button epk-button-primary" href={`mailto:${email}`}
+                  onClick={() => track("click", { label: "epk_booking_contact" })}>
+                  {hu ? "Fellépés egyeztetése" : "Booking enquiries"}
+                </a>
+              )}
+              <a className="epk-button" href="#videok">
+                {artistProfile ? (hu ? "Videók" : "Videos") : (hu ? "Műsorízelítő" : "Watch the showreel")} ↓
               </a>
-              <a className="epk-button" href="#videok">{hu ? "Műsorízelítő" : "Watch the showreel"} ↓</a>
             </div>
           </div>
         </section>
 
+        {artistProfile && <ArtistBiography lang={lang} />}
+
         <section id="videok" className="epk-section" aria-labelledby="epk-video-heading">
           <div className="epk-wrap">
-            <h2 id="epk-video-heading">{hu ? "Videórészletek" : "Performance clips"}</h2>
+            <h2 id="epk-video-heading">{artistProfile ? (hu ? "Zenei felvételek" : "Recordings") : (hu ? "Videórészletek" : "Performance clips")}</h2>
             <div className="epk-grid">
               {videos.map(video => renderVideo(video))}
             </div>
           </div>
         </section>
 
-        <section className="epk-section epk-section-tinted" aria-labelledby="epk-about-heading">
-          <div className="epk-wrap epk-editorial">
-            <div>
-              <p className="epk-kicker">{hu ? "A műsor" : "The set"}</p>
-              <h2 id="epk-about-heading">{hu ? "Ismerős dalok több korszakból" : "Familiar songs from across the decades"}</h2>
-              <p>{hu
-                ? "A műsorban magyar rockörökzöldek, angol nyelvű pop- és rockslágerek, Sinatra-dalok és olasz klasszikusok szólalnak meg. A balladák és a lendületesebb slágerek közé egy-egy saját dal is bekerülhet. A dalokat és a műsor hosszát előre egyeztetjük."
-                : "The repertoire spans Hungarian rock favourites, English-language pop and rock hits, Sinatra standards and Italian songs. It ranges from ballads to up-tempo hits. The set can also include an original song or two. The set list and running time can be arranged in advance."}</p>
+        {!artistProfile && (
+          <section className="epk-section epk-section-tinted" aria-labelledby="epk-about-heading">
+            <div className="epk-wrap epk-editorial">
+              <div>
+                <p className="epk-kicker">{hu ? "A műsor" : "The set"}</p>
+                <h2 id="epk-about-heading">{hu ? "Ismerős dalok több korszakból" : "Familiar songs from across the decades"}</h2>
+                <p>{hu
+                  ? "A műsorban magyar rockörökzöldek, angol nyelvű pop- és rockslágerek, Sinatra-dalok és olasz klasszikusok szólalnak meg. A balladák és a lendületesebb slágerek közé egy-egy saját dal is bekerülhet. A dalokat és a műsor hosszát előre egyeztetjük."
+                  : "The repertoire spans Hungarian rock favourites, English-language pop and rock hits, Sinatra standards and Italian songs. It ranges from ballads to up-tempo hits. The set can also include an original song or two. The set list and running time can be arranged in advance."}</p>
+              </div>
+              <div>
+                <p className="epk-kicker">{hu ? "Az előadó" : "The artist"}</p>
+                <h2>{hu ? "Rövid bemutatkozás" : "Short biography"}</h2>
+                <p>{hu
+                  ? "Körmendi Richárd esztergomi énekes, gitáros és dalszerző. Zenei pályáját az Éberálom zenekar frontembereként kezdte, később színészként dolgozott és musicalekben játszott. 2024-ben a nagyváradi Partiumi Keresztény Egyetemen szerzett klasszikus énekdiplomát. Ma magyarul és angolul ír saját dalokat, fellépésein pedig főként örökzöldeket énekel."
+                  : "Richard Körmendi is a singer, guitarist and songwriter from Esztergom, Hungary. He began his music career as the frontman of Éberálom and went on to perform as an actor and in musical theatre. In 2024 he graduated in classical vocal performance from Partium Christian University in Oradea. He writes songs in English and Hungarian and mainly performs evergreen favourites live."}</p>
+              </div>
             </div>
-            <div>
-              <p className="epk-kicker">{hu ? "Az előadó" : "The artist"}</p>
-              <h2>{hu ? "Rövid bemutatkozás" : "Short biography"}</h2>
-              <p>{hu
-                ? "Körmendi Richárd esztergomi énekes, gitáros és dalszerző. Zenei pályáját az Éberálom zenekar frontembereként kezdte, később színészként dolgozott és musicalekben játszott. 2024-ben a nagyváradi Partiumi Keresztény Egyetemen szerzett klasszikus énekdiplomát. Ma magyarul és angolul ír saját dalokat, fellépésein pedig főként örökzöldeket énekel."
-                : "Richard Körmendi is a singer, guitarist and songwriter from Esztergom, Hungary. He began his music career as the frontman of Éberálom and went on to perform as an actor and in musical theatre. In 2024 he graduated in classical vocal performance from Partium Christian University in Oradea. He writes songs in English and Hungarian and mainly performs evergreen favourites live."}</p>
-            </div>
-          </div>
-        </section>
+          </section>
+        )}
 
         <section className="epk-section" aria-labelledby="epk-more-videos-heading">
           <div className="epk-wrap">
@@ -250,10 +272,10 @@ export default function Epk() {
 
         <section className="epk-section epk-contact" aria-labelledby="epk-contact-heading">
           <div className="epk-wrap">
-            <h2 id="epk-contact-heading">{hu ? "Fellépés és sajtó" : "Bookings and press"}</h2>
-            <p>{hu
-              ? "Ha fellépésre hívnál, írd meg, milyen rendezvényre gondoltál, mikor és hol lenne."
-              : "For booking enquiries, please include the date, venue and type of event."}</p>
+            <h2 id="epk-contact-heading">{artistProfile ? (hu ? "Kapcsolat" : "Contact") : (hu ? "Fellépés és sajtó" : "Bookings and press")}</h2>
+            <p>{artistProfile
+              ? (hu ? "Zenei együttműködéssel, fellépéssel vagy sajtómegkereséssel kapcsolatban írj e-mailt." : "For collaborations, bookings or press enquiries, get in touch by email.")
+              : (hu ? "Ha fellépésre hívnál, írd meg, milyen rendezvényre gondoltál, mikor és hol lenne." : "For booking enquiries, please include the date, venue and type of event.")}</p>
             <a href={`mailto:${email}`} onClick={() => track("click", { label: "epk_booking_contact" })}>{email}</a>
             <p>{hu ? "Esztergom, Magyarország" : "Esztergom, Hungary"}</p>
             <button type="button" className="epk-button epk-print"
