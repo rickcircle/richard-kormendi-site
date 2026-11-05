@@ -156,16 +156,13 @@ export default function Epk() {
           <div className="epk-hero-copy">
             <p className="epk-kicker">{hu ? "Fellépésajánló" : "Live bookings"}</p>
             <h1 id="epk-name">{hu ? "Körmendi Richárd" : "Richard Körmendi"}</h1>
-            <p className="epk-lead">{hu ? "Magyar és külföldi örökzöldek élőben" : "Hungarian and international favourites, live"}</p>
-            <p>{hu
-              ? "A Republic és az Omega dalai, a Beatles, Elvis Presley és Frank Sinatra slágerei, valamint néhány olasz klasszikus."
-              : "Songs by Republic and Omega, favourites from the Beatles, Elvis Presley and Frank Sinatra, and a few Italian classics."}</p>
+            <p className="epk-lead">{hu ? "Klasszikus tenor a rock világában." : "A classical tenor in the world of rock."}</p>
             <div className="epk-actions">
               <a className="epk-button epk-button-primary" href={`mailto:${email}`}
                 onClick={() => track("click", { label: "epk_booking_contact" })}>
                 {hu ? "Fellépés egyeztetése" : "Booking enquiries"}
               </a>
-              <a className="epk-button" href="#videok">{hu ? "Videók" : "Watch videos"} ↓</a>
+              <a className="epk-button" href="#videok">{hu ? "Műsorízelítő" : "Watch the showreel"} ↓</a>
             </div>
           </div>
         </section>
