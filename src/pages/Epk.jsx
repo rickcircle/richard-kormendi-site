@@ -12,6 +12,7 @@ import photoSession from "../assets/images/photo-img3953.jpg";
 import "./Epk.css";
 
 const email = "richard.kormendi@gmail.com";
+const showreelUrl = "https://drive.google.com/file/d/1237A0yrQDL1kFsOK65qSmqpeC4pBJCsS/view";
 
 const pressItems = [
   {
@@ -33,7 +34,7 @@ const pressItems = [
   {
     outlet: "Indie Dream",
     quote: "“The vocal moment at 2:42 feels like the push you need to realize there's still so much left to do in life.”",
-    quoteHu: "A kritika a dal 2:42-nél hallható énekrészletét emeli ki. A szerzőt arra emlékeztette, mennyi minden vár még rá.",
+    quoteHu: "A kritika szerint a 2:42-nél megszólaló ének adja meg azt a lendületet, amitől az ember úgy érzi, még sok minden vár rá.",
     type: { en: "Review", hu: "Kritika" },
     song: "Still I Go",
     url: "https://www.indiedream.com.mx/2026/08/richard-kormendi-still-i-go.html",
@@ -41,7 +42,7 @@ const pressItems = [
   {
     outlet: "Sagar Kari",
     quote: "“Fall Into You is a really beautiful song. There's so much pain and emotion in the track, and it comes through in a very raw and genuine way. The song feels unique in its own way, and the overall mood really stays with you. I liked how deeply emotional it feels without trying too hard. Really nice track overall!”",
-    quoteHu: "A dal őszinteségét és visszafogott előadását emeli ki. A hangulata sokáig vele maradt.",
+    quoteHu: "A dal őszintesége és fájdalma fogta meg. Külön kiemelte, hogy az érzelmek erőltetés nélkül is átjönnek.",
     type: { en: "Listener", hu: "Hallgatói vélemény" },
     song: "Fall Into You",
     url: null,
@@ -73,7 +74,7 @@ const videos = [
 const additionalVideos = [
   { id: "qpZUke-3WdE", title: "Regnum Marianum", hu: "Saját dal · Videóklip", en: "Original song · Music video" },
   { id: "PW9BkG3gnlk", title: "My Burning Devotion", hu: "Saját dal · Videóklip", en: "Original song · Music video" },
-  { id: "DbmA6e0lOEw", title: "Anthem", youtubeOnly: true, hu: "Chess · Zongorás musicalfeldolgozás", en: "Chess · Piano version" },
+  { id: "DbmA6e0lOEw", title: "Anthem", youtubeOnly: true, hu: "A Sakk című musical dala · Zongorás változat", en: "Chess · Piano version" },
 ];
 
 function VideoCard({ video, hu, playing, onPlay, landscape }) {
@@ -157,7 +158,7 @@ export default function Epk() {
             <h1 id="epk-name">{hu ? "Körmendi Richárd" : "Richard Körmendi"}</h1>
             <p className="epk-lead">{hu ? "Magyar és külföldi örökzöldek élőben" : "Hungarian and international favourites, live"}</p>
             <p>{hu
-              ? "A Republic és az Omega dalaitól a Beatles, Elvis Presley és Frank Sinatra slágereiig, néhány olasz klasszikussal."
+              ? "A Republic és az Omega dalai, a Beatles, Elvis Presley és Frank Sinatra slágerei, valamint néhány olasz klasszikus."
               : "Songs by Republic and Omega, favourites from the Beatles, Elvis Presley and Frank Sinatra, and a few Italian classics."}</p>
             <div className="epk-actions">
               <a className="epk-button epk-button-primary" href={`mailto:${email}`}
@@ -172,6 +173,19 @@ export default function Epk() {
         <section id="videok" className="epk-section" aria-labelledby="epk-video-heading">
           <div className="epk-wrap">
             <h2 id="epk-video-heading">{hu ? "Videórészletek" : "Performance clips"}</h2>
+            <article className="epk-card epk-showreel">
+              <div>
+                <p className="epk-kicker">{hu ? "Műsorízelítő" : "Showreel"}</p>
+                <h3>{hu ? "Öt dal, 77 másodperc" : "Five songs in 77 seconds"}</h3>
+                <p>{hu
+                  ? "Szeretni valakit valamiért, Sway, Can’t Help Falling in Love, Feeling Good és Delilah egy otthoni felvételen."
+                  : "Recorded at home, with excerpts from Szeretni valakit valamiért, Sway, Can’t Help Falling in Love, Feeling Good and Delilah."}</p>
+              </div>
+              <a className="epk-button epk-button-primary" href={showreelUrl} target="_blank" rel="noreferrer"
+                onClick={() => track("click", { label: "epk_video: showreel" })}>
+                {hu ? "Műsorízelítő megtekintése" : "Watch the showreel"} ↗
+              </a>
+            </article>
             <div className="epk-grid">
               {videos.map(video => renderVideo(video))}
             </div>
@@ -182,16 +196,16 @@ export default function Epk() {
           <div className="epk-wrap epk-editorial">
             <div>
               <p className="epk-kicker">{hu ? "A műsor" : "The set"}</p>
-              <h2 id="epk-about-heading">{hu ? "Ismerős dalok, több korszakból" : "Familiar songs from across the decades"}</h2>
+              <h2 id="epk-about-heading">{hu ? "Ismerős dalok több korszakból" : "Familiar songs from across the decades"}</h2>
               <p>{hu
-                ? "A magyar rock örökzöldjei mellett angol nyelvű pop- és rockslágerek, Sinatra-dalok és olasz dalok is helyet kapnak a műsorban. A repertoár a lírai balladáktól a lendületesebb slágerekig terjed. A válogatásban egy-egy saját dal is helyet kaphat. A műsor összeállítása és hossza előre egyeztethető."
+                ? "A műsorban magyar rockörökzöldek, angol nyelvű pop- és rockslágerek, Sinatra-dalok és olasz klasszikusok szólalnak meg. A balladák és a lendületesebb slágerek közé egy-egy saját dal is bekerülhet. A dalokat és a műsor hosszát előre egyeztetjük."
                 : "The repertoire spans Hungarian rock favourites, English-language pop and rock hits, Sinatra standards and Italian songs. It ranges from ballads to up-tempo hits. The set can also include an original song or two. The set list and running time can be arranged in advance."}</p>
             </div>
             <div>
               <p className="epk-kicker">{hu ? "Az előadó" : "The artist"}</p>
               <h2>{hu ? "Rövid bemutatkozás" : "Short biography"}</h2>
               <p>{hu
-                ? "Körmendi Richárd esztergomi énekes, gitáros és dalszerző. Zenei pályáját az Éberálom zenekar frontembereként kezdte, később színészként és musicalekben is fellépett. 2024-ben klasszikus ének szakon diplomázott a nagyváradi Partiumi Keresztény Egyetemen. Ma magyarul és angolul ír saját dalokat, fellépésein pedig főként örökzöldeket énekel."
+                ? "Körmendi Richárd esztergomi énekes, gitáros és dalszerző. Zenei pályáját az Éberálom zenekar frontembereként kezdte, később színészként dolgozott és musicalekben játszott. 2024-ben a nagyváradi Partiumi Keresztény Egyetemen szerzett klasszikus énekdiplomát. Ma magyarul és angolul ír saját dalokat, fellépésein pedig főként örökzöldeket énekel."
                 : "Richard Körmendi is a singer, guitarist and songwriter from Esztergom, Hungary. He began his music career as the frontman of Éberálom and went on to perform as an actor and in musical theatre. In 2024 he graduated in classical vocal performance from Partium Christian University in Oradea. He writes songs in English and Hungarian and mainly performs evergreen favourites live."}</p>
             </div>
           </div>
@@ -256,7 +270,7 @@ export default function Epk() {
           <div className="epk-wrap">
             <h2 id="epk-contact-heading">{hu ? "Fellépés és sajtó" : "Bookings and press"}</h2>
             <p>{hu
-              ? "Fellépés egyeztetéséhez írd meg a rendezvény időpontját, helyszínét és jellegét."
+              ? "Ha fellépésre hívnál, írd meg, milyen rendezvényre gondoltál, mikor és hol lenne."
               : "For booking enquiries, please include the date, venue and type of event."}</p>
             <a href={`mailto:${email}`} onClick={() => track("click", { label: "epk_booking_contact" })}>{email}</a>
             <p>{hu ? "Esztergom, Magyarország" : "Esztergom, Hungary"}</p>
