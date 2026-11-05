@@ -72,12 +72,33 @@ const videos = [
   { id: "N1f6MujK9gc", title: "Like an Ember", hu: "Saját dal · Zongorás részlet", en: "Original song · Piano excerpt" },
 ];
 
-const artistVideo = {
-  id: "OsEl7PvRveE",
-  title: "Parla più piano",
-  hu: "A Keresztapa főtémája",
-  en: "Theme from The Godfather",
-};
+const [sisteronVideo, heroVideo, ...otherVideos] = videos;
+
+const artistVideos = [
+  {
+    ...sisteronVideo,
+    title: "Non ti scordar di me (École de musique de Sisteron)",
+    hu: "Franciaországi fellépés",
+    en: "Live performance in France",
+    credit: { hu: "Zongora: Maestro Antoine Rossfelder", en: "Piano: Maestro Antoine Rossfelder" },
+  },
+  heroVideo,
+  {
+    id: "OsEl7PvRveE",
+    title: "Parla più piano",
+    hu: "A Keresztapa főcímdala",
+    en: "Title song from The Godfather",
+  },
+  ...otherVideos,
+  {
+    id: "I1tJo5GW1Qs",
+    url: "https://www.youtube.com/watch?v=I1tJo5GW1Qs",
+    title: "Delilah",
+    youtubeOnly: true,
+    hu: "Tom Jones · Feldolgozás",
+    en: "Tom Jones cover",
+  },
+];
 
 const additionalVideos = [
   { id: "qpZUke-3WdE", title: "Regnum Marianum", hu: "Saját dal · Videóklip", en: "Original song · Music video" },
@@ -86,10 +107,10 @@ const additionalVideos = [
 ];
 
 function VideoCard({ video, hu, playing, onPlay, landscape }) {
-  const { id, title, youtubeOnly } = video;
-  const url = landscape
+  const { id, title, youtubeOnly, credit } = video;
+  const url = video.url ?? (landscape
     ? `https://www.youtube.com/watch?v=${id}`
-    : `https://www.youtube.com/shorts/${id}`;
+    : `https://www.youtube.com/shorts/${id}`);
   const thumbnail = (
     <>
       <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" />
@@ -119,6 +140,7 @@ function VideoCard({ video, hu, playing, onPlay, landscape }) {
       <div className="epk-card-copy">
         <h3>{title}</h3>
         <p>{hu ? video.hu : video.en}</p>
+        {credit && <p>{hu ? credit.hu : credit.en}</p>}
         <a href={url} target="_blank" rel="noreferrer" aria-label={`${title} – YouTube`}>
           {hu ? "Megnyitás a YouTube-on" : "Watch on YouTube"} ↗
         </a>
@@ -197,8 +219,7 @@ export default function Epk({ artistProfile = false }) {
           <div className="epk-wrap">
             <h2 id="epk-video-heading">{artistProfile ? (hu ? "Zenei ízelítő" : "Music highlights") : (hu ? "Videórészletek" : "Performance clips")}</h2>
             <div className={artistProfile ? "epk-grid epk-profile-videos" : "epk-grid"}>
-              {videos.map(video => renderVideo(video))}
-              {artistProfile && renderVideo(artistVideo)}
+              {(artistProfile ? artistVideos : videos).map(video => renderVideo(video))}
             </div>
           </div>
         </section>

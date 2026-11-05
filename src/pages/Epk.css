@@ -119,10 +119,6 @@
 .epk-contact p { margin: 0.6rem 0; }
 .epk-print { margin-top: 0.65rem; }
 
-@media (min-width: 1200px) {
-  .epk-profile-videos { grid-template-columns: repeat(5, minmax(0, 1fr)); }
-}
-
 @media (max-width: 960px) {
   .epk-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }

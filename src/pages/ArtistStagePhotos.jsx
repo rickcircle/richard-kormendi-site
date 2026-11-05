@@ -5,11 +5,11 @@ import stageScene from "../assets/images/stage/stage-scene.jpg";
 import castPhoto from "../assets/images/stage/cast-photo.jpg";
 
 const stagePhotos = [
-  { src: cinderella, hu: "Herceg a Hamupipőkében", en: "The prince in Cinderella" },
+  { src: cinderella, hu: "A herceg a Hamupipőkében · Noir Színház", en: "The prince in Cinderella · Noir Theatre" },
   { src: stageScene, hu: "Jelenet egy színházi előadásból", en: "A scene from a stage production" },
-  { src: ensemble, hu: "A szereplőkkel a színpadon", en: "On stage with the cast" },
+  { src: ensemble, hu: "A Gergely Theáter szereplőivel", en: "With the cast of Gergely Theáter" },
   { src: inCostume, hu: "Jelmezben a színpadon", en: "On stage in costume" },
-  { src: castPhoto, hu: "Csoportkép a szereplőkkel", en: "Cast group photo" },
+  { src: castPhoto, hu: "A Partiumi Keresztény Egyetem csapata Erdélyben", en: "With the Partium Christian University cast in Transylvania" },
 ];
 
 export default function ArtistStagePhotos({ lang }) {
