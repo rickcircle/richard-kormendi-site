@@ -14,7 +14,6 @@ import lookEdgy       from "../assets/images/casting/casting-look-edgy.jpg";
 import lookCasual     from "../assets/images/casting/casting-look-casual.jpg";
 import lookSoft       from "../assets/images/casting/casting-look-soft.jpg";
 import lookUrban      from "../assets/images/casting/casting-look-urban.jpg";
-import lookFullBody   from "../assets/images/casting/casting-look-fullbody.jpg";
 import lookWarm       from "../assets/images/casting/casting-look-warm.jpg";
 import lookSerious    from "../assets/images/casting/casting-look-serious.jpg";
 
@@ -43,7 +42,6 @@ const gallery = [
   { src: lookUrban,     label: { en: "Urban", hu: "Városi" } },
   { src: lookWarm,      label: { en: "Approachable", hu: "Közvetlen" } },
   { src: lookSerious,   label: { en: "Serious", hu: "Komoly" } },
-  { src: lookFullBody,  label: { en: "Full Body", hu: "Teljes alak" } },
 ];
 
 export default function Casting() {
