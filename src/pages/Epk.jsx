@@ -209,6 +209,9 @@ export default function Epk({ artistProfile = false }) {
               <a className="epk-button" href="#videok">
                 {artistProfile ? (hu ? "Zenei ízelítő" : "Music highlights") : (hu ? "Műsorízelítő" : "Watch the showreel")} ↓
               </a>
+              {artistProfile && (
+                <a className="epk-button" href="#kapcsolat">{hu ? "Kapcsolat" : "Contact"} ↓</a>
+              )}
             </div>
           </div>
         </section>
@@ -302,7 +305,7 @@ export default function Epk({ artistProfile = false }) {
 
         {artistProfile && <ArtistStagePhotos lang={lang} />}
 
-        <section className="epk-section epk-contact" aria-labelledby="epk-contact-heading">
+        <section id={artistProfile ? "kapcsolat" : undefined} className="epk-section epk-contact" aria-labelledby="epk-contact-heading">
           <div className="epk-wrap">
             <h2 id="epk-contact-heading">{artistProfile ? (hu ? "Kapcsolat" : "Contact") : (hu ? "Fellépés és sajtó" : "Bookings and press")}</h2>
             <p>{artistProfile

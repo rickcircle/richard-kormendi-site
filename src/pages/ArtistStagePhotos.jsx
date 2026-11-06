@@ -8,7 +8,7 @@ const stagePhotos = [
   { src: cinderella, hu: "A herceg a Hamupipőkében · Noir Színház", en: "The prince in Cinderella · Noir Theatre" },
   { src: stageScene, hu: "Szécsi Pál szerepében a Szécsi Pál-emlékesten", en: "As Pál Szécsi at a tribute evening" },
   { src: ensemble, hu: "Az Ami késik, nem múlik! premierjén a Gergely Theáter szereplőivel", en: "With the cast of Gergely Theáter at the premiere of Ami késik, nem múlik!" },
-  { src: inCostume, hu: "Jelmezben a színpadon", en: "On stage in costume" },
+  { src: inCostume, hu: "Hamupipőke – promófotózás · Noir Színház, Duna Palota", en: "Cinderella promotional photo shoot · Noir Theatre, Duna Palota" },
   { src: castPhoto, hu: "A János vitéz címszerepében az erdélyi turnén · Partiumi Keresztény Egyetem", en: "In the title role of János vitéz on tour in Transylvania · Partium Christian University" },
 ];
 
