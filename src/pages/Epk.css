@@ -127,6 +127,51 @@
 .epk-biography h3 { margin-bottom: 0.55rem; }
 .epk-editorial h2 { font-size: clamp(1.55rem, 3vw, 2.2rem); margin-bottom: 0.75rem; }
 .epk-listen { margin-top: 2rem; }
+.epk-profile .epk-listen { margin-top: 3rem; }
+.epk-profile .epk-listen h3 { font-size: clamp(1.15rem, 2.5vw, 1.5rem); }
+.epk-platforms {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.8rem;
+  margin-top: 1rem;
+}
+
+.epk .epk-platform {
+  --platform: var(--epk-accent);
+  position: relative;
+  display: grid;
+  align-content: space-between;
+  gap: 0.75rem;
+  min-height: 114px;
+  box-sizing: border-box;
+  padding: 0.9rem 0.85rem;
+  border: 1px solid color-mix(in srgb, var(--platform) 40%, var(--epk-line));
+  border-radius: 10px;
+  background: linear-gradient(150deg, color-mix(in srgb, var(--platform) 17%, var(--epk-card)), var(--epk-card));
+  color: var(--epk-ink);
+  font-size: 0.92rem;
+  font-weight: 650;
+  text-decoration: none;
+  overflow-wrap: anywhere;
+}
+
+.epk .epk-platform[data-platform="spotify"] { --platform: #43df86; border-color: var(--platform); }
+.epk .epk-platform[data-platform="apple"] { --platform: #ff819e; }
+.epk .epk-platform[data-platform="tidal"] { --platform: #8fe4e3; }
+.epk .epk-platform[data-platform="youtube"] { --platform: #ff7c75; }
+.epk .epk-platform[data-platform="instagram"] { --platform: #e8a2ff; }
+.epk .epk-platform:is(:hover, :focus-visible) {
+  border-color: var(--platform);
+  background: color-mix(in srgb, var(--platform) 24%, var(--epk-card));
+}
+
+.epk-platform-icon, .epk-platform-arrow { color: var(--platform); }
+.epk-platform-arrow { position: absolute; top: 0.85rem; right: 0.75rem; }
+
+@media (max-width: 760px) {
+  .epk-platforms { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .epk-platform[data-platform="spotify"] { grid-column: 1 / -1; }
+}
 .epk .epk-photo { display: block; text-decoration: none; color: var(--epk-ink); }
 .epk-photo img { width: 100%; aspect-ratio: 3 / 4; object-fit: cover; display: block; }
 .epk-photo > span { display: flex; justify-content: space-between; gap: 0.3rem; padding: 0.75rem; font-size: 0.86rem; }
@@ -169,7 +214,7 @@
 
 @media print {
   .epk { --epk-ink: #000; --epk-muted: #222; --epk-accent: #452522; --epk-line: #ccc; }
-  .epk :is(header, footer, .epk-actions, .epk-video-frame, .epk-print, .epk-language, .epk-progress, .epk-back-top) { display: none !important; }
+  .epk :is(header, footer, .epk-actions, .epk-platforms, .epk-video-frame, .epk-print, .epk-language, .epk-progress, .epk-back-top) { display: none !important; }
   .epk main { padding: 0; }
   .epk .epk-hero { display: block; min-height: 0; padding: 1rem 0 !important; }
   .epk-hero-photo { display: none; }

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import { ArrowUpRight, AudioLines, Camera, Gem, Music2, Play } from "lucide-react";
 import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -51,11 +52,11 @@ const pressItems = [
 ];
 
 const streamingLinks = [
-  { name: "Spotify",     url: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
-  { name: "Apple Music", url: "https://music.apple.com/hu/artist/richard-körmendi/1877841316" },
-  { name: "Tidal",       url: "https://tidal.com/artist/74624158" },
-  { name: "YouTube",     url: "https://www.youtube.com/@richardkormendi6379" },
-  { name: "Instagram",   url: "https://www.instagram.com/rickormendi/" },
+  { name: "Spotify", platform: "spotify", Icon: AudioLines, url: "https://open.spotify.com/artist/5UW4cZ0M83TG2nJWYvkVkp" },
+  { name: "Apple Music", platform: "apple", Icon: Music2, url: "https://music.apple.com/hu/artist/richard-körmendi/1877841316" },
+  { name: "Tidal", platform: "tidal", Icon: Gem, url: "https://tidal.com/artist/74624158" },
+  { name: "YouTube", platform: "youtube", Icon: Play, url: "https://www.youtube.com/@richardkormendi6379" },
+  { name: "Instagram", platform: "instagram", Icon: Camera, url: "https://www.instagram.com/rickormendi/" },
 ];
 
 const photos = [
@@ -310,10 +311,19 @@ export default function Epk({ artistProfile = false }) {
             </div>
             <div className="epk-listen">
               <h3>{hu ? "Saját dalok és közösségi oldalak" : "Original music and social links"}</h3>
-              <div className="epk-actions">
-                {streamingLinks.map(link => (
-                  <a key={link.name} className="epk-button" href={link.url} target="_blank" rel="noreferrer"
-                    onClick={() => track("click", { label: `epk_stream: ${link.name}` })}>{link.name} ↗</a>
+              <div className={artistProfile ? "epk-platforms" : "epk-actions"}>
+                {streamingLinks.map(({ name, platform, Icon, url }) => (
+                  <a key={name} className={artistProfile ? "epk-platform" : "epk-button"} data-platform={platform}
+                    href={url} target="_blank" rel="noreferrer"
+                    onClick={() => track("click", { label: `epk_stream: ${name}` })}>
+                    {artistProfile ? (
+                      <>
+                        <Icon className="epk-platform-icon" size={24} aria-hidden="true" />
+                        <span>{name}</span>
+                        <ArrowUpRight className="epk-platform-arrow" size={17} aria-hidden="true" />
+                      </>
+                    ) : `${name} ↗`}
+                  </a>
                 ))}
               </div>
             </div>
