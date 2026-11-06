@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -149,6 +149,38 @@ function VideoCard({ video, hu, playing, onPlay, landscape }) {
   );
 }
 
+function ReadingProgress() {
+  const fill = useRef(null);
+
+  useEffect(() => {
+    const bar = fill.current;
+    const update = () => {
+      const page = document.documentElement;
+      const distance = page.scrollHeight - page.clientHeight;
+      const progress = distance > 0 ? Math.max(0, Math.min(1, window.scrollY / distance)) : 0;
+      bar.style.transform = `scaleX(${progress})`;
+    };
+
+    const observer = new ResizeObserver(update);
+    observer.observe(document.body);
+    window.addEventListener("scroll", update, { passive: true });
+    window.addEventListener("resize", update);
+    update();
+
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("scroll", update);
+      window.removeEventListener("resize", update);
+    };
+  }, []);
+
+  return (
+    <div className="epk-progress" aria-hidden="true">
+      <div ref={fill} />
+    </div>
+  );
+}
+
 export default function Epk({ artistProfile = false }) {
   const { lang } = useLang();
   const hu = lang === "hu";
@@ -180,8 +212,8 @@ export default function Epk({ artistProfile = false }) {
 
   return (
     <div className={artistProfile ? "epk epk-profile" : "epk"} lang={lang}>
-      {!artistProfile && <Navbar />}
-      <main>
+      {artistProfile ? <ReadingProgress /> : <Navbar />}
+      <main id={artistProfile ? "eleje" : undefined} tabIndex={artistProfile ? -1 : undefined}>
         <section className="epk-hero" aria-labelledby="epk-name">
           <picture className="epk-hero-photo">
             <source media="(max-width: 760px)" srcSet={portraitMobile} />
@@ -318,9 +350,14 @@ export default function Epk({ artistProfile = false }) {
               {hu ? "Mentés PDF-ként" : "Save as PDF"}
             </button>
             {artistProfile && (
-              <a className="epk-language" href={hu ? "?lang=en" : "?lang=hu"} lang={hu ? "en" : "hu"}>
-                {hu ? "English" : "Magyar"}
-              </a>
+              <>
+                <div className="epk-back-top">
+                  <a className="epk-button" href="#eleje">{hu ? "Vissza az elejére" : "Back to top"} ↑</a>
+                </div>
+                <a className="epk-language" href={hu ? "?lang=en" : "?lang=hu"} lang={hu ? "en" : "hu"}>
+                  {hu ? "English" : "Magyar"}
+                </a>
+              </>
             )}
           </div>
         </section>
