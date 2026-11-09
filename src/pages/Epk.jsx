@@ -73,16 +73,9 @@ const videos = [
   { id: "N1f6MujK9gc", title: "Like an Ember", hu: "Saját dal · Zongorás részlet", en: "Original song · Piano excerpt" },
 ];
 
-const [sisteronVideo, heroVideo, ...otherVideos] = videos;
+const [sisteronVideo, heroVideo, sweetChildVideo, likeAnEmberVideo] = videos;
 
 const artistVideos = [
-  {
-    ...sisteronVideo,
-    title: "Non ti scordar di me (École de musique de Sisteron)",
-    hu: "Franciaországi fellépés",
-    en: "Live performance in France",
-    credit: { hu: "Zongora: Maestro Antoine Rossfelder", en: "Piano: Maestro Antoine Rossfelder" },
-  },
   heroVideo,
   {
     id: "OsEl7PvRveE",
@@ -90,7 +83,8 @@ const artistVideos = [
     hu: "A Keresztapa főcímdala",
     en: "Title song from The Godfather",
   },
-  ...otherVideos,
+  likeAnEmberVideo,
+  sweetChildVideo,
   {
     id: "I1tJo5GW1Qs",
     url: "https://www.youtube.com/watch?v=I1tJo5GW1Qs",
@@ -98,6 +92,13 @@ const artistVideos = [
     youtubeOnly: true,
     hu: "Tom Jones · Feldolgozás",
     en: "Tom Jones cover",
+  },
+  {
+    ...sisteronVideo,
+    title: "Non ti scordar di me (École de musique de Sisteron)",
+    hu: "Franciaországi fellépés",
+    en: "Live performance in France",
+    credit: { hu: "Zongora: Maestro Antoine Rossfelder", en: "Piano: Maestro Antoine Rossfelder" },
   },
 ];
 
