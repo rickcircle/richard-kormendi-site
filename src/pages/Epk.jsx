@@ -96,8 +96,8 @@ const artistVideos = [
   {
     ...sisteronVideo,
     title: "Non ti scordar di me (École de musique de Sisteron)",
-    hu: "Franciaországi fellépés",
-    en: "Live performance in France",
+    hu: "Franciaországi fellépés (Sisteron)",
+    en: "Live performance in France (Sisteron)",
     credit: { hu: "Zongora: Maestro Antoine Rossfelder", en: "Piano: Maestro Antoine Rossfelder" },
   },
 ];
@@ -139,12 +139,16 @@ function VideoCard({ video, hu, playing, onPlay, landscape }) {
           </button>
         )}
       </div>
-      <div className="epk-card-copy">
+      <div className="epk-card-copy epk-video-copy">
         <h3>{title}</h3>
-        <p>{hu ? video.hu : video.en}</p>
-        {credit && <p>{hu ? credit.hu : credit.en}</p>}
-        <a href={url} target="_blank" rel="noreferrer" aria-label={`${title} – YouTube`}>
-          {hu ? "Megnyitás a YouTube-on" : "Watch on YouTube"} ↗
+        <div className="epk-video-details">
+          <p>{hu ? video.hu : video.en}</p>
+          {credit && <p className="epk-video-credit">{hu ? credit.hu : credit.en}</p>}
+        </div>
+        <a className="epk-video-link" href={url} target="_blank" rel="noreferrer" aria-label={`${title} – YouTube`}>
+          <Play size={15} aria-hidden="true" />
+          <span>{hu ? "Megnyitás a YouTube-on" : "Watch on YouTube"}</span>
+          <ArrowUpRight size={17} aria-hidden="true" />
         </a>
       </div>
     </article>
