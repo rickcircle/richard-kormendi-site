@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { ArrowUpRight, AudioLines, Camera, Gem, Music2, Play } from "lucide-react";
+import { ArrowUpRight, AudioLines, Camera, Gem, Music2, Play, X } from "lucide-react";
 import { useLang } from "../context/LanguageContext";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -187,6 +187,47 @@ function ReadingProgress() {
   );
 }
 
+function HeroPortrait({ artistProfile, hu, onPlay }) {
+  const dialog = useRef(null);
+  const video = useRef(null);
+  const label = hu ? "Bemutatkozó videó" : "Introduction video (in Hungarian)";
+
+  function openVideo() {
+    const player = video.current;
+    dialog.current.showModal();
+    onPlay();
+    if (!player.hasAttribute("src")) player.src = "/media/bemutatkozas.mp4";
+    player.play().catch(() => {
+      // The native controls remain available if the browser blocks playback.
+    });
+  }
+
+  return (
+    <div className="epk-hero-visual">
+      <picture className="epk-hero-photo">
+        <source media="(max-width: 760px)" srcSet={portraitMobile} />
+        <img src={portraitWide} alt={hu ? "Körmendi Richárd portréja" : "Portrait of Richard Körmendi"} fetchPriority="high" />
+      </picture>
+      {artistProfile && (
+        <>
+          <button type="button" className="epk-intro-trigger" aria-haspopup="dialog" onClick={openVideo}>
+            <span><Play size={17} fill="currentColor" aria-hidden="true" /></span>
+            {label}
+          </button>
+          <dialog className="epk-intro-dialog" ref={dialog} aria-label={label} onClose={() => video.current.pause()}>
+            <form method="dialog">
+              <button type="submit" aria-label={hu ? "Bezárás" : "Close"}>
+                <X size={20} aria-hidden="true" />
+              </button>
+            </form>
+            <video ref={video} controls playsInline aria-label={label} />
+          </dialog>
+        </>
+      )}
+    </div>
+  );
+}
+
 export default function Epk({ artistProfile = false }) {
   const { lang } = useLang();
   const hu = lang === "hu";
@@ -221,10 +262,7 @@ export default function Epk({ artistProfile = false }) {
       {artistProfile ? <ReadingProgress /> : <Navbar />}
       <main id={artistProfile ? "eleje" : undefined} tabIndex={artistProfile ? -1 : undefined}>
         <section className="epk-hero" aria-labelledby="epk-name">
-          <picture className="epk-hero-photo">
-            <source media="(max-width: 760px)" srcSet={portraitMobile} />
-            <img src={portraitWide} alt={hu ? "Körmendi Richárd portréja" : "Portrait of Richard Körmendi"} fetchPriority="high" />
-          </picture>
+          <HeroPortrait artistProfile={artistProfile} hu={hu} onPlay={() => setPlaying(null)} />
           <div className="epk-hero-copy">
             <h1 id="epk-name">{hu ? "Körmendi Richárd" : "Richard Körmendi"}</h1>
             <p className="epk-lead">{artistProfile
