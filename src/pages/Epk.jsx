@@ -211,7 +211,7 @@ function HeroPortrait({ artistProfile, hu, onPlay }) {
       {artistProfile && (
         <>
           <button type="button" className="epk-intro-trigger" aria-haspopup="dialog" onClick={openVideo}>
-            <span><Play size={17} fill="currentColor" aria-hidden="true" /></span>
+            <span><Play size={20} fill="currentColor" aria-hidden="true" /></span>
             {label}
           </button>
           <dialog className="epk-intro-dialog" ref={dialog} aria-label={label} onClose={() => video.current.pause()}>
