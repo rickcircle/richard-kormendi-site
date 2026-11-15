@@ -14,7 +14,7 @@ const stagePhotos = [
 
 export default function ArtistStagePhotos({ lang }) {
   return (
-    <section className="epk-section epk-section-tinted" aria-labelledby="stage-photos-heading">
+    <section id="fotok" className="epk-section epk-section-tinted" aria-labelledby="stage-photos-heading">
       <div className="epk-wrap">
         <h2 id="stage-photos-heading">{lang === "hu" ? "Színpadi fotók" : "Stage photos"}</h2>
         <div className="epk-grid epk-stage-grid">

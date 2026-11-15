@@ -273,22 +273,25 @@ export default function Epk({ artistProfile = false }) {
                 ? "Lírai tenor, saját dalok magyarul és angolul."
                 : "Lyric tenor with original songs in Hungarian and English."}</p>
             )}
-            <div className="epk-actions">
-              {artistProfile ? (
-                <a className="epk-button epk-button-primary" href="#palyam">{hu ? "Pályám" : "Biography"} ↓</a>
-              ) : (
+            {artistProfile ? (
+              <nav className="epk-actions" aria-label={hu ? "Az oldal tartalma" : "On this page"}>
+                <a className="epk-button epk-button-primary" href="#palyam">{hu ? "Pályám" : "Biography"}</a>
+                <a className="epk-button" href="#videok">{hu ? "Videók" : "Videos"}</a>
+                <a className="epk-button" href="#sajto">{hu ? "Sajtó" : "Press"}</a>
+                <a className="epk-button" href="#fotok">{hu ? "Fotók" : "Photos"}</a>
+                <a className="epk-button" href="#kapcsolat">{hu ? "Kapcsolat" : "Contact"}</a>
+              </nav>
+            ) : (
+              <div className="epk-actions">
                 <a className="epk-button epk-button-primary" href={`mailto:${email}`}
                   onClick={() => track("click", { label: "epk_booking_contact" })}>
                   {hu ? "Fellépés egyeztetése" : "Booking enquiries"}
                 </a>
-              )}
-              <a className="epk-button" href="#videok">
-                {artistProfile ? (hu ? "Zenei ízelítő" : "Music highlights") : (hu ? "Műsorízelítő" : "Watch the showreel")} ↓
-              </a>
-              {artistProfile && (
-                <a className="epk-button" href="#kapcsolat">{hu ? "Kapcsolat" : "Contact"} ↓</a>
-              )}
-            </div>
+                <a className="epk-button" href="#videok">
+                  {hu ? "Műsorízelítő" : "Watch the showreel"} ↓
+                </a>
+              </div>
+            )}
           </div>
         </section>
 
@@ -333,7 +336,7 @@ export default function Epk({ artistProfile = false }) {
           </div>
         </section>
 
-        <section className="epk-section" aria-labelledby="epk-press-heading">
+        <section id={artistProfile ? "sajto" : undefined} className="epk-section" aria-labelledby="epk-press-heading">
           <div className="epk-wrap">
             <h2 id="epk-press-heading">{hu ? "Sajtó és visszajelzések" : "Press and feedback"}</h2>
             <div className="epk-grid epk-press">
@@ -373,7 +376,9 @@ export default function Epk({ artistProfile = false }) {
           </div>
         </section>
 
-        <section className="epk-section epk-section-tinted" aria-labelledby="epk-photos-heading">
+        {artistProfile && <ArtistStagePhotos lang={lang} />}
+
+        <section className={artistProfile ? "epk-section" : "epk-section epk-section-tinted"} aria-labelledby="epk-photos-heading">
           <div className="epk-wrap">
             <h2 id="epk-photos-heading">{hu ? "Letölthető fotók" : "Press photos"}</h2>
             <div className="epk-grid">
@@ -387,8 +392,6 @@ export default function Epk({ artistProfile = false }) {
             </div>
           </div>
         </section>
-
-        {artistProfile && <ArtistStagePhotos lang={lang} />}
 
         <section id={artistProfile ? "kapcsolat" : undefined} className="epk-section epk-contact" aria-labelledby="epk-contact-heading">
           <div className="epk-wrap">
