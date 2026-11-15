@@ -187,6 +187,26 @@ function ReadingProgress() {
   );
 }
 
+function BackToTop({ menuRef, hu }) {
+  const [visible, setVisible] = useState(false);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(([entry]) => {
+      setVisible(!entry.isIntersecting && entry.boundingClientRect.bottom <= 0);
+    });
+    observer.observe(menuRef.current);
+    return () => observer.disconnect();
+  }, [menuRef]);
+
+  if (!visible) return null;
+
+  return (
+    <a className="epk-button epk-back-top" href="#eleje">
+      <span aria-hidden="true">↑</span> {hu ? "Elejére" : "Back to top"}
+    </a>
+  );
+}
+
 function HeroPortrait({ artistProfile, hu, onPlay }) {
   const dialog = useRef(null);
   const video = useRef(null);
@@ -232,6 +252,7 @@ export default function Epk({ artistProfile = false }) {
   const { lang } = useLang();
   const hu = lang === "hu";
   const [playing, setPlaying] = useState(null);
+  const menuRef = useRef(null);
 
   useEffect(() => {
     const previousTitle = document.title;
@@ -274,7 +295,7 @@ export default function Epk({ artistProfile = false }) {
                 : "Lyric tenor with original songs in Hungarian and English."}</p>
             )}
             {artistProfile ? (
-              <nav className="epk-actions" aria-label={hu ? "Az oldal tartalma" : "On this page"}>
+              <nav ref={menuRef} className="epk-actions" aria-label={hu ? "Az oldal tartalma" : "On this page"}>
                 <a className="epk-button epk-button-primary" href="#palyam">{hu ? "Pályám" : "Biography"}</a>
                 <a className="epk-button" href="#videok">{hu ? "Videók" : "Videos"}</a>
                 <a className="epk-button" href="#sajto">{hu ? "Sajtó" : "Press"}</a>
@@ -380,13 +401,22 @@ export default function Epk({ artistProfile = false }) {
 
         <section className={artistProfile ? "epk-section" : "epk-section epk-section-tinted"} aria-labelledby="epk-photos-heading">
           <div className="epk-wrap">
-            <h2 id="epk-photos-heading">{hu ? "Letölthető fotók" : "Press photos"}</h2>
+            <h2 id="epk-photos-heading">{artistProfile
+              ? (hu ? "Letölthető sajtófotók" : "Downloadable press photos")
+              : (hu ? "Letölthető fotók" : "Press photos")}</h2>
             <div className="epk-grid">
               {photos.map(photo => (
                 <a className="epk-card epk-photo" key={photo.name} href={photo.src} download={photo.name}
                   onClick={() => track("click", { label: `epk_photo_download: ${photo.name}` })}>
                   <img src={photo.src} alt="" loading="lazy" />
-                  <span>{photo.label[lang]} <span aria-hidden="true">↓</span></span>
+                  {artistProfile ? (
+                    <span className="epk-photo-download">
+                      <span>{photo.label[lang]}</span>
+                      <strong>{hu ? "Letöltés" : "Download"} <span aria-hidden="true">↓</span></strong>
+                    </span>
+                  ) : (
+                    <span>{photo.label[lang]} <span aria-hidden="true">↓</span></span>
+                  )}
                 </a>
               ))}
             </div>
@@ -406,19 +436,15 @@ export default function Epk({ artistProfile = false }) {
               {hu ? "Mentés PDF-ként" : "Save as PDF"}
             </button>
             {artistProfile && (
-              <>
-                <div className="epk-back-top">
-                  <a className="epk-button" href="#eleje">{hu ? "Vissza az elejére" : "Back to top"} ↑</a>
-                </div>
-                <a className="epk-language" href={hu ? "?lang=en" : "?lang=hu"} lang={hu ? "en" : "hu"}>
-                  {hu ? "English" : "Magyar"}
-                </a>
-              </>
+              <a className="epk-language" href={hu ? "?lang=en" : "?lang=hu"} lang={hu ? "en" : "hu"}>
+                {hu ? "English" : "Magyar"}
+              </a>
             )}
           </div>
         </section>
       </main>
       <Footer />
+      {artistProfile && <BackToTop menuRef={menuRef} hu={hu} />}
     </div>
   );
 }
