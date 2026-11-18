@@ -9,20 +9,18 @@ import { track } from "../utils/track";
 import "./Hero.css";
 
 const slides = [
-  { ...edenPark, theme: "eden", platform: "Apple Music" },
+  { ...edenPark, theme: "eden" },
   {
     title: "My Burning Devotion",
     cover: burningArt,
     href: "https://open.spotify.com/album/32LLbLolCdLWUH2pzJDZLR",
     theme: "devotion",
-    platform: "Spotify",
   },
   {
     title: "Like an Ember",
     cover: emberArt,
     href: "https://open.spotify.com/album/07fRNFTqUkQynMTCABulTu",
     theme: "ember",
-    platform: "Spotify",
   },
 ];
 
@@ -43,9 +41,7 @@ export default function Hero() {
     setIndex((nextIndex + slides.length) % slides.length);
   }
 
-  const listen = slide.platform === "Apple Music"
-    ? (hu ? "Hallgasd meg az Apple Musicon" : "Listen on Apple Music")
-    : (hu ? "Hallgasd meg a Spotifyon" : "Listen on Spotify");
+  const listen = hu ? "Hallgasd meg a Spotifyon" : "Listen on Spotify";
 
   return (
     <section className={`artist-hero artist-hero--${slide.theme}`} aria-label={hu ? "Kiemelt dalok" : "Featured songs"}>

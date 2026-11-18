@@ -74,12 +74,22 @@
 }
 .artist-hero-balloon {
   position: absolute;
-  bottom: 4%;
-  right: clamp(1rem, 13vw, 13rem);
-  width: clamp(130px, 17vw, 230px);
-  height: 88%;
-  object-fit: contain;
-  object-position: bottom;
+  bottom: 6%;
+  right: clamp(1rem, 10vw, 11rem);
+  width: auto;
+  height: 82%;
+  mask-image: linear-gradient(to bottom, transparent, #000 37%);
+  pointer-events: none;
+}
+.artist-hero--eden::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 3%;
+  right: 2%;
+  width: min(48%, 560px);
+  height: 43%;
+  background: radial-gradient(ellipse at 55% 42%, #ced6b12e, #a8b28a14 45%, transparent 73%);
   pointer-events: none;
 }
 .artist-hero-switcher {
@@ -114,7 +124,8 @@
   .artist-hero.artist-hero--devotion .artist-hero-image { object-position: 78% 45%; }
   .artist-hero::after { background: linear-gradient(0deg, var(--hero-shadow) 1%, #0b0a0896 44%, transparent 79%); }
   .artist-hero-switcher { left: 1.4rem; }
-  .artist-hero-balloon { right: 0.25rem; bottom: 24%; height: 70%; width: clamp(108px, 28vw, 155px); }
+  .artist-hero-balloon { right: -1.25rem; bottom: 15%; height: 73%; }
+  .artist-hero--eden::before { right: -7%; width: 67%; }
 }
 @media (prefers-reduced-motion: reduce) {
   .artist-hero-balloon { display: none; }

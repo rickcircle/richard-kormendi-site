@@ -5,7 +5,7 @@ export const edenPark = {
   title: "Éden Park",
   year: "2026",
   cover: edenParkArt,
-  href: "https://music.apple.com/hu/album/%C3%A9den-park/6835853869?i=6835853870",
+  href: "https://open.spotify.com/track/0UMPpZslzNit4d9LRveb4K",
   isNew: true,
 };
 
