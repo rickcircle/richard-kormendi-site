@@ -11,7 +11,7 @@ import photo4    from "../assets/images/photo-img7255.jpg";
 import photo6    from "../assets/images/photo-img3953.jpg";
 import photo9    from "../assets/images/casting/casting-look-warm.jpg";
 import photo10   from "../assets/images/casting/casting-look-serious.jpg";
-import photo11   from "../assets/images/casting/casting-look-smile.jpg";
+import newPortrait from "../assets/images/portrait-leather-jacket.jpg";
 
 import autumn1262 from "../assets/images/photo-autumn-1262.jpg";
 import autumn1392 from "../assets/images/photo-autumn-1392.jpg";
@@ -21,7 +21,6 @@ const staticPhotos = [
   { src: autumn1392, alt: "Richard Körmendi full-length portrait outdoors in autumn" },
   { src: photo9,    alt: "Richard Körmendi portrait, warm smile" },
   { src: photo10,   alt: "Richard Körmendi portrait, side profile" },
-  { src: photo11,   alt: "Richard Körmendi portrait, smiling" },
   { src: photo1,    alt: "Richard Körmendi portrait outdoors near Esztergom Basilica" },
   { src: photo2,    alt: "Richard Körmendi portrait, urban setting" },
   { src: photo4,    alt: "Richard Körmendi portrait in golden hour light" },
@@ -34,7 +33,10 @@ export default function Photos() {
   const scrollRef = useRef(null);
 
   // CMS-fotók ha vannak, egyébként statikus fallback
-  const photos = photosData.photos.length > 0 ? photosData.photos : staticPhotos;
+  const photos = [
+    { src: newPortrait, alt: lang === "hu" ? "Körmendi Richárd bőrdzsekiben" : "Richard Körmendi in a leather jacket" },
+    ...(photosData.photos.length > 0 ? photosData.photos : staticPhotos),
+  ];
 
   const scroll = dir => scrollRef.current?.scrollBy({ left: dir * 320, behavior: "smooth" });
 

@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 import { fadeUp } from "../utils/animations";
 import { useLang } from "../context/LanguageContext";
 import { track } from "../utils/track";
+import { edenPark, spotifyArtist } from "../data/featuredMusic";
 
 import coverMercy from "../assets/images/cover-mercy-i-dont-want.jpg";
 import coverRegnum from "../assets/images/cover-regnum-marianum.jpg";
@@ -24,11 +25,15 @@ const ACCENT = "#d16b63";
 // tényleg elváljon a mindenhol használt lágyabb alap-pirostól.
 const ACCENT_STRONG = "#e8342b";
 
+const regnumMarianum = { title: "Regnum Marianum (feat. Emily Simon)", year: "2026", cover: coverRegnum, href: "https://www.youtube.com/watch?v=qpZUke-3WdE" };
+const myBurningDevotion = { title: "My Burning Devotion", year: "2026", cover: coverMyBurningDevotion, spotifyId: "32LLbLolCdLWUH2pzJDZLR" };
+
 const RELEASES = [
-  { title: "Regnum Marianum (feat. Emily Simon)", year: "2026", cover: coverRegnum, href: "https://distrokid.com/hyperfollow/richardkrmendi/regnum-marianum-feat-emily-simon", comingSoon: true },
+  edenPark,
+  regnumMarianum,
   { title: "Mercy, I Don’t Want", year: "2026", cover: coverMercy, href: "https://open.spotify.com/track/3aCAe8fuF3kW3YYHpJFQYc", isNew: true },
   { title: "Calling for Flame", year: "2026", cover: coverCallingForFlame, href: "https://open.spotify.com/track/5t63pHAbGvKo34ceFM9dYj" },
-  { title: "My Burning Devotion", year: "2026", cover: coverMyBurningDevotion, spotifyId: "32LLbLolCdLWUH2pzJDZLR" },
+  myBurningDevotion,
   { title: "Fall Into You",      year: "2026", cover: coverFallIntoYou,     spotifyId: "539fHNOQNfCHWLW2mWoijM" },
   { title: "Still I Go",         year: "2026", cover: coverStillIGo,        spotifyId: "7gT1yqH7HjtBA3wWcTwtD7" },
   { title: "The Absent",         year: "2026", cover: coverTheAbsent,       spotifyId: "29BOxHtSuQC7qTGJBeKP3D" },
@@ -44,12 +49,34 @@ const RELEASES = [
 // Az első 2 kiadás (legújabb + soron következő) kap kiemelt, nagyobb kártyát.
 const FEATURED_COUNT = 2;
 
-export default function Releases() {
+export default function Releases({ compact = false }) {
   const { lang } = useLang();
   const label   = lang === "hu" ? "Diszkográfia" : "Discography";
   const heading = lang === "hu" ? "Összes kiadás." : "All releases.";
   const featured = RELEASES.slice(0, FEATURED_COUNT);
   const rest = RELEASES.slice(FEATURED_COUNT);
+
+  if (compact) {
+    const hu = lang === "hu";
+    const highlights = [edenPark, regnumMarianum, myBurningDevotion];
+
+    return (
+      <section id="releases" className="home-section home-releases" aria-labelledby="home-releases-heading">
+        <div className="home-releases-wrap">
+          <h2 id="home-releases-heading">{hu ? "Megjelenések" : "Releases"}</h2>
+          <div className="home-releases-grid">
+            {highlights.map((release, index) => (
+              <ReleaseCard key={release.title} release={release} delay={index * 0.05} lang={lang} />
+            ))}
+          </div>
+          <a className="home-text-link" href={spotifyArtist} target="_blank" rel="noreferrer"
+            onClick={() => track("click", { label: "home_all_releases_spotify" })}>
+            {hu ? "Összes dal a Spotifyon" : "All music on Spotify"} ↗
+          </a>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section id="releases" style={{ background: "#1f1113", padding: "8rem 2rem" }}>
@@ -160,7 +187,7 @@ function FeaturedReleaseCard({ release, delay, lang }) {
           padding: "3px 8px", borderRadius: "999px",
           marginBottom: "0.6rem",
         }}>
-          {release.comingSoon ? (lang === "hu" ? "Hamarosan" : "Coming Soon") : "New"}
+          {release.comingSoon ? (lang === "hu" ? "Hamarosan" : "Coming Soon") : (release.isNew ? (lang === "hu" ? "Új" : "New") : (lang === "hu" ? "Kiemelt" : "Featured"))}
         </span>
         <p style={{ margin: 0, fontSize: "1.2rem", fontWeight: 700, color: "#fff", lineHeight: 1.25 }}>
           {release.title}
@@ -240,7 +267,7 @@ function ReleaseCard({ release, delay, lang }) {
             textTransform: "uppercase", fontWeight: 700,
             padding: "2px 7px", borderRadius: "2px",
           }}>
-            {release.comingSoon ? (lang === "hu" ? "Hamarosan" : "Coming Soon") : "New"}
+            {release.comingSoon ? (lang === "hu" ? "Hamarosan" : "Coming Soon") : (release.isNew ? (lang === "hu" ? "Új" : "New") : (lang === "hu" ? "Kiemelt" : "Featured"))}
           </span>
         )}
       </div>

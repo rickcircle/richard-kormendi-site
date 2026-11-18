@@ -117,12 +117,67 @@ const pressItems = [
 const HERO_COUNT = 1;
 const SECONDARY_COUNT = 2;
 
-export default function Press() {
+export default function Press({ compact = false }) {
   const { lang } = useLang();
   const tx = t[lang].press;
   const hero = pressItems[0];
   const secondary = pressItems.slice(HERO_COUNT, HERO_COUNT + SECONDARY_COUNT);
   const rest = pressItems.slice(HERO_COUNT + SECONDARY_COUNT);
+
+  const morePress = (
+    <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
+      className="press-grid">
+      {rest.map((item, i) => {
+        const Tag = item.href ? motion.a : motion.div;
+        return (
+          <Tag key={i} variants={staggerItem}
+            {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer", onClick: () => track("click", { label: `press: ${item.outlet}` }) } : {})}
+            className="press-card"
+            style={{
+              display: "flex", flexDirection: "column", gap: "0.85rem",
+              padding: "1.75rem",
+              border: "1px solid rgba(255,255,255,0.08)",
+              borderRadius: "10px",
+              background: "rgba(255,255,255,0.03)",
+              textDecoration: "none",
+              transition: "border-color 0.2s, background 0.2s",
+            }}
+            onMouseOver={e => { e.currentTarget.style.borderColor = "rgba(209, 107, 99,0.4)"; e.currentTarget.style.background = "rgba(209, 107, 99,0.05)"; }}
+            onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
+          >
+            <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
+              <TypeBadge outline>{item.type[lang]}</TypeBadge>
+              {item.song && <SongBadge>🎵 {item.song}</SongBadge>}
+            </div>
+
+            <p style={{ margin: 0, fontWeight: 600, fontSize: "1.1rem", color: "#f5f1ea" }}>
+              {item.outlet}
+            </p>
+
+            <p style={{ margin: 0, fontSize: "0.9rem", color: "rgba(245,241,234,0.65)", lineHeight: 1.6, fontStyle: "italic" }}>
+              “{item.quote[lang]}”
+            </p>
+
+            {item.role && (
+              <p style={{ margin: 0, fontSize: "0.78rem", color: "rgba(245,241,234,0.4)" }}>
+                — {item.role[lang]}
+              </p>
+            )}
+
+            {item.href && (
+              <span style={{
+                marginTop: "auto", paddingTop: "0.5rem",
+                fontSize: "0.78rem", letterSpacing: "0.06em",
+                color: "rgba(245,241,234,0.6)",
+              }}>
+                {lang === "hu" ? "Teljes cikk →" : "Read full article →"}
+              </span>
+            )}
+          </Tag>
+        );
+      })}
+    </motion.div>
+  );
 
   return (
     <section id="press" style={{ padding: "8rem 2rem", background: "#0b0a08" }}>
@@ -265,61 +320,12 @@ export default function Press() {
           })}
         </motion.div>
 
-        {/* További megjelenések — kompakt rács */}
-        {rest.length > 0 && (
-          <motion.div variants={staggerContainer} initial="hidden" whileInView="visible" viewport={{ once: true, amount: 0.05 }}
-            className="press-grid">
-            {rest.map((item, i) => {
-              const Tag = item.href ? motion.a : motion.div;
-              return (
-                <Tag key={i} variants={staggerItem}
-                  {...(item.href ? { href: item.href, target: "_blank", rel: "noreferrer", onClick: () => track("click", { label: `press: ${item.outlet}` }) } : {})}
-                  className="press-card"
-                  style={{
-                    display: "flex", flexDirection: "column", gap: "0.85rem",
-                    padding: "1.75rem",
-                    border: "1px solid rgba(255,255,255,0.08)",
-                    borderRadius: "10px",
-                    background: "rgba(255,255,255,0.03)",
-                    textDecoration: "none",
-                    transition: "border-color 0.2s, background 0.2s",
-                  }}
-                  onMouseOver={e => { e.currentTarget.style.borderColor = "rgba(209, 107, 99,0.4)"; e.currentTarget.style.background = "rgba(209, 107, 99,0.05)"; }}
-                  onMouseOut={e => { e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)"; e.currentTarget.style.background = "rgba(255,255,255,0.03)"; }}
-                >
-                  <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" }}>
-                    <TypeBadge outline>{item.type[lang]}</TypeBadge>
-                    {item.song && <SongBadge>🎵 {item.song}</SongBadge>}
-                  </div>
-
-                  <p style={{ margin: 0, fontWeight: 600, fontSize: "1.1rem", color: "#f5f1ea" }}>
-                    {item.outlet}
-                  </p>
-
-                  <p style={{ margin: 0, fontSize: "0.9rem", color: "rgba(245,241,234,0.65)", lineHeight: 1.6, fontStyle: "italic" }}>
-                    “{item.quote[lang]}”
-                  </p>
-
-                  {item.role && (
-                    <p style={{ margin: 0, fontSize: "0.78rem", color: "rgba(245,241,234,0.4)" }}>
-                      — {item.role[lang]}
-                    </p>
-                  )}
-
-                  {item.href && (
-                    <span style={{
-                      marginTop: "auto", paddingTop: "0.5rem",
-                      fontSize: "0.78rem", letterSpacing: "0.06em",
-                      color: "rgba(245,241,234,0.6)",
-                    }}>
-                      {lang === "hu" ? "Teljes cikk →" : "Read full article →"}
-                    </span>
-                  )}
-                </Tag>
-              );
-            })}
-          </motion.div>
-        )}
+        {compact ? (
+          <details className="home-more">
+            <summary>{lang === "hu" ? "További sajtómegjelenések" : "More press coverage"}</summary>
+            {morePress}
+          </details>
+        ) : morePress}
       </div>
       <style>{`
         .press-featured-grid {
