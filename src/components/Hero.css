@@ -1,11 +1,13 @@
 .artist-hero {
+  --hero-accent: #f0d49f;
+  --hero-shadow: #08110b;
   position: relative;
   isolation: isolate;
   box-sizing: border-box;
   display: grid;
   align-items: end;
   min-height: clamp(450px, 47vw, 760px);
-  padding: 7rem max(6%, calc((100% - 1100px) / 2)) clamp(3rem, 8vw, 7rem);
+  padding: 7rem max(6%, calc((100% - 1100px) / 2)) clamp(5.5rem, 9vw, 7rem);
   overflow: hidden;
   background: #09110b;
   color: #f7f0e4;
@@ -20,11 +22,12 @@
 .artist-hero-image { display: block; object-fit: cover; object-position: 70% center; }
 .artist-hero::after {
   content: "";
-  background: linear-gradient(90deg, #08110bea 0%, #08110b40 52%, transparent 76%);
+  background: linear-gradient(90deg, var(--hero-shadow) 0%, transparent 76%),
+              linear-gradient(0deg, var(--hero-shadow), transparent 32%);
 }
 .artist-hero-eyebrow {
   margin-bottom: 0.65rem;
-  color: #ebcb90;
+  color: var(--hero-accent);
   font-size: 0.75rem;
   font-weight: 650;
   letter-spacing: 0.16em;
@@ -46,16 +49,73 @@
   min-height: 44px;
   padding: 0.5rem 1rem;
   border-radius: 6px;
-  background: #f0d49f;
+  background: var(--hero-accent);
   color: #172117;
   font-size: 0.9rem;
   font-weight: 700;
   text-decoration: none;
 }
-.artist-hero-cta:hover { background: #ffdfac; }
+.artist-hero-cta:hover { background: #fff0d0; }
 .artist-hero-cta:focus-visible { outline: 2px solid #fff; outline-offset: 4px; }
+.artist-hero--devotion { --hero-accent: #f6b0a4; --hero-shadow: #100b0a; }
+.artist-hero--ember { --hero-accent: #f8c096; --hero-shadow: #0b1013; }
+.artist-hero--devotion .artist-hero-image, .artist-hero--ember .artist-hero-image { object-position: 71% center; }
+.artist-hero-copy { max-width: 43rem; }
+.artist-hero--eden h1 {
+  font-family: "Germania One", Georgia, serif;
+  font-size: clamp(3.6rem, 9vw, 8rem);
+  letter-spacing: 0;
+  color: #ffe6ac;
+  text-shadow: 0 3px #722d26, 0 6px 18px #000;
+}
+.artist-hero--devotion h1, .artist-hero--ember h1 {
+  font-size: clamp(3.1rem, 7.5vw, 7rem);
+  text-wrap: balance;
+}
+.artist-hero-balloon {
+  position: absolute;
+  bottom: 4%;
+  right: clamp(1rem, 13vw, 13rem);
+  width: clamp(130px, 17vw, 230px);
+  height: 88%;
+  object-fit: contain;
+  object-position: bottom;
+  pointer-events: none;
+}
+.artist-hero-switcher {
+  position: absolute;
+  bottom: 0.8rem;
+  left: max(6%, calc((100% - 1100px) / 2));
+  display: flex;
+  align-items: center;
+  gap: 0.12rem;
+}
+.artist-hero-switcher button {
+  display: grid;
+  place-items: center;
+  box-sizing: border-box;
+  width: 44px;
+  height: 44px;
+  padding: 0;
+  border: 1px solid #f7f0e456;
+  border-radius: 50%;
+  background: #0b0a08a8;
+  color: #f7f0e4;
+  cursor: pointer;
+}
+.artist-hero-switcher button:hover { border-color: var(--hero-accent); }
+.artist-hero-switcher button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
+.artist-hero-switcher .artist-hero-dot { background: transparent; border-color: transparent; width: 32px; }
+.artist-hero-dot span { width: 7px; height: 7px; border-radius: 50%; background: #f7f0e4a6; }
+.artist-hero-dot[aria-pressed="true"] span { width: 10px; height: 10px; background: var(--hero-accent); }
 @media (max-width: 700px) {
-  section.artist-hero { min-height: clamp(440px, 118vw, 570px); padding: 6rem 1.4rem 2.5rem !important; }
-  .artist-hero-image { object-position: 72% 45%; }
-  .artist-hero::after { background: linear-gradient(0deg, #08110bf7 0%, #08110ba6 40%, transparent 80%); }
+  section.artist-hero { min-height: clamp(440px, 118vw, 570px); padding: 6rem 1.4rem 4.6rem !important; }
+  .artist-hero .artist-hero-image { object-position: 72% 45%; }
+  .artist-hero.artist-hero--devotion .artist-hero-image { object-position: 78% 45%; }
+  .artist-hero::after { background: linear-gradient(0deg, var(--hero-shadow) 1%, #0b0a0896 44%, transparent 79%); }
+  .artist-hero-switcher { left: 1.4rem; }
+  .artist-hero-balloon { right: 0.25rem; bottom: 24%; height: 70%; width: clamp(108px, 28vw, 155px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .artist-hero-balloon { display: none; }
 }

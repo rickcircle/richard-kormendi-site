@@ -1,3 +1,5 @@
+import portrait from "../assets/images/portrait-leather-jacket.jpg";
+
 const biography = {
   hu: [
     {
@@ -41,7 +43,10 @@ export default function ArtistBiography({ lang }) {
   return (
     <section id="palyam" className="epk-section epk-section-tinted" aria-labelledby="artist-bio-heading">
       <div className="epk-wrap">
-        <h2 id="artist-bio-heading">{lang === "hu" ? "Pályám" : "Biography"}</h2>
+        <div className="epk-bio-heading">
+          <h2 id="artist-bio-heading">{lang === "hu" ? "Pályám" : "Biography"}</h2>
+          <img src={portrait} alt={lang === "hu" ? "Körmendi Richárd bőrdzsekiben" : "Richard Körmendi in a leather jacket"} width="1066" height="1500" loading="lazy" />
+        </div>
         <div className="epk-editorial epk-biography">
           {biography[lang].map(({ title, text }) => (
             <div key={title}>

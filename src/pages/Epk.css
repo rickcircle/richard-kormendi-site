@@ -346,3 +346,20 @@
   .epk-card { break-inside: avoid; }
   .epk :is(.epk-photo, .epk-stage-photo) img { max-height: 110px; object-fit: contain; }
 }
+
+.epk-bio-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.4rem;
+}
+.epk-bio-heading h2 { margin: 0; }
+.epk-bio-heading img {
+  width: clamp(78px, 12vw, 125px);
+  height: auto;
+  aspect-ratio: 4 / 5;
+  object-fit: cover;
+  object-position: center 40%;
+  border-radius: 8px;
+}

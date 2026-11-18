@@ -8,7 +8,7 @@ export default function About() {
   return (
     <section id="about" className="home-section home-about" aria-labelledby="home-about-heading">
       <div className="home-about-layout">
-        <div>
+        <div className="home-about-copy">
           <h2 id="home-about-heading">{hu ? "Bemutatkozás" : "About"}</h2>
           <p className="home-about-lead">{hu ? "Klasszikus énekművész és dalszerző" : "Classical singer and songwriter"}</p>
           <p>{hu
@@ -18,7 +18,7 @@ export default function About() {
             {hu ? "Pályám és bemutatkozó videóm" : "My background and introduction video"} →
           </a>
         </div>
-        <img src={profilePhoto} alt={hu ? "Körmendi Richárd portréja" : "Portrait of Richard Körmendi"} width="1066" height="1500" loading="lazy" />
+        <img src={profilePhoto} alt={hu ? "Körmendi Richárd portréja" : "Portrait of Richard Körmendi"} width="1066" height="1500" />
       </div>
     </section>
   );
