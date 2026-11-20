@@ -163,7 +163,8 @@
 .epk-card-copy > .epk-outlet { font-weight: 650; }
 .epk-video { display: flex; flex-direction: column; }
 .epk-video .epk-card-copy { flex: 1; }
-.epk-video-frame { aspect-ratio: 4 / 5; background: #130d0e; }
+.epk-video-frame { position: relative; aspect-ratio: 4 / 5; background: #130d0e; }
+.epk-video-frame iframe { position: absolute; inset: 0; }
 .epk-wide-videos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 .epk-wide-videos .epk-video-frame { aspect-ratio: 16 / 9; }
 .epk-video-frame :is(a, button, iframe) { display: block; width: 100%; height: 100%; border: 0; }
@@ -321,15 +322,14 @@
 
 @media (max-width: 600px) {
   .epk-stage-grid { grid-template-columns: 1fr; }
+  .epk-profile-videos { grid-template-columns: 1fr; }
+  .epk-profile-videos .epk-video-frame { aspect-ratio: 9 / 16; max-height: 70svh; }
 }
 
 @media (max-width: 420px) {
   .epk-grid { gap: 0.65rem; }
   .epk-card-copy { padding: 0.7rem; overflow-wrap: anywhere; }
   .epk-video-frame { aspect-ratio: 3 / 4; }
-  .epk-video:has(iframe) { grid-column: 1 / -1; }
-  .epk-video:has(iframe) .epk-video-frame { aspect-ratio: 4 / 5; }
-  .epk-wide-videos .epk-video:has(iframe) .epk-video-frame { aspect-ratio: 16 / 9; min-height: 200px; }
 }
 
 @media print {
