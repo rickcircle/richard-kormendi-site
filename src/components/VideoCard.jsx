@@ -9,7 +9,7 @@ export default function VideoCard({ video, hu, playing, onPlay }) {
     </>
   );
   return (
-    <article className="epk-card epk-video">
+    <article className={`epk-card epk-video${video.featured ? " epk-video-featured" : ""}`}>
       <div className="epk-video-frame">
         {playing ? (
           <iframe

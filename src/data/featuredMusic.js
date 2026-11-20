@@ -10,6 +10,7 @@ export const edenPark = {
 };
 
 export const musicVideos = [
+  { id: "aDOg3IWSHmU", title: "Éden Park", featured: true, hu: "Saját dal · Hivatalos videóklip", en: "Original song · Official music video" },
   { id: "qpZUke-3WdE", title: "Regnum Marianum", hu: "Saját dal · Videóklip", en: "Original song · Music video" },
   { id: "PW9BkG3gnlk", title: "My Burning Devotion", hu: "Saját dal · Videóklip", en: "Original song · Music video" },
 ];

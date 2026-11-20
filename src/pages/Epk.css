@@ -166,6 +166,8 @@
 .epk-video-frame { position: relative; aspect-ratio: 4 / 5; background: #130d0e; }
 .epk-video-frame iframe { position: absolute; inset: 0; }
 .epk-wide-videos { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.epk-wide-videos .epk-video-featured { grid-column: 1 / -1; }
+.epk-video-featured .epk-video-copy h3 { font-size: clamp(1.4rem, 3vw, 2rem); }
 .epk-wide-videos .epk-video-frame { aspect-ratio: 16 / 9; }
 .epk-video-frame :is(a, button, iframe) { display: block; width: 100%; height: 100%; border: 0; }
 .epk-video-frame :is(a, button) { position: relative; padding: 0; background: transparent; color: var(--epk-ink); cursor: pointer; }
