@@ -4,7 +4,7 @@ export default function VideoCard({ video, hu, playing, onPlay }) {
   const { id, title, credit } = video;
   const thumbnail = (
     <>
-      <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" />
+      <img src={`https://i.ytimg.com/vi/${id}/${video.featured ? "maxresdefault" : "hqdefault"}.jpg`} alt="" loading="lazy" />
       <span aria-hidden="true">▶</span>
     </>
   );

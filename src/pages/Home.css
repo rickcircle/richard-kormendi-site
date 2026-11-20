@@ -4,7 +4,7 @@
 .home-about { background: #1f1113; }
 .home-about-layout {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(180px, 260px);
+  grid-template-columns: minmax(0, 1fr) minmax(220px, 340px);
   gap: clamp(1.5rem, 7vw, 6rem);
   align-items: center;
   max-width: 980px;

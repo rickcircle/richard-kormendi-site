@@ -42,7 +42,7 @@ const biography = {
 export default function ArtistBiography({ lang }) {
   return (
     <section id="palyam" className="epk-section epk-section-tinted" aria-labelledby="artist-bio-heading">
-      <div className="epk-wrap">
+      <div className="epk-wrap epk-bio-layout">
         <div className="epk-bio-heading">
           <h2 id="artist-bio-heading">{lang === "hu" ? "Pályám" : "Biography"}</h2>
           <img src={portrait} alt={lang === "hu" ? "Körmendi Richárd bőrdzsekiben" : "Richard Körmendi in a leather jacket"} width="1066" height="1500" loading="lazy" />
