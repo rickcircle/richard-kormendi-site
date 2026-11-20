@@ -17,14 +17,17 @@ export default function ArtistStagePhotos({ lang }) {
     <section id="fotok" className="epk-section epk-section-tinted" aria-labelledby="stage-photos-heading">
       <div className="epk-wrap">
         <h2 id="stage-photos-heading">{lang === "hu" ? "Színpadi fotók" : "Stage photos"}</h2>
-        <div className="epk-grid epk-stage-grid">
+        <details className="epk-more">
+          <summary>{lang === "hu" ? "Színpadi képek megtekintése" : "View stage photos"}</summary>
+          <div className="epk-grid epk-stage-grid">
           {stagePhotos.map(photo => (
             <figure className="epk-card epk-stage-photo" key={photo.src}>
               <img src={photo.src} alt="" loading="lazy" decoding="async" />
               <figcaption>{photo[lang]}</figcaption>
             </figure>
           ))}
-        </div>
+          </div>
+        </details>
       </div>
     </section>
   );

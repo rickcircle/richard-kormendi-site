@@ -5,7 +5,7 @@ import { musicVideos, musicalPerformance } from "../data/featuredMusic";
 import VideoCard from "../components/VideoCard";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import ArtistBiography from "./ArtistBiography";
+import ArtistBiography, { ArtistIntro } from "./ArtistBiography";
 import ArtistStagePhotos from "./ArtistStagePhotos";
 import { track } from "../utils/track";
 import portraitWide from "../assets/images/portrait-riverside-wide.jpg";
@@ -241,9 +241,10 @@ export default function Epk({ artistProfile = false }) {
               ? (hu ? "Klasszikus énekművész és dalszerző" : "Classical singer and songwriter")
               : (hu ? "Klasszikus tenor a rock világában." : "A classical tenor in the world of rock.")}</p>
             {artistProfile && (
-              <p>{hu
-                ? "Lírai tenor, saját dalok magyarul és angolul."
-                : "Lyric tenor with original songs in Hungarian and English."}</p>
+              <>
+                <p>{hu ? "Saját dalok, örökzöldek és nápolyi dallamok." : "Original songs, evergreen favourites and Neapolitan melodies."}</p>
+                <a className="epk-button epk-button-primary" href="#kapcsolat">{hu ? "Fellépés egyeztetése" : "Booking enquiries"}</a>
+              </>
             )}
             {artistProfile ? (
               <nav ref={menuRef} className="epk-actions" aria-label={hu ? "Az oldal tartalma" : "On this page"}>
@@ -268,14 +269,23 @@ export default function Epk({ artistProfile = false }) {
           </div>
         </section>
 
-        {artistProfile && <ArtistBiography lang={lang} />}
+        {artistProfile && <ArtistIntro lang={lang} />}
 
         <section id="videok" className="epk-section" aria-labelledby="epk-video-heading">
           <div className="epk-wrap">
             <h2 id="epk-video-heading">{artistProfile ? (hu ? "Zenei ízelítő" : "Music highlights") : (hu ? "Videórészletek" : "Performance clips")}</h2>
             <div className={artistProfile ? "epk-grid epk-profile-videos" : "epk-grid"}>
-              {(artistProfile ? artistVideos : videos).map(video => renderVideo(video))}
+              {(artistProfile ? artistVideos.slice(0, 3) : videos).map(video => renderVideo(video))}
             </div>
+            {artistProfile && (
+              <details className="epk-more" onToggle={event => { if (!event.currentTarget.open) setPlaying(null); }}>
+                <summary>{hu ? "További felvételek" : "More performances"}</summary>
+                <div className="epk-grid epk-profile-videos">
+                  {artistVideos.slice(3).map(video => renderVideo(video))}
+                  {renderVideo(musicalPerformance, true)}
+                </div>
+              </details>
+            )}
           </div>
         </section>
 
@@ -300,11 +310,23 @@ export default function Epk({ artistProfile = false }) {
           </section>
         )}
 
+        {artistProfile && (
+          <section id="fellepes" className="epk-section epk-section-tinted" aria-labelledby="epk-performance-heading">
+            <div className="epk-wrap">
+              <h2 id="epk-performance-heading">{hu ? "Milyen fellépésekre hívhatsz?" : "Live performances"}</h2>
+              <p>{hu
+                ? "Saját dalok magyarul és angolul, magyar és külföldi örökzöldek, valamint nápolyi dalok. Kulturális rendezvényekre, zenés estekre és egyedi alkalmakra a dalválasztást és a műsor hosszát közösen egyeztetjük."
+                : "Original songs in Hungarian and English, evergreen favourites and Neapolitan songs. For cultural events, music evenings and private occasions, the repertoire and running time are arranged together."}</p>
+              <a className="epk-button" href="#kapcsolat">{hu ? "Beszéljünk a fellépésről" : "Discuss a booking"} →</a>
+            </div>
+          </section>
+        )}
+
         <section id={artistProfile ? "videoklipek" : undefined} className="epk-section" aria-labelledby="epk-more-videos-heading">
           <div className="epk-wrap">
-            <h2 id="epk-more-videos-heading">{hu ? "Saját klipek és musical" : "Music videos and musical theatre"}</h2>
+            <h2 id="epk-more-videos-heading">{artistProfile ? (hu ? "Saját videóklipek" : "Original music videos") : (hu ? "Saját klipek és musical" : "Music videos and musical theatre")}</h2>
             <div className="epk-grid epk-wide-videos">
-              {additionalVideos.map(video => renderVideo(video, true))}
+              {(artistProfile ? musicVideos : additionalVideos).map(video => renderVideo(video, true))}
             </div>
           </div>
         </section>
@@ -313,7 +335,7 @@ export default function Epk({ artistProfile = false }) {
           <div className="epk-wrap">
             <h2 id="epk-press-heading">{hu ? "Sajtó és visszajelzések" : "Press and feedback"}</h2>
             <div className="epk-grid epk-press">
-              {pressItems.map(item => (
+              {(artistProfile ? pressItems.slice(0, 3) : pressItems).map(item => (
                 <article className="epk-card epk-card-copy" key={item.outlet}>
                   <p className="epk-kicker">{item.type[lang]}</p>
                   <h3>{item.song}</h3>
@@ -328,6 +350,17 @@ export default function Epk({ artistProfile = false }) {
                 </article>
               ))}
             </div>
+            {artistProfile && (
+              <details className="epk-more">
+                <summary>{hu ? "További visszajelzés" : "More feedback"}</summary>
+                {pressItems.slice(3).map(item => (
+                  <article key={item.outlet}>
+                    <h3>{item.outlet} · {item.song}</h3>
+                    <p>{hu ? item.quoteHu : item.quote}</p>
+                  </article>
+                ))}
+              </details>
+            )}
             <div className="epk-listen">
               <h3>{hu ? "Saját dalok és közösségi oldalak" : "Original music and social links"}</h3>
               <div className={artistProfile ? "epk-platforms" : "epk-actions"}>
@@ -349,6 +382,7 @@ export default function Epk({ artistProfile = false }) {
           </div>
         </section>
 
+        {artistProfile && <ArtistBiography lang={lang} />}
         {artistProfile && <ArtistStagePhotos lang={lang} />}
 
         <section className={artistProfile ? "epk-section" : "epk-section epk-section-tinted"} aria-labelledby="epk-photos-heading">
