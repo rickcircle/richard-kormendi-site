@@ -249,6 +249,7 @@ export default function Epk({ artistProfile = false }) {
               <nav ref={menuRef} className="epk-actions" aria-label={hu ? "Az oldal tartalma" : "On this page"}>
                 <a className="epk-button epk-button-primary" href="#palyam">{hu ? "Pályám" : "Biography"}</a>
                 <a className="epk-button" href="#videok">{hu ? "Videók" : "Videos"}</a>
+                <a className="epk-button" href="#videoklipek">{hu ? "Saját videóklipek" : "Original music videos"}</a>
                 <a className="epk-button" href="#sajto">{hu ? "Sajtó" : "Press"}</a>
                 <a className="epk-button" href="#fotok">{hu ? "Fotók" : "Photos"}</a>
                 <a className="epk-button" href="#kapcsolat">{hu ? "Kapcsolat" : "Contact"}</a>
@@ -299,7 +300,7 @@ export default function Epk({ artistProfile = false }) {
           </section>
         )}
 
-        <section className="epk-section" aria-labelledby="epk-more-videos-heading">
+        <section id={artistProfile ? "videoklipek" : undefined} className="epk-section" aria-labelledby="epk-more-videos-heading">
           <div className="epk-wrap">
             <h2 id="epk-more-videos-heading">{hu ? "Saját klipek és musical" : "Music videos and musical theatre"}</h2>
             <div className="epk-grid epk-wide-videos">
