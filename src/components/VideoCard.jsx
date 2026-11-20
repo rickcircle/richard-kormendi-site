@@ -1,10 +1,7 @@
-import { ArrowUpRight, Play } from "lucide-react";
+import { Play } from "lucide-react";
 
-export default function VideoCard({ video, hu, playing, onPlay, landscape }) {
-  const { id, title, youtubeOnly, credit } = video;
-  const url = video.url ?? (landscape
-    ? `https://www.youtube.com/watch?v=${id}`
-    : `https://www.youtube.com/shorts/${id}`);
+export default function VideoCard({ video, hu, playing, onPlay }) {
+  const { id, title, credit } = video;
   const thumbnail = (
     <>
       <img src={`https://i.ytimg.com/vi/${id}/hqdefault.jpg`} alt="" loading="lazy" />
@@ -21,10 +18,6 @@ export default function VideoCard({ video, hu, playing, onPlay, landscape }) {
             allow="autoplay; encrypted-media; picture-in-picture"
             allowFullScreen
           />
-        ) : youtubeOnly ? (
-          <a href={url} target="_blank" rel="noreferrer" aria-label={`${title} – YouTube`}>
-            {thumbnail}
-          </a>
         ) : (
           <button type="button" onClick={onPlay} aria-label={`${hu ? "Lejátszás" : "Play"} – ${title}`}>
             {thumbnail}
@@ -37,11 +30,10 @@ export default function VideoCard({ video, hu, playing, onPlay, landscape }) {
           <p>{hu ? video.hu : video.en}</p>
           {credit && <p className="epk-video-credit">{hu ? credit.hu : credit.en}</p>}
         </div>
-        <a className="epk-video-link" href={url} target="_blank" rel="noreferrer" aria-label={`${title} – YouTube`}>
+        <button className="epk-video-link" type="button" onClick={onPlay} disabled={playing} aria-label={`${hu ? "Lejátszás" : "Play"} – ${title}`}>
           <Play size={15} aria-hidden="true" />
-          <span>{hu ? "Megnyitás a YouTube-on" : "Watch on YouTube"}</span>
-          <ArrowUpRight size={17} aria-hidden="true" />
-        </a>
+          <span>{playing ? (hu ? "Lejátszó megnyitva" : "Player open") : (hu ? "Lejátszás itt" : "Play here")}</span>
+        </button>
       </div>
     </article>
   );
