@@ -322,8 +322,18 @@
 
 @media (max-width: 600px) {
   .epk-stage-grid { grid-template-columns: 1fr; }
-  .epk-profile-videos { grid-template-columns: 1fr; }
-  .epk-profile-videos .epk-video-frame { aspect-ratio: 9 / 16; max-height: 70svh; }
+  .epk-profile-videos { grid-template-columns: 1fr; justify-items: center; gap: 1.25rem; }
+  .epk-profile-videos .epk-video {
+    width: min(100%, 420px);
+    min-width: 0;
+    box-sizing: border-box;
+  }
+  .epk-profile-videos .epk-video-frame {
+    width: 100%;
+    aspect-ratio: 9 / 16;
+    max-height: none;
+    flex-shrink: 0;
+  }
 }
 
 @media (max-width: 420px) {
