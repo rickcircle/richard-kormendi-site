@@ -5,7 +5,7 @@ import { musicVideos, musicalPerformance } from "../data/featuredMusic";
 import VideoCard from "../components/VideoCard";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import ArtistBiography, { ArtistIntro } from "./ArtistBiography";
+import ArtistBiography from "./ArtistBiography";
 import ArtistStagePhotos from "./ArtistStagePhotos";
 import { track } from "../utils/track";
 import portraitWide from "../assets/images/portrait-riverside-wide.jpg";
@@ -268,8 +268,6 @@ export default function Epk({ artistProfile = false }) {
             )}
           </div>
         </section>
-
-        {artistProfile && <ArtistIntro lang={lang} />}
 
         <section id="videok" className="epk-section" aria-labelledby="epk-video-heading">
           <div className="epk-wrap">

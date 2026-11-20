@@ -17,7 +17,7 @@ export default function ArtistStagePhotos({ lang }) {
     <section id="fotok" className="epk-section epk-section-tinted" aria-labelledby="stage-photos-heading">
       <div className="epk-wrap">
         <h2 id="stage-photos-heading">{lang === "hu" ? "Színpadi fotók" : "Stage photos"}</h2>
-        <details className="epk-more">
+        <details className="epk-more" open>
           <summary>{lang === "hu" ? "Színpadi képek megtekintése" : "View stage photos"}</summary>
           <div className="epk-grid epk-stage-grid">
           {stagePhotos.map(photo => (

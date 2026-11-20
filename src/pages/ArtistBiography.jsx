@@ -1,5 +1,3 @@
-import portrait from "../assets/images/portrait-leather-jacket.jpg";
-
 const biography = {
   hu: [
     {
@@ -39,32 +37,12 @@ const biography = {
   ],
 };
 
-export function ArtistIntro({ lang }) {
-  const hu = lang === "hu";
-  return (
-    <section className="epk-section epk-section-tinted" aria-labelledby="artist-intro-heading">
-      <div className="epk-wrap epk-short-intro">
-        <div>
-          <h2 id="artist-intro-heading">{hu ? "Röviden rólam" : "About me"}</h2>
-          <p>{hu
-            ? "Körmendi Richárd esztergomi énekes, gitáros és dalszerző, diplomás klasszikus énekművész. Az Éberálom zenekarból a színház és a musical világán át jutott el saját magyar és angol nyelvű dalaihoz."
-            : "Richard Körmendi is a singer, guitarist and songwriter from Esztergom, with a degree in classical vocal performance. His path has taken him from the band Éberálom through acting and musical theatre to his own songs in Hungarian and English."}</p>
-          <p>{hu
-            ? "Ma a zenére és a fellépésekre összpontosít, saját dalokkal, örökzöldekkel és nápolyi dalokkal áll színpadra."
-            : "He now focuses on music and live performance, bringing his own songs, evergreen favourites and Neapolitan songs to the stage."}</p>
-        </div>
-        <img src={portrait} alt={hu ? "Körmendi Richárd portréja" : "Portrait of Richard Körmendi"} width="1066" height="1500" loading="lazy" />
-      </div>
-    </section>
-  );
-}
-
 export default function ArtistBiography({ lang }) {
   return (
     <section id="palyam" className="epk-section epk-section-tinted" aria-labelledby="artist-bio-heading">
       <div className="epk-wrap">
         <h2 id="artist-bio-heading">{lang === "hu" ? "Szakmai háttér" : "Background"}</h2>
-        <details className="epk-more">
+        <details className="epk-more" open>
           <summary>{lang === "hu" ? "Részletes pálya és szerepek" : "Training, career and stage roles"}</summary>
           <div className="epk-editorial epk-biography">
             {biography[lang].map(({ title, text }) => (
