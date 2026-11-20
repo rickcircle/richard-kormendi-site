@@ -322,17 +322,26 @@
 
 @media (max-width: 600px) {
   .epk-stage-grid { grid-template-columns: 1fr; }
-  .epk-profile-videos { grid-template-columns: 1fr; justify-items: center; gap: 1.25rem; }
+  .epk-profile-videos { grid-template-columns: 1fr; justify-items: center; gap: 1rem; }
   .epk-profile-videos .epk-video {
-    width: min(100%, 420px);
+    width: min(100%, 300px);
     min-width: 0;
     box-sizing: border-box;
   }
   .epk-profile-videos .epk-video-frame {
     width: 100%;
-    aspect-ratio: 9 / 16;
+    aspect-ratio: 4 / 5;
     max-height: none;
     flex-shrink: 0;
+  }
+  .epk-profile .epk-video .epk-video-copy { padding: 0.9rem; }
+  .epk-profile .epk-video-copy h3 { font-size: 1.3rem; font-weight: 700; }
+  .epk-profile .epk-video-details { margin: 0.55rem 0 0.8rem; }
+  .epk-profile .epk-video-details p { line-height: 1.45; }
+  .epk-profile .epk-video-copy > .epk-video-link {
+    box-sizing: border-box;
+    min-height: 44px;
+    padding: 0.55rem 0.65rem;
   }
 }
 
